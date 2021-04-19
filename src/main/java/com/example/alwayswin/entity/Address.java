@@ -13,7 +13,7 @@ public class Address {
     private String phone;
     private String location;
     private String state;
-    private Integer zipCode;
+    private String zipCode;
 
     public Address() {
         aid = 0;
@@ -22,10 +22,11 @@ public class Address {
         phone = "";
         location = "";
         state = "";
-        zipCode = 0;
+        zipCode = "";
     }
 
-    public Address(Integer aid, Integer uid, String name, String phone, String location, String state, Integer zipCode) {
+    public Address(Integer aid, Integer uid, String name, String phone,
+                   String location, String state, String zipCode) {
         this.aid = aid;
         this.uid = uid;
         this.name = name;
@@ -59,7 +60,7 @@ public class Address {
         return state;
     }
 
-    public Integer getZipCode() {
+    public String getZipCode() {
         return zipCode;
     }
 
@@ -87,7 +88,7 @@ public class Address {
         this.state = state;
     }
 
-    public void setZipCode(Integer zipCode) {
+    public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
 }

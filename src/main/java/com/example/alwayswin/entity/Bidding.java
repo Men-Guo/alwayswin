@@ -12,7 +12,7 @@ public class Bidding {
     private Integer bid;
     private Integer uid;
     private Integer pid;
-    private Double offer;
+    private double offer;
     private Timestamp createTime;
 
     public Bidding() {
@@ -23,7 +23,7 @@ public class Bidding {
         createTime = new Timestamp(0);
     }
 
-    public Bidding(Integer bid, Integer uid, Integer pid, Double offer, Timestamp createTime) {
+    public Bidding(Integer bid, Integer uid, Integer pid, double offer, Timestamp createTime) {
         this.bid = bid;
         this.uid = uid;
         this.pid = pid;
@@ -55,11 +55,11 @@ public class Bidding {
         this.uid = uid;
     }
 
-    public Double getOffer() {
+    public double getOffer() {
         return offer;
     }
 
-    public void setOffer(Double offer) {
+    public void setOffer(double offer) {
         this.offer = offer;
     }
 

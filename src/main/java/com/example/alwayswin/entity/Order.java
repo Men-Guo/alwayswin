@@ -17,7 +17,7 @@ public class Order {
     private Integer uid;
     private Integer pid;
     private Integer aid;
-    private Double payment;
+    private double payment;
     private Timestamp createTime;
     private String status;
 
@@ -33,7 +33,7 @@ public class Order {
     }
 
         public Order(Integer oid,String number, Integer uid, Integer pid, Integer aid,
-                Double payment, Timestamp createTime, String status) {
+                double payment, Timestamp createTime, String status) {
             this.oid = oid;
             this.number = number;
             this.uid = uid;
@@ -84,11 +84,11 @@ public class Order {
         this.aid = aid;
     }
 
-    public Double getPayment() {
+    public double getPayment() {
         return payment;
     }
 
-    public void setPayment(Double payment) {
+    public void setPayment(double payment) {
         this.payment = payment;
     }
 
