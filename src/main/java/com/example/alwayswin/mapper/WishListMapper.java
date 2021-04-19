@@ -1,11 +1,10 @@
 package com.example.alwayswin.mapper;
 
 import com.example.alwayswin.entity.WishList;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @ClassName: WishListMapper
@@ -17,7 +16,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface WishListMapper {
     @Select("select * from wishlist where uid = {#uid}")
-    WishList getByUid(int uid);
+    @Results({
+            @Result(property = "product",column = "pid", one=@One(select = "com.alwayswin.mapper.ProductMapper.getByPid"))
+    })
+    List<WishList> getByUid(int uid);
 
     @Options(useGeneratedKeys = true,keyProperty = "wid")
     @Insert("insert into " +

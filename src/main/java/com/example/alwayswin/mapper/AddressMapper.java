@@ -11,13 +11,15 @@ import com.example.alwayswin.entity.Address;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface AddressMapper {
     @Select("Select * from address where aid=#{aid}")
     Address getByAid(int aid);
 
     @Select("Select * from address where uid=#{uid}")
-    Address getByUid(int uid);
+    List<Address> getByUid(int uid);
 
     @Options(useGeneratedKeys = true,keyProperty = "aid")
     @Insert("insert into " +

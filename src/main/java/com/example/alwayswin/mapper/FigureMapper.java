@@ -4,6 +4,8 @@ import com.example.alwayswin.entity.Figure;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @ClassName: FigureMapper
  * @Description:
@@ -17,7 +19,7 @@ public interface FigureMapper {
     Figure getByFid(int fid);
 
     @Select("SELECT * from figure where pid = #{pid}")
-    Figure getByPid(int pid);
+    List<Figure> getByPid(int pid);
 
     @Select("SELECT * from figure where pid = #{pid} and is_thumbnail = 1")
     Figure getThumbnail(int pid);
