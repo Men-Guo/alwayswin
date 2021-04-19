@@ -22,7 +22,7 @@ public interface FigureMapper {
     List<Figure> getByPid(int pid);
 
     @Select("SELECT * from figure where pid = #{pid} and is_thumbnail = 1")
-    Figure getThumbnail(int pid);
+    Figure getThumbnailByPid(int pid);
 
     @Options(useGeneratedKeys = true,keyProperty = "fid")
     @Insert("insert into " +
