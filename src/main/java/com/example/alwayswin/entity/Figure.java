@@ -14,7 +14,7 @@ public class Figure {
     private String url;
     private String description;
     private boolean isThumbnail;
-    private Timestamp updateTime;
+    private Timestamp updatedTime;
 
     public Figure() {
         fid = 0;
@@ -22,16 +22,16 @@ public class Figure {
         url = "";
         description = "";
         isThumbnail = true;
-        updateTime = new Timestamp(0);
+        updatedTime = new Timestamp(0);
     }
 
-    public Figure(Integer fid, Integer uid, String url, String description, boolean isThumbnail, Timestamp updateTime) {
+    public Figure(Integer fid, Integer uid, String url, String description, boolean isThumbnail, Timestamp updatedTime) {
         this.fid = fid;
         this.uid = uid;
         this.url = url;
         this.description = description;
         this.isThumbnail = isThumbnail;
-        this.updateTime = updateTime;
+        this.updatedTime = updatedTime;
     }
 
     public Integer getFid() {
@@ -67,7 +67,7 @@ public class Figure {
     }
 
     public Timestamp getUpdateTime() {
-        return updateTime;
+        return updatedTime;
     }
 
     public void setThumbnail(boolean thumbnail) {

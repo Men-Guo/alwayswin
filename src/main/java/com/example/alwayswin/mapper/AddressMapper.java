@@ -8,7 +8,7 @@ package com.example.alwayswin.mapper;
  */
 
 import com.example.alwayswin.entity.Address;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -18,4 +18,23 @@ public interface AddressMapper {
 
     @Select("Select * from address where uid=#{uid}")
     Address getByUid(int uid);
+
+    @Options(useGeneratedKeys = true,keyProperty = "aid")
+    @Insert("insert into " +
+            "address(uid, name,phone, location, state, zipcode) " +
+            "values(#{uid}, #{name},#{phone}, #{location}, #{state}, #{zipCode})")
+    int add(Address address);
+
+    @Update("update address set " +
+            "address.uid = #{uid}," +
+            "address.name = #{name}," +
+            "address.phone = #{phone}," +
+            "address.location = #{location}," +
+            "address.state = #{state}," +
+            "address.zipcode = #{zipCode}" +
+            "where address.aid=#{aid}")
+    int update(Address address);
+
+    @Delete("delete from address where aid=#{aid}")
+    int delete(int aid);
 }
