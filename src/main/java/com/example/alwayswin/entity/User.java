@@ -1,5 +1,7 @@
 package com.example.alwayswin.entity;
 
+import java.sql.Timestamp;
+
 /**
  * @ClassName: User
  * @Description:
@@ -12,6 +14,7 @@ public class User {
     private String password;
     private String role;
     private boolean status;
+    private Timestamp updatedTime;  // last login time, this name is to stay consist with other attributes in db
 
     public User() {
         uid= 0;
@@ -19,14 +22,16 @@ public class User {
         password = "";
         role = "";
         status = false;
+        updatedTime = new Timestamp(0);
     }
 
-    public User(Integer uid, String username, String password, String role, boolean status) {
+    public User(Integer uid, String username, String password, String role, boolean status, Timestamp updatedTime) {
         this.uid = uid;
         this.username = username;
         this.password = password;
         this.role = role;
         this.status = status;
+        this.updatedTime = updatedTime;
     }
 
     public Integer getUid() {
@@ -67,5 +72,13 @@ public class User {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public Timestamp getUpdatedTime() {
+        return updatedTime;
+    }
+
+    public void setUpdatedTime(Timestamp updatedTime) {
+        this.updatedTime = updatedTime;
     }
 }

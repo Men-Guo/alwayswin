@@ -24,15 +24,16 @@ public interface UserMapper {
 
     @Options(useGeneratedKeys = true,keyProperty = "uid")
     @Insert("insert into " +
-            "user(username, password, role, status) " +
-            "values(#{username}, #{password}, #{role}, #{status})")
+            "user(username, password, role, status, update_time) " +
+            "values(#{username}, #{password}, #{role}, #{status}, #{updateTime})")
     int add(User user);
 
     // Editing username is not allowed
     @Update("update user set " +
             "user.password = #{password}," +
             "user.role = #{role}," +
-            "user.status = #{status}" +
+            "user.status = #{status}," +
+            "user.update_time = #{updateTime}" +
             "where user.uid = #{uid}")
     int update(User user);
 
