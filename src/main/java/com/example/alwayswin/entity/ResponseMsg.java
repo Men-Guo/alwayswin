@@ -14,6 +14,13 @@ public class ResponseMsg {
     private String message;
     private HashMap<String, Object> responseMap = new HashMap<>();
 
+    public ResponseMsg(){}
+
+    public ResponseMsg(Integer status, String message) {
+        this.status = status;
+        this.message = message;
+    }
+
     public Integer getStatus() {
         return status;
     }
