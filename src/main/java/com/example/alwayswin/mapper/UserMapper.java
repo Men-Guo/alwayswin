@@ -5,6 +5,8 @@ import com.example.alwayswin.entity.UserInfo;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
+
 /**
  * @ClassName: User
  * @Description:
@@ -28,14 +30,21 @@ public interface UserMapper {
             "values(#{username}, #{password}, #{role}, #{status}, #{updateTime})")
     int add(User user);
 
-    // Editing username is not allowed
     @Update("update user set " +
-            "user.password = #{password}," +
-            "user.role = #{role}," +
             "user.status = #{status}," +
             "user.update_time = #{updateTime}" +
             "where user.uid = #{uid}")
-    int update(User user);
+    int updateLoginStatus(int uid, boolean status, Timestamp updatedTime);
+
+    @Update("update user set " +
+            "user.status = #{status}" +
+            "where user.uid = #{uid}")
+    int updateLogoutStatus(int uid, boolean status);
+
+    @Update("update user set " +
+            "user.password = #{password}" +
+            "where user.uid = #{uid}")
+    int updatePassword(int uid, String password);
 
 
 

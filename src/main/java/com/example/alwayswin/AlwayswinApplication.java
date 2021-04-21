@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.alwayswin.mapper")
+@MapperScan("com.example.alwayswin.mapper")
 public class AlwayswinApplication {
 
     public static void main(String[] args) {
