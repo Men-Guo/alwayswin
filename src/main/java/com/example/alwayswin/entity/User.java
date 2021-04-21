@@ -81,4 +81,16 @@ public class User {
     public void setUpdatedTime(Timestamp updatedTime) {
         this.updatedTime = updatedTime;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "uid=" + uid +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", role='" + role + '\'' +
+                ", status=" + status +
+                ", updatedTime=" + updatedTime +
+                '}';
+    }
 }

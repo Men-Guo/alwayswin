@@ -1,3 +1,4 @@
+/*
 package com.example.alwayswin.service;
 
 import com.example.alwayswin.entity.ResponseMsg;
@@ -18,12 +19,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
 import java.util.List;
 
+*/
 /**
  * @ClassName: UserService
  * @Description:
  * @Author: SQ
  * @Date: 2021-4-19
- */
+ *//*
+
 
 // todo: 修改密码，修改个人信息，logout
 @Service
@@ -54,13 +57,15 @@ public class UserService {
         this.orderMapper = orderMapper;
     }
 
-    /*
+    */
+/*
      * @Description: user login
      * @Param: [username, password]
      * @Return: com.example.alwayswin.entity.ResponseMsg 
      * @Author: SQ
      * @Date: 2021-4-20
-     **/
+     **//*
+
 
     public ResponseMsg login(String username, String password){
         ResponseMsg msg = new ResponseMsg();
@@ -95,13 +100,15 @@ public class UserService {
         return msg;
     }
 
-    /*
+    */
+/*
      * @Description: user regislation
      * @Param: [username, password]
      * @Return: com.example.alwayswin.entity.ResponseMsg 
      * @Author: SQ
      * @Date: 2021-4-20
-     **/
+     **//*
+
     public ResponseMsg register(String username, String password) {
         ResponseMsg msg = new ResponseMsg();
         msg.setStatusAndMessage(HttpServletResponse.SC_NOT_FOUND, "Requested resource not found");
@@ -129,13 +136,15 @@ public class UserService {
         return msg;
     }
 
-    /*
+    */
+/*
      * @Description: 密码规则。长度大于等于6位且数字字母混合, 字符滚粗
      * @Param: [password]
      * @Return: boolean
      * @Author: SQ
      * @Date: 2021-4-20
-     **/
+     **//*
+
     private boolean isValidPassword(String password) {
         if (password.length() < 6)
             return false;
@@ -156,3 +165,4 @@ public class UserService {
     }
 
 }
+*/

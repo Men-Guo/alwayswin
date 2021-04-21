@@ -37,8 +37,6 @@ public interface UserMapper {
             "where user.uid = #{uid}")
     int update(User user);
 
-
-
     /////////          UserInfo          //////////////
 
     @Select("select * from user_info where uid = #{uid}")

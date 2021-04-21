@@ -59,4 +59,14 @@ public class WishList {
     public void setCreateTime(Timestamp createTime) {
         this.createTime = createTime;
     }
+
+    @Override
+    public String toString() {
+        return "WishList{" +
+                "wid=" + wid +
+                ", uid=" + uid +
+                ", pid=" + pid +
+                ", createTime=" + createTime +
+                '}';
+    }
 }

@@ -70,4 +70,15 @@ public class Bidding {
     public void setCreateTime(Timestamp createTime) {
         this.createTime = createTime;
     }
+
+    @Override
+    public String toString() {
+        return "Bidding{" +
+                "bid=" + bid +
+                ", uid=" + uid +
+                ", pid=" + pid +
+                ", offer=" + offer +
+                ", createTime=" + createTime +
+                '}';
+    }
 }

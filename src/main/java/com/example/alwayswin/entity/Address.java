@@ -7,6 +7,7 @@ package com.example.alwayswin.entity;
  * @Date: 2021-4-19
  */
 public class Address {
+
     private Integer aid;
     private Integer uid;
     private String name;
@@ -90,5 +91,18 @@ public class Address {
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "aid=" + aid +
+                ", uid=" + uid +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", location='" + location + '\'' +
+                ", state='" + state + '\'' +
+                ", zipCode='" + zipCode + '\'' +
+                '}';
     }
 }

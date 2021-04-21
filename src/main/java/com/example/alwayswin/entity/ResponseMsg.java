@@ -38,4 +38,13 @@ public class ResponseMsg {
     public HashMap<String, Object> getResponseMap() {
         return responseMap;
     }
+
+    @Override
+    public String toString() {
+        return "ResponseMsg{" +
+                "status=" + status +
+                ", message='" + message + '\'' +
+                ", responseMap=" + responseMap +
+                '}';
+    }
 }

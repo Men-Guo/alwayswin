@@ -187,10 +187,31 @@ public class Product {
     public boolean isPassed() {
         return isPassed;
     }
+
     public void setPassed(boolean passed) {
         isPassed = passed;
     }
 
-
+    @Override
+    public String toString() {
+        return "Product{" +
+                "pid=" + pid +
+                ", uid=" + uid +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", cate1='" + cate1 + '\'' +
+                ", cate2='" + cate2 + '\'' +
+                ", cate3='" + cate3 + '\'' +
+                ", createTime=" + createTime +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", startPrice=" + startPrice +
+                ", autoWinPrice=" + autoWinPrice +
+                ", reservedPrice=" + reservedPrice +
+                ", minIncrement=" + minIncrement +
+                ", isPassed=" + isPassed +
+                ", isCanceled=" + isCanceled +
+                '}';
+    }
 }
 
