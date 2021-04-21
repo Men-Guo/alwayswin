@@ -70,4 +70,15 @@ public class ProductStatus {
     public void setEndTime(Timestamp endTime) {
         this.endTime = endTime;
     }
+
+    @Override
+    public String toString() {
+        return "ProductStatus{" +
+                "psid=" + psid +
+                ", pid=" + pid +
+                ", price=" + price +
+                ", status='" + status + '\'' +
+                ", endTime=" + endTime +
+                '}';
+    }
 }

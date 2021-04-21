@@ -115,4 +115,19 @@ public class UserInfo {
     public void setBalance(double balance) {
         this.balance = balance;
     }
+
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "uiid=" + uiid +
+                ", uid=" + uid +
+                ", portrait='" + portrait + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", gender='" + gender + '\'' +
+                ", birthday=" + birthday +
+                ", regisDate=" + regisDate +
+                ", balance=" + balance +
+                '}';
+    }
 }

@@ -1,3 +1,5 @@
+/*
+
 package com.example.alwayswin.service;
 
 import com.example.alwayswin.utils.DateUtil;
@@ -26,12 +28,14 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Map;
 
+*/
 /**
  * @ClassName: UserService
  * @Description:
  * @Author: SQ
  * @Date: 2021-4-19
- */
+ *//*
+
 
 
 @Service
@@ -61,13 +65,15 @@ public class UserService {
         this.orderMapper = orderMapper;
     }
 
-    /*
+    */
+/*
      * @Description: user login
      * @Param: [username, password]
      * @Return: com.example.alwayswin.entity.ResponseMsg
      * @Author: SQ
      * @Date: 2021-4-20
-     **/
+     **//*
+
 
     public ResponseMsg login(String username, String password) {
         ResponseMsg msg = new ResponseMsg();
@@ -93,13 +99,15 @@ public class UserService {
         return msg;
     }
 
-    /*
+    */
+/*
      * @Description: user registration
      * @Param: [username, password]
      * @Return: com.example.alwayswin.entity.ResponseMsg
      * @Author: SQ
      * @Date: 2021-4-20
-     **/
+     **//*
+
     public ResponseMsg register(String username, String password) {
         ResponseMsg msg = new ResponseMsg();
         try {
@@ -205,3 +213,4 @@ public class UserService {
         return msg;
     }
 }
+*/

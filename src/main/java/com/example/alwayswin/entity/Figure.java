@@ -77,4 +77,16 @@ public class Figure {
     public boolean isThumbnail() {
         return isThumbnail;
     }
+
+    @Override
+    public String toString() {
+        return "Figure{" +
+                "fid=" + fid +
+                ", uid=" + uid +
+                ", url='" + url + '\'' +
+                ", description='" + description + '\'' +
+                ", isThumbnail=" + isThumbnail +
+                ", updatedTime=" + updatedTime +
+                '}';
+    }
 }

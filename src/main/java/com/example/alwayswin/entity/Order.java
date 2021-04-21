@@ -107,4 +107,18 @@ public class Order {
     public void setCreateTime(Timestamp createTime) {
         this.createTime = createTime;
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "oid=" + oid +
+                ", number='" + number + '\'' +
+                ", uid=" + uid +
+                ", pid=" + pid +
+                ", aid=" + aid +
+                ", payment=" + payment +
+                ", createTime=" + createTime +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

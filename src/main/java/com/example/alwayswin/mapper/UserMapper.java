@@ -46,8 +46,6 @@ public interface UserMapper {
             "where user.uid = #{uid}")
     int updatePassword(int uid, String password);
 
-
-
     /////////          UserInfo          //////////////
 
     @Select("select * from user_info where uid = #{uid}")
