@@ -24,19 +24,30 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public int addWishList(WishList wishList) {
+    public Integer addWishList(WishList wishList) {
+        if (wishListMapper.checkDuplicate(wishList.getPid(),wishList.getUid())==0) return null;
         int nums = wishListMapper.insertWishList(wishList);
         return nums;
     }
 
     @Override
     public List<WishList> queryWishList(Integer uid) {
-        return wishListMapper.getByUid(uid);
+        List<WishList> wishLists = wishListMapper.getByUid(uid);
+        return wishLists;
     }
 
     @Override
     public WishList queryWishListByWid(Integer wid) {
         WishList wishlist = wishListMapper.selectWid(wid);
         return wishlist;
+    }
+
+    @Override
+    public int deleteWishList(Integer uid, Integer pid) {
+        if (wishListMapper.checkDuplicate(pid,uid)==0) {
+            System.out.println("商品不存在");
+            return 0;
+        }
+        return wishListMapper.deleteWishList(uid,pid);
     }
 }

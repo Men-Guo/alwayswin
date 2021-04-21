@@ -22,9 +22,13 @@ public interface WishListMapper {
             "values(#{uid}, #{pid},#{createTime})")
     int insertWishList(WishList wishList);
 
-    @Delete("delete from wishlist where wid=#{wid}")
-    int deleteWishList(int wid);
+    @Delete("delete from wishlist where uid=#{uid} and pid =#{pid}")
+    int deleteWishList(int uid, int pid);
 
     @Select("Select * from wishlist where wid=#{wid}")
     WishList selectWid(int wid);
+
+    @Select("Select count(*) from wishlist where pid=#{pid} and uid=#{uid}")
+    Integer checkDuplicate(int pid, int uid);
+    /*@Update()*/
 }

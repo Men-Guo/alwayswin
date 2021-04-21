@@ -1,3 +1,4 @@
+/*
 package com.example.alwayswin.security;
 
 import com.example.alwayswin.entity.ResponseMsg;
@@ -12,12 +13,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 
+*/
 /**
  * @ClassName: ErrorAuthenticationEntryPoint
  * @Description:
  * @Author: SQ
  * @Date: 2021-4-20
- */
+ *//*
+
 @Component
 public class ErrorAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
     Logger logger = LoggerFactory.getLogger(getClass());
@@ -33,3 +36,4 @@ public class ErrorAuthenticationEntryPoint implements AuthenticationEntryPoint, 
         logger.debug("Unauthorized Request", response.toString());
     }
 }
+*/

@@ -7,7 +7,8 @@ import java.util.List;
 
 @Service
 public interface WishListService{
-    int addWishList(WishList wishList);
+    Integer addWishList(WishList wishList);
     List<WishList> queryWishList(Integer uid);
     WishList queryWishListByWid(Integer wid);
+    int deleteWishList(Integer uid, Integer pid);
 }
