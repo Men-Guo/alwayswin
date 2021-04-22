@@ -1,5 +1,4 @@
-/*
-package com.example.alwayswin;
+package com.example.alwayswin.service;
 
 import com.example.alwayswin.entity.ResponseMsg;
 import com.example.alwayswin.entity.User;
@@ -7,7 +6,7 @@ import com.example.alwayswin.mapper.BiddingMapper;
 import com.example.alwayswin.mapper.OrderMapper;
 import com.example.alwayswin.mapper.ProductMapper;
 import com.example.alwayswin.mapper.UserMapper;
-import com.example.alwayswin.service.UserService;
+import com.example.alwayswin.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -19,7 +18,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class UserServiceTest {
-    private static UserService userService;
+    private static UserServiceImpl userService;
     @Mock
     private UserMapper userMapper;
     private ProductMapper productMapper;
@@ -33,7 +32,7 @@ public class UserServiceTest {
         biddingMapper = mock(BiddingMapper.class);
         orderMapper = mock(OrderMapper.class);
         
-        userService = new UserService(userMapper, productMapper, biddingMapper, orderMapper);
+        userService = new UserServiceImpl(userMapper, productMapper, biddingMapper, orderMapper);
     }
 
     //////////////login()//////////////
@@ -93,4 +92,3 @@ public class UserServiceTest {
 //    }
 
 }
-*/

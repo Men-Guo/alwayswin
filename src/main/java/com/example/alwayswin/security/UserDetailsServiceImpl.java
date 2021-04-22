@@ -1,4 +1,3 @@
-/*
 package com.example.alwayswin.security;
 
 import com.example.alwayswin.entity.User;
@@ -14,13 +13,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-*/
 /**
  * @ClassName: UserDetailsServiceImpl
  * @Description:
  * @Author: SQ
  * @Date: 2021-4-20
- *//*
+ */
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -39,4 +37,3 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
 }
-*/

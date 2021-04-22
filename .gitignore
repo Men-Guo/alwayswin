@@ -112,7 +112,6 @@ target/
 
 ### IntelliJ IDEA ###
 .idea
-*.iws
 *.iml
 *.ipr
 
@@ -128,4 +127,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### my ignore ###
+.mvn/
+mvnw
+mvnw.cmd
+.gradle
+
 >>>>>>> -m

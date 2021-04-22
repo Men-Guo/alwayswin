@@ -20,7 +20,7 @@ public class User {
         uid= 0;
         username = "";
         password = "";
-        role = "";
+        role = "user";
         status = false;
         updatedTime = new Timestamp(0);
     }
