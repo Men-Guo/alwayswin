@@ -1,7 +1,6 @@
 
 package com.example.alwayswin.security;
 
-import com.example.alwayswin.entity.ResponseMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;

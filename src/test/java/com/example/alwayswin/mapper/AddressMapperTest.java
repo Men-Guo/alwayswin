@@ -32,7 +32,7 @@ class AddressMapperTest {
         assertNull(address);
     }
 
-    ////////////////////        getByAid     ///////////////////////////////////
+    ////////////////////        getByUid     ///////////////////////////////////
     @Test
     public void happyPathWithGetByUid() {
         List<Address> addressList = addressMapper.getByUid(1);
@@ -86,7 +86,14 @@ class AddressMapperTest {
 
     @Test
     public void happyPathWithDeleteAddress() {
-        assertEquals(1, addressMapper.delete(7));
+        Address address = new Address(0, 3,"ccc", "123456", "Plaza", "CA", "92617");
+        assertEquals(1, addressMapper.add(address));
+
+        List<Address> addressList = addressMapper.getByUid(3);
+        for (Address a: addressList)
+            if (a.getName().equals("ccc"))
+                address = a;
+        assertEquals(1, addressMapper.delete(address.getAid()));
     }
 
     @Test

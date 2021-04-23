@@ -1,6 +1,9 @@
 
-package com.example.alwayswin.security;
+package com.example.alwayswin.config;
 
+import com.example.alwayswin.security.ErrorAuthenticationEntryPoint;
+import com.example.alwayswin.security.TokenFilter;
+import com.example.alwayswin.security.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +32,7 @@ import javax.annotation.Resource;
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Resource
     private UserDetailsServiceImpl userDetailsService;

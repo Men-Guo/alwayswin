@@ -1,21 +1,24 @@
 package com.example.alwayswin.service;
 
-import com.example.alwayswin.entity.ResponseMsg;
+import com.example.alwayswin.entity.User;
+import com.example.alwayswin.entity.UserInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
 @Service
 public interface UserService {
-    ResponseMsg login(String username, String password);
 
-    ResponseMsg register(String username, String password);
+    // return token
+    String login(String username, String password);
 
-    ResponseMsg logout(Integer uid);
+    int register(String username, String password);
 
-    ResponseMsg changePassword(Integer uid, String newPassword);
+    int logout(Integer uid);
 
-    ResponseMsg getUserInfo(Integer uid);
+    int changePassword(Integer uid, String newPassword);
 
-    ResponseMsg updateUserInfo(int uid, Map param);
+    UserInfo getUserInfo(Integer uid);
+
+    int updateUserInfo(int uid, Map param);
 }

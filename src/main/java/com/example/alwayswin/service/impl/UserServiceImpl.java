@@ -2,7 +2,6 @@ package com.example.alwayswin.service.impl;
 
 import com.example.alwayswin.service.UserService;
 import com.example.alwayswin.utils.DateUtil;
-import com.example.alwayswin.entity.ResponseMsg;
 import com.example.alwayswin.entity.User;
 import com.example.alwayswin.entity.UserInfo;
 import com.example.alwayswin.mapper.BiddingMapper;
@@ -12,6 +11,7 @@ import com.example.alwayswin.mapper.UserMapper;
 import com.example.alwayswin.security.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -63,144 +63,73 @@ public class UserServiceImpl implements UserService {
     /*
      * @Description: user login
      * @Param: [username, password]
-     * @Return: com.example.alwayswin.entity.ResponseMsg
+     * @Return: String
      * @Author: SQ
      * @Date: 2021-4-20
      **/
 
-    public ResponseMsg login(String username, String password) {
-        ResponseMsg msg = new ResponseMsg();
+    public String login(String username, String password) {
         try {
             // 验证用户名和密码
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password));
         } catch (BadCredentialsException e) {
-            msg.setStatusAndMessage(HttpServletResponse.SC_BAD_REQUEST, "Wrong username or password");
-            return msg;
+            logger.info(e.getMessage(), e);
         }
-
-        msg.setStatusAndMessage(HttpServletResponse.SC_OK, "Login successful");
-
-        User user = userMapper.getByUsername(username);
-        // set user login status and login time
-        userMapper.updateLoginStatus(user.getUid(), true, new Timestamp(System.currentTimeMillis()));
-
-        // put user and token into response
-        msg.getResponseMap().put("uid", user.getUid());   // uid放在msg 中就可以到处使用辽
-        msg.getResponseMap().put("username", user.getUsername());
-        msg.getResponseMap().put("token", JwtUtils.generateToken(user));
-        return msg;
+        return JwtUtils.generateToken(userMapper.getByUsername(username));
     }
 
     /*
      * @Description: user registration
      * @Param: [username, password]
-     * @Return: com.example.alwayswin.entity.ResponseMsg
+     * @Return: com.example.alwayswin.entity.int
      * @Author: SQ
      * @Date: 2021-4-20
      **/
-    public ResponseMsg register(String username, String password) {
-        ResponseMsg msg = new ResponseMsg();
+    public int register(String username, String password) {
+        int res = 0;
         try {
             User user = new User();
             user.setUsername(username);
             // 密码加密存储
             user.setPassword(new BCryptPasswordEncoder().encode(password));
             // 加入user
-            userMapper.add(user);
+            res = userMapper.add(user);
 
             user = userMapper.getByUsername(username);
             UserInfo userInfo = new UserInfo();
             userInfo.setUid(user.getUid());
             userInfo.setRegisDate(new Date(System.currentTimeMillis()));
             // 加入userInfo
-            userMapper.addUserInfo(userInfo);
+            res = userMapper.addUserInfo(userInfo);
 
         } catch (DataAccessException e) {
             // username is unique
-            msg.setStatusAndMessage(HttpServletResponse.SC_BAD_REQUEST, "Duplicate username");
-            return msg;
+            logger.info(e.getMessage(), e);
         }
-        msg.setStatusAndMessage(HttpServletResponse.SC_OK, "New user created");
-
-        // 将用户名和密码存入msg
-        msg.getResponseMap().put( "username", username);
-        msg.getResponseMap().put("password", password);
-        return msg;
+        return res;
     }
 
-    public ResponseMsg logout(Integer uid) {
-        ResponseMsg msg = new ResponseMsg();
-        try{
-            if (userMapper.updateLogoutStatus(uid, false) > 0)
-                msg.setStatusAndMessage(HttpServletResponse.SC_OK, "logout successful");
-            else
-                msg.setStatusAndMessage(HttpServletResponse.SC_BAD_REQUEST, "logout failed");
-        }catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return msg;
+    public int logout(Integer uid) {
+        return userMapper.updateLogoutStatus(uid, false);
     }
 
-    public ResponseMsg changePassword(Integer uid, String newPassword) {
-        ResponseMsg msg = new ResponseMsg();
-        try{
-            if (userMapper.updatePassword(uid, newPassword) > 0)
-                msg.setStatusAndMessage(HttpServletResponse.SC_OK, "Changing password successful");
-            else
-                msg.setStatusAndMessage(HttpServletResponse.SC_BAD_REQUEST, "Changing password failed");
-
-        }catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return msg;
+    public int changePassword(Integer uid, String newPassword) {
+       return userMapper.updatePassword(uid, newPassword);
     }
 
 
         ////////////////        User Info           ////////////////////
 
-    public ResponseMsg getUserInfo(Integer uid) {
-        ResponseMsg msg = new ResponseMsg(HttpServletResponse.SC_BAD_REQUEST, "No userInfo");
-        try {
-            UserInfo userInfo = userMapper.getUserInfoByUid(uid);
-            if (userInfo != null) {
-                msg.setStatusAndMessage(HttpServletResponse.SC_OK, "UserInfo found");
-                msg.getResponseMap().put("userInfo", userInfo);
-            }
-        }catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return msg;
+    public UserInfo getUserInfo(Integer uid) {
+        return userMapper.getUserInfoByUid(uid);
     }
 
-    public ResponseMsg updateUserInfo(int uid, Map param) {
-        ResponseMsg msg = new ResponseMsg();
-        try{
-            UserInfo userInfo = userMapper.getUserInfoByUid(uid);
+    public int updateUserInfo(int uid, Map param) {
+        UserInfo userInfo = new UserInfo();
+        BeanUtils.copyProperties(param, userInfo);
+        userInfo.setUid(uid);
 
-            if(param.containsKey("portrait"))
-                userInfo.setPortrait(param.get("portrait").toString());
-            if (param.containsKey("phone"))
-                userInfo.setPhone(param.get("phone").toString());
-            if(param.containsKey("email"))
-                userInfo.setEmail(param.get("email").toString());
-            if (param.containsKey("gender"))
-                userInfo.setGender(param.get("gender").toString());
-            if(param.containsKey("balance"))
-                userInfo.setBalance(Double.parseDouble(param.get("balance").toString()));
-            if(param.containsKey("birthday")){
-                Date birthday = DateUtil.String2Date(param.get("birthday").toString(), "yyyy-MM-dd");
-                userInfo.setBirthday(birthday);
-            }
-
-            if(userMapper.updateUserInfo(userInfo) > 0){
-                msg.setStatusAndMessage(HttpServletResponse.SC_OK, "Update userInfo successfully");
-            }else{
-                msg.setStatusAndMessage(HttpServletResponse.SC_BAD_REQUEST, "Update userInfo failed");
-            }
-        }catch (Exception e){
-            logger.error(e.getMessage(), e);
-        }
-        return msg;
+        return userMapper.updateUserInfo(userInfo);
     }
 }

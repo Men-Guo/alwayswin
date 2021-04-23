@@ -1,18 +1,21 @@
 package com.example.alwayswin.service;
 
-import com.example.alwayswin.entity.ResponseMsg;
+import com.example.alwayswin.entity.Address;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
+@Service
 public interface AddressService {
 
-    ResponseMsg showAddress(int aid);
+    Address showAddress(int aid);
 
-    ResponseMsg showAllAddresses(int uid);
+    List<Address> showAllAddresses(int uid);
 
-    ResponseMsg addAddress(int uid, String name, String phone, String location, String state, String zipCode);
+    int addAddress(int uid, Map param);
 
-    ResponseMsg editAddress(int aid, Map map);
+    int editAddress(int aid, Map param);
 
-    ResponseMsg deleteAddress(int aid);
+    int deleteAddress(int aid);
 }

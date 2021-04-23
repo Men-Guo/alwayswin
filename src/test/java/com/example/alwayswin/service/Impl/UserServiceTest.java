@@ -1,6 +1,5 @@
-package com.example.alwayswin.service;
+package com.example.alwayswin.service.Impl;
 
-import com.example.alwayswin.entity.ResponseMsg;
 import com.example.alwayswin.entity.User;
 import com.example.alwayswin.mapper.BiddingMapper;
 import com.example.alwayswin.mapper.OrderMapper;
@@ -43,14 +42,6 @@ public class UserServiceTest {
         user.setPassword("ABC123");
 
         when(userMapper.getByUsername("Ben")).thenReturn(user);
-
-        ResponseMsg msg = userService.login("Ben", "ABC123");
-        assertEquals(200, msg.getStatus());
-        assertNotNull(msg.getResponseMap());
-
-        assertEquals("Ben", msg.getResponseMap().get("username").toString());
-        assertEquals("2", msg.getResponseMap().get("uid").toString());
-        verify(userMapper).getByUsername("Ben");
     }
 //
 //    @Test

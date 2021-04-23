@@ -44,6 +44,8 @@ public class JwtUtils {
      * @Date: 2021-4-20
      **/
     public static String generateToken(User user) {
+        if (user == null)
+            return null;
         Date nowDate = new Date();
         Date expireDate = new Date(nowDate.getTime() + expireTime);
         return Jwts.builder()
@@ -87,6 +89,17 @@ public class JwtUtils {
             logger.debug("Invalid token", e.getMessage());
             return null;
         }
+    }
+
+    public static String getTokenFromHeader(String authHeader) {
+        String token = null;
+        // Token 开头部分 默认 Bearer 开头, 注意空格
+        final String bearer = "Bearer ";
+        if (authHeader != null && authHeader.startsWith(bearer)) {
+            // 抽取token
+             token = authHeader.substring(bearer.length());
+        }
+        return token;
     }
 
     public static Claims getClaimFromToken(String token) {

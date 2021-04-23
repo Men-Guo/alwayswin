@@ -1,4 +1,4 @@
-package com.example.alwayswin.service;
+package com.example.alwayswin.service.Impl;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  */
 public class Figure {
     private Integer fid;
-    private Integer uid;
+    private Integer pid;
     private String url;
     private String description;
     private boolean isThumbnail;
@@ -18,16 +18,16 @@ public class Figure {
 
     public Figure() {
         fid = 0;
-        uid = 0;
+        pid = 0;
         url = "";
         description = "";
         isThumbnail = true;
         updatedTime = new Timestamp(0);
     }
 
-    public Figure(Integer fid, Integer uid, String url, String description, boolean isThumbnail, Timestamp updatedTime) {
+    public Figure(Integer fid, Integer pid, String url, String description, boolean isThumbnail, Timestamp updatedTime) {
         this.fid = fid;
-        this.uid = uid;
+        this.pid = pid;
         this.url = url;
         this.description = description;
         this.isThumbnail = isThumbnail;
@@ -42,12 +42,12 @@ public class Figure {
         this.fid = fid;
     }
 
-    public Integer getUid() {
-        return uid;
+    public Integer getPid() {
+        return pid;
     }
 
-    public void setUid(Integer uid) {
-        this.uid = uid;
+    public void setPid(Integer pid) {
+        this.pid = pid;
     }
 
     public String getUrl() {
@@ -66,8 +66,13 @@ public class Figure {
         this.description = description;
     }
 
-    public Timestamp getUpdateTime() {
+    public Timestamp getUpdatedTime() {
         return updatedTime;
+    }
+
+
+    public void setUpdatedTime(Timestamp updatedTime) {
+        this.updatedTime = updatedTime;
     }
 
     public void setThumbnail(boolean thumbnail) {
@@ -82,7 +87,7 @@ public class Figure {
     public String toString() {
         return "Figure{" +
                 "fid=" + fid +
-                ", uid=" + uid +
+                ", pid=" + pid +
                 ", url='" + url + '\'' +
                 ", description='" + description + '\'' +
                 ", isThumbnail=" + isThumbnail +
