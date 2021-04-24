@@ -19,12 +19,16 @@ public class WishListController {
 
     @RequestMapping(value = "/wishList/listAll/{uid}", method = RequestMethod.GET)
     public CommonResult<List<WishList>> getWishListsByUid(@PathVariable("uid") Integer uid){
-        return CommonResult.success(wishListService.queryWishList(uid));
+        List<WishList> wishLists = wishListService.queryWishList(uid);
+        if (wishLists.size()==0) return CommonResult.unauthorized();
+        return CommonResult.success(wishLists);
     }
 
     @RequestMapping(value ="/wishList/wid/{wid}", method = RequestMethod.GET)
     public CommonResult<WishList> getByWid(@PathVariable("wid") Integer wid){
-        return CommonResult.success(wishListService.queryWishListByWid(wid));
+        WishList wishList = wishListService.queryWishListByWid(wid);
+        if (wishList == null) return CommonResult.unauthorized();
+        return CommonResult.success(wishList);
     }
 
     @RequestMapping(value ="/wishlist/delete/{uid}&{pid}", method = RequestMethod.GET)

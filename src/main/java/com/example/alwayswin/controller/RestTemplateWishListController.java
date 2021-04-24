@@ -17,7 +17,7 @@ public class RestTemplateWishListController {
     @ResponseBody
     public Object getForEntity(@PathVariable("uid") Integer uid){
         String url = HOST_ADMIN + "/wishList/listAll/{uid}";
-        ResponseEntity<CommonResult> responseEntity = new RestTemplate().getForEntity(url,CommonResult.class,uid);//uid);
+        ResponseEntity<CommonResult> responseEntity = new RestTemplate().getForEntity(url,CommonResult.class,uid);
         return responseEntity.getBody();
     }
 
@@ -25,10 +25,12 @@ public class RestTemplateWishListController {
     @ResponseBody
     public Object getForEntity2(@PathVariable("wid") Integer wid){
         String url = HOST_ADMIN + "/wishList/wid/{wid}";
-        ResponseEntity<CommonResult> responseEntity = new RestTemplate().getForEntity(url,CommonResult.class,wid);//uid);
+        ResponseEntity<CommonResult> responseEntity = new RestTemplate().getForEntity(url,CommonResult.class,wid);
         System.out.println(responseEntity);
         return responseEntity.getBody();
     }
+
+
 
 
 /*    @RequestMapping(value = "/postwishlist", method = RequestMethod.POST)
