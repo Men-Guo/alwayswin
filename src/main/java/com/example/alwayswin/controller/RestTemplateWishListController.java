@@ -7,6 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 public class RestTemplateWishListController {
 
@@ -26,10 +29,19 @@ public class RestTemplateWishListController {
     public Object getForEntity2(@PathVariable("wid") Integer wid){
         String url = HOST_ADMIN + "/wishList/wid/{wid}";
         ResponseEntity<CommonResult> responseEntity = new RestTemplate().getForEntity(url,CommonResult.class,wid);
-        System.out.println(responseEntity);
         return responseEntity.getBody();
     }
 
+    @RequestMapping(value = "/wishList/delete/uid/{uid}/pid/{pid}",method = RequestMethod.GET)
+    @ResponseBody
+    public Object deleteWishList(@PathVariable("uid") Integer uid, @PathVariable("pid") Integer pid){
+        String url = HOST_ADMIN + "/wishList/delete/uid/{uid}/pid/{pid}";
+        Map<String,Object> params = new HashMap<>();
+        params.put("uid",uid);
+        params.put("pid",pid);
+        ResponseEntity<CommonResult> responseEntity = new RestTemplate().getForEntity(url,CommonResult.class,params);
+        return responseEntity.getBody();
+    }
 
 
 
