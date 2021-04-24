@@ -2,31 +2,29 @@ package com.example.alwayswin.controller;
 import com.example.alwayswin.common.api.CommonResult;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class RestTemplateWishListController {
-/*    private RestTemplate restTemplate;
 
-    @Before
-    public void init(){
-        restTemplate = new RestTemplate();
-    }*/
+    @Value("http://localhost:8080")
+    String HOST_ADMIN;
 
-    @RequestMapping(value = "/get/{uid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/wishList/getByUid/{uid}", method = RequestMethod.GET)
     @ResponseBody
     public Object getForEntity(@PathVariable("uid") Integer uid){
-        String url = "http://localhost:8080/wishList/listAll/{uid}";
+        String url = HOST_ADMIN + "/wishList/listAll/{uid}";
         ResponseEntity<CommonResult> responseEntity = new RestTemplate().getForEntity(url,CommonResult.class,uid);//uid);
         return responseEntity.getBody();
     }
 
-    @RequestMapping(value = "/get2/{wid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/wishList/getByWid/{wid}", method = RequestMethod.GET)
     @ResponseBody
     public Object getForEntity2(@PathVariable("wid") Integer wid){
-        String url = "http://localhost:8080/wishList/wid/{wid}";
+        String url = HOST_ADMIN + "/wishList/wid/{wid}";
         ResponseEntity<CommonResult> responseEntity = new RestTemplate().getForEntity(url,CommonResult.class,wid);//uid);
         System.out.println(responseEntity);
         return responseEntity.getBody();
