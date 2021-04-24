@@ -10,13 +10,13 @@ import java.util.Map;
 public interface UserService {
 
     // return token
-    String login(String username, String password);
+    String login(Map param);
 
-    int register(String username, String password);
+    int register(Map param);
 
     int logout(Integer uid);
 
-    int changePassword(Integer uid, String newPassword);
+    int changePassword(Integer uid, Map param);
 
     UserInfo getUserInfo(Integer uid);
 

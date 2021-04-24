@@ -95,14 +95,6 @@ public class Address {
 
     @Override
     public String toString() {
-        return "Address{" +
-                "aid=" + aid +
-                ", uid=" + uid +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", location='" + location + '\'' +
-                ", state='" + state + '\'' +
-                ", zipCode='" + zipCode + '\'' +
-                '}';
+        return name + " " + phone + " " + location + ", " + state + ", " + zipCode;
     }
 }

@@ -11,7 +11,7 @@ public enum ResultCode implements StatusErrorCode{
     private long code;
     private String message;
 
-    private ResultCode(long code, String message) {
+    ResultCode(long code, String message) {
         this.code = code;
         this.message = message;
     }

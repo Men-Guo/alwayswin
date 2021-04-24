@@ -46,18 +46,23 @@ public class JwtUtils {
     public static String generateToken(User user) {
         if (user == null)
             return null;
-        Date nowDate = new Date();
-        Date expireDate = new Date(nowDate.getTime() + expireTime);
-        return Jwts.builder()
-                .setHeaderParam("typ", "JWT")
-                .setIssuer("AlwaysWin server")  // optional
-                .setIssuedAt(nowDate)  // optional
-                .setExpiration(expireDate)
-                .setAudience(user.getUid() + "")    // 根据uid 设置 Token 的接受者
-                .claim("username", user.getUsername())
-                .claim("role", user.getRole())  // 在claim 中增加role
-                .signWith(key, SignatureAlgorithm.ES256)
-                .compact();
+        try {
+            Date nowDate = new Date();
+            Date expireDate = new Date(nowDate.getTime() + expireTime);
+            String token = Jwts.builder()
+                    .setHeaderParam("typ", "JWT")
+                    .setIssuer("AlwaysWin server")  // optional
+                    .setIssuedAt(nowDate)  // optional
+                    .setExpiration(expireDate)
+                    .setAudience(user.getUid() + "")    // 根据uid 设置 Token 的接受者
+                    .claim("username", user.getUsername())
+                    .claim("role", user.getRole())  // 在claim 中增加role
+                    .signWith(key, SignatureAlgorithm.ES256)
+                    .compact();
+            return "Bearer " + token;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /*

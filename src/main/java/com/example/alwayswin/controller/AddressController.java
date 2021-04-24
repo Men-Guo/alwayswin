@@ -6,7 +6,6 @@ import com.example.alwayswin.service.AddressService;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
 import io.jsonwebtoken.Claims;
 
-import org.apache.ibatis.annotations.Delete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -65,7 +64,7 @@ public class AddressController {
 
     @ResponseBody
     @PostMapping("/user/address/create")
-    CommonResult<Integer> addAddress(@RequestHeader("Authorization") String authHeader,
+    CommonResult addAddress(@RequestHeader("Authorization") String authHeader,
                                     @RequestBody Map param){
 
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
@@ -86,8 +85,8 @@ public class AddressController {
     }
 
     @ResponseBody
-    @PutMapping("/user/address/edit/{aid}")
-    CommonResult<Integer> editAddress(@RequestBody Map param, @PathVariable int aid){
+    @PutMapping("/user/address/update/{aid}")
+    CommonResult updateAddress(@RequestBody Map param, @PathVariable int aid){
         int res = addressService.editAddress(aid, param);
         if (res == 1) {
             logger.info("Edit address successfully");
@@ -101,7 +100,7 @@ public class AddressController {
 
     @ResponseBody
     @DeleteMapping("/user/address/delete/{aid}")
-    CommonResult<Integer> deleteAddress(@PathVariable int aid){
+    CommonResult deleteAddress(@PathVariable int aid){
         int res = addressService.deleteAddress(aid);
         if (res == 1) {
             logger.info("Delete address successfully");

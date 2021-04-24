@@ -16,6 +16,7 @@ public class Order {
     private String number;
     private Integer uid;
     private Integer pid;
+    // todo: change to string
     private Integer aid;
     private double payment;
     private Timestamp createTime;

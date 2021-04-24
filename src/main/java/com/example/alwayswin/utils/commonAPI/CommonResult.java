@@ -45,6 +45,17 @@ public class CommonResult<T> {
     public static <T> CommonResult<T> failure(){
         return failure(ResultCode.FAILED);
     }
+    /*
+     * @Description:
+     * @Param: String error message
+     * @Return:  Error code and input error message
+     * @Author: SQ
+     * @Date: 2021-4-24
+     **/
+
+    public static <T> CommonResult<T> failure(String message){
+        return new CommonResult<T>(ResultCode.FAILED.getCode(),message,null);
+    }
 
     /**
      * Continue use with function validateFailure(ResultCode.VALIDATE_FAILED);
@@ -63,6 +74,18 @@ public class CommonResult<T> {
      */
     public static<T> CommonResult<T> validateFailure(){
         return validateFailure(ResultCode.VALIDATE_FAILED);
+    }
+
+    /*
+     * @Description:
+     * @Param: String error message
+     * @Return:  Error code and input error message
+     * @Author: SQ
+     * @Date: 2021-4-24
+     **/
+
+    public static <T> CommonResult<T> validateFailure(String message){
+        return new CommonResult<T>(ResultCode.VALIDATE_FAILED.getCode(),message,null);
     }
 
     /**
