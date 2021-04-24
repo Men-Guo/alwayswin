@@ -1,6 +1,7 @@
 package com.example.alwayswin.controller;
 
 import ch.qos.logback.classic.Logger;
+import com.example.alwayswin.common.api.CommonResult;
 import com.example.alwayswin.entity.WishList;
 import com.example.alwayswin.service.WishListService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +16,15 @@ public class WishListController {
     @Autowired
     private WishListService wishListService;
 
-    @RequestMapping(value = "/wishlist/uid/{uid}", method = RequestMethod.GET)
-    public List<WishList> getByUid(@PathVariable("uid") Integer uid){
-        List<WishList> wishLists = wishListService.queryWishList(uid);
-        return wishLists;
+
+    @RequestMapping(value = "/wishList/listAll/{uid}", method = RequestMethod.GET)
+    public CommonResult<List<WishList>> getWishListsByUid(@PathVariable("uid") Integer uid){
+        return CommonResult.success(wishListService.queryWishList(uid));
     }
 
-    @RequestMapping(value ="/wishlist/wid/{wid}", method = RequestMethod.GET)
-    public WishList getByWid(@PathVariable("wid") Integer wid){
-        return wishListService.queryWishListByWid(wid);
+    @RequestMapping(value ="/wishList/wid/{wid}", method = RequestMethod.GET)
+    public CommonResult<WishList> getByWid(@PathVariable("wid") Integer wid){
+        return CommonResult.success(wishListService.queryWishListByWid(wid));
     }
 
     @RequestMapping(value ="/wishlist/delete/{uid}&{pid}", method = RequestMethod.GET)
