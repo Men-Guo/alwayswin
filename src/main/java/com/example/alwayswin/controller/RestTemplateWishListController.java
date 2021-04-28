@@ -1,12 +1,24 @@
 package com.example.alwayswin.controller;
 import com.example.alwayswin.common.api.CommonResult;
+import com.example.alwayswin.entity.WishList;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +44,8 @@ public class RestTemplateWishListController {
         return responseEntity.getBody();
     }
 
-    @RequestMapping(value = "/wishList/delete/uid/{uid}/pid/{pid}",method = RequestMethod.GET)
+    //只用一个delete于WishListController
+/*    @RequestMapping(value = "/wishList/delete/{uid}&{pid}",method = RequestMethod.GET)
     @ResponseBody
     public Object deleteWishList(@PathVariable("uid") Integer uid, @PathVariable("pid") Integer pid){
         String url = HOST_ADMIN + "/wishList/delete/uid/{uid}/pid/{pid}";
@@ -41,24 +54,19 @@ public class RestTemplateWishListController {
         params.put("pid",pid);
         ResponseEntity<CommonResult> responseEntity = new RestTemplate().getForEntity(url,CommonResult.class,params);
         return responseEntity.getBody();
-    }
-
-
-
-/*    @RequestMapping(value = "/postwishlist", method = RequestMethod.POST)
-    public Object postForWishListEntity(@RequestParam String name){
-        String url = "/wishListAttribute/create";
-        //HttpHeaders 是一个Map类, MultiValueMap<String,String>
-        //MultivalueMap<String,String>是一个Map 延伸于 Map<k,List<V>>
-
-        HttpHeaders headers = new HttpHeaders();
-        //用来调整MediaType 接收前端传递过来的类型, 这里接收的是APPLICATION_FORM_URLENCODEDa
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        //一个Map<k,List<v>> 用MultiValueMap可以一个key多个值
-        MultiValueMap<String,String> params = new LinkedMultiValueMap<>();
-        params.add("name",name);
-        HttpEntity<MultiValueMap<String,String>> requestEntity = new HttpEntity<>(params,headers);
-        *//*ResponseEntity<CommonResult> responseEntity = *//*
     }*/
+
+
+
+    @RequestMapping(value = "/wishList/post", method = RequestMethod.POST)
+    public Object postForWishListEntity(Map<String,String> params) throws ParseException {
+        String url = HOST_ADMIN + "/wishList/create";
+        WishList wishlist = new WishList();
+        wishlist.setWid(Integer.parseInt(params.get("wid")));
+        wishlist.setPid(Integer.parseInt(params.get("pid")));
+        wishlist.setUid(Integer.parseInt(params.get("uid")));
+        wishlist.setCreateTime(Timestamp.valueOf(params.get("createTime")));
+        ResponseEntity<CommonResult> responseEntity = new RestTemplate().getForEntity(url, CommonResult.class, wishlist);
+        return responseEntity.getBody();
+    }
 }

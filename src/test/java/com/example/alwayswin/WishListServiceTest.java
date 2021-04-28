@@ -1,39 +1,51 @@
 package com.example.alwayswin;
 
-import com.example.alwayswin.common.api.CommonResult;
+import com.example.alwayswin.entity.WishList;
 import com.example.alwayswin.mapper.WishListMapper;
-import com.example.alwayswin.service.WishListService;
 import com.example.alwayswin.service.impl.WishListServiceImpl;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import static org.mockito.Mockito.mock;
+import java.sql.Timestamp;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 public class WishListServiceTest {
 
     private RestTemplate restTemplate;
 
-    private WishListServiceImpl wishListService;
+    @Autowired
+    private WishListServiceImpl wishListService = new WishListServiceImpl();
 
-    @Mock
+    @Autowired
     private WishListMapper wishListMapper;
 
-    @BeforeEach
-    public void init() {
-        wishListMapper = mock(WishListMapper.class);
-        wishListService.setWishListMapper(wishListMapper);
-    }
-
-/*    @Test
+    @Test
     public void happy_path_with_wish_list(){
-        String url = "http://127.0.0.1:8080/wishlist/wid/{wid}";
-        ResponseEntity<CommonResult> responseEntity = restTemplate.getForEntity(url,CommonResult.class,2);
-        System.out.println(responseEntity);
-    }*/
+        WishList wishList = new WishList();
+        wishList.setUid(1);
+        wishList.setPid(3);
+        wishList.setCreateTime(new Timestamp(System.currentTimeMillis()));
+
+        //查找成功
+        assertEquals(1,wishListMapper.checkDuplicate(wishList.getPid(),wishList.getUid()));
+
+        //查找失败
+        wishList.setPid(2);
+        assertEquals(0,wishListMapper.checkDuplicate(wishList.getPid(),wishList.getUid()));
+
+        //插入成功
+        assertEquals(1,wishListService.addWishList(wishList));
+        //插入失败
+        assertEquals(null,wishListService.addWishList(wishList));
+
+        //删除成功
+        assertEquals(1,wishListService.deleteWishList(1,2));
+        //删除失败
+        assertEquals(0,wishListService.deleteWishList(1,2));
+        //assertEquals(1,wishListService.addWishList(wishlist));
+    }
 }

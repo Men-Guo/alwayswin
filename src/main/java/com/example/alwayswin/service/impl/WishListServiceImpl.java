@@ -25,7 +25,7 @@ public class WishListServiceImpl implements WishListService {
 
     @Override
     public Integer addWishList(WishList wishList) {
-        if (wishListMapper.checkDuplicate(wishList.getPid(),wishList.getUid())==0) return null;
+        if (wishListMapper.checkDuplicate(wishList.getPid(),wishList.getUid())==1) return null;
         int nums = wishListMapper.insertWishList(wishList);
         return nums;
     }
@@ -45,7 +45,6 @@ public class WishListServiceImpl implements WishListService {
     @Override
     public int deleteWishList(Integer uid, Integer pid) {
         if (wishListMapper.checkDuplicate(pid,uid)==0) {
-            System.out.println("商品不存在");
             return 0;
         }
         return wishListMapper.deleteWishList(uid,pid);

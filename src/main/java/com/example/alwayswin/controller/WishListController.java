@@ -3,7 +3,6 @@ package com.example.alwayswin.controller;
 import com.example.alwayswin.common.api.CommonResult;
 import com.example.alwayswin.entity.WishList;
 import com.example.alwayswin.service.WishListService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -50,7 +49,7 @@ public class WishListController {
      * @return
      */
     @RequestMapping(value ="/wishList/delete/uid/{uid}/pid/{pid}", method = RequestMethod.GET)
-    public CommonResult<Object> deleteWishList(@PathVariable("uid") Integer uid, @PathVariable("pid") Integer pid){
+    public CommonResult<Object> deleteWishListByUidPid(@PathVariable("uid") Integer uid, @PathVariable("pid") Integer pid){
         int res = wishListService.deleteWishList(uid,pid);
         if (res == 1){
             return CommonResult.success(null);
@@ -59,7 +58,7 @@ public class WishListController {
         }
     }
 
-    @RequestMapping(value = "/wishlist/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/wishList/create", method = RequestMethod.POST)
     public CommonResult insertWishList(WishList wishList){
         int res = wishListService.addWishList(wishList);
         if (res == 1){
