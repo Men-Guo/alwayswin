@@ -9,7 +9,7 @@ import java.util.List;
 public interface ProductService {
     Product displayProductDetail(Integer pid);
     Integer deleteProduct(Integer pid);
-    Integer updateProduct(Integer pid);
+    Integer updateProduct(Product product);
     Integer createProduct(Product product);
-    List<Product> displayAllProduct();
+    List<Product> displayAllProduct(String filter, String sorted);
 }

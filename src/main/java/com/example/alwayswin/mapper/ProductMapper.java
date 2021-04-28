@@ -24,6 +24,9 @@ public interface ProductMapper {
     @Select("select * from product where pid = #{pid}")
     Product getByPid(int pid);
 
+    @Select("select count(*) from product where pid =#{pid}")
+    Integer checkProduct(int pid);
+
     @Select("select * from product where pid = #{pid}")
     @Results({
             @Result(property = "productStatus", column = "pid",
