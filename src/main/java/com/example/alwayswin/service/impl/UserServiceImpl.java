@@ -1,5 +1,6 @@
 package com.example.alwayswin.service.impl;
 
+import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.security.UserDetailsServiceImpl;
 import com.example.alwayswin.service.UserService;
 import com.example.alwayswin.entity.User;
@@ -8,12 +9,10 @@ import com.example.alwayswin.mapper.BiddingMapper;
 import com.example.alwayswin.mapper.OrderMapper;
 import com.example.alwayswin.mapper.ProductMapper;
 import com.example.alwayswin.mapper.UserMapper;
-import com.example.alwayswin.security.JwtUtils;
+import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Map;
 
 /**
@@ -36,6 +36,9 @@ import java.util.Map;
 @Service
 public class UserServiceImpl implements UserService {
     private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
+    @Resource
+    private JwtUtils jwtUtils;
 
     @Resource
     private PasswordEncoder passwordEncoder;
@@ -68,23 +71,41 @@ public class UserServiceImpl implements UserService {
      * @Date: 2021-4-20
      **/
 
+//    public String login(Map param) {
+//        User user = new User();
+//        try {
+//            UserDetailsService userDetailsService = new UserDetailsServiceImpl();
+//            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+//            // matches(CharSequence rawPassword, String encodedPassword)
+//            if(!passwordEncoder.matches(user.getPassword(), userDetails.getPassword())){
+//                logger.warn("Wrong password");
+//                System.out.println("Wrong password");
+//            }
+//            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+//                    userDetails, null, userDetails.getAuthorities());
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//        } catch (Exception e) {
+//            logger.debug(e.getMessage(), e);
+//            e.printStackTrace();
+//        }
+//    userMapper.updateLoginStatus(user.getUid(), true, new Timestamp(System.currentTimeMillis()));
+//        return JwtUtils.generateToken(userMapper.getByUsername(user.getUsername()));
+//    }
+
+    // for test
     public String login(Map param) {
-        User user = new User();
-        BeanUtils.copyProperties(param, user);
+        String username = (String)param.get("username");
+        String password = (String)param.get("password");
         try {
-            UserDetailsService userDetailsService = new UserDetailsServiceImpl();
-            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
-            // matches(CharSequence rawPassword, String encodedPassword)
-            if(!passwordEncoder.matches(user.getPassword(), userDetails.getPassword())){
-                logger.warn("Wrong password");
+            User user = userMapper.getByUsername(username);
+            if (user != null && user.getPassword().equals(password)) {
+                if (userMapper.updateLoginStatus(user.getUid(), true, new Timestamp(System.currentTimeMillis())) == 1)
+                    return JwtUtils.generateToken(user);
             }
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (AuthenticationException e) {
-            logger.warn("Wrong username or password", e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return JwtUtils.generateToken(userMapper.getByUsername(user.getUsername()));
+        return null;
     }
 
     /*
@@ -196,8 +217,12 @@ public class UserServiceImpl implements UserService {
 
     public int updateUserInfo(int uid, Map param) {
         UserInfo userInfo = new UserInfo();
-        BeanUtils.copyProperties(param, userInfo);
-        userInfo.setUid(uid);
+        try {
+            BeanUtils.populate(userInfo, param);
+            userInfo.setUid(uid);
+        }catch (Exception e) {
+            logger.debug(e.getMessage(), e);
+        }
 
         return userMapper.updateUserInfo(userInfo);
     }

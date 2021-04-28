@@ -5,11 +5,10 @@ import com.example.alwayswin.mapper.AddressMapper;
 import com.example.alwayswin.service.AddressService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.apache.commons.beanutils.BeanUtils;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +20,7 @@ import java.util.Map;
  */
 @Service
 public class AddressServiceImpl implements AddressService {
+    private static Logger logger = LoggerFactory.getLogger(AddressServiceImpl.class);
 
     @Resource
     private AddressMapper addressMapper;
@@ -39,14 +39,23 @@ public class AddressServiceImpl implements AddressService {
 
     public int addAddress(int uid, Map param) {
         Address address = new Address();
-        BeanUtils.copyProperties(param,address);
+        try {
+            BeanUtils.populate(address, param);
+            address.setUid(uid);
+        }catch (Exception e) {
+            logger.debug(e.getMessage(), e);
+        }
         return addressMapper.add(address);
     }
 
-    public int editAddress(int aid, Map param) {
+    public int updateAddress(int aid, Map param) {
         Address address = new Address();
-        BeanUtils.copyProperties(param,address);
-        address.setAid(aid);
+        try {
+            BeanUtils.populate(address, param);
+            address.setAid(aid);
+        }catch (Exception e) {
+            logger.debug(e.getMessage(), e);
+        }
         return addressMapper.update(address);
     }
 

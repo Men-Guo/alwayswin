@@ -1,7 +1,6 @@
 package com.example.alwayswin.service;
 
 import com.example.alwayswin.entity.Figure;
-import com.example.alwayswin.exception.FileException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

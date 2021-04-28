@@ -87,7 +87,7 @@ public class AddressController {
     @ResponseBody
     @PutMapping("/user/address/update/{aid}")
     CommonResult updateAddress(@RequestBody Map param, @PathVariable int aid){
-        int res = addressService.editAddress(aid, param);
+        int res = addressService.updateAddress(aid, param);
         if (res == 1) {
             logger.info("Edit address successfully");
             return CommonResult.success(res);

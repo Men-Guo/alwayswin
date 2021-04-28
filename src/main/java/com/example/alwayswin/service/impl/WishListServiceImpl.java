@@ -25,9 +25,9 @@ public class WishListServiceImpl implements WishListService {
 
     @Override
     public Integer addWishList(WishList wishList) {
-        if (wishListMapper.checkDuplicate(wishList.getPid(),wishList.getUid())==0) return null;
-        int nums = wishListMapper.insertWishList(wishList);
-        return nums;
+        if (wishListMapper.checkDuplicate(wishList.getPid(),wishList.getUid()) > 0)
+            return 0;
+        return wishListMapper.insertWishList(wishList);
     }
 
     @Override

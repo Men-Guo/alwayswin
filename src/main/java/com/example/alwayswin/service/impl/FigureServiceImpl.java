@@ -4,9 +4,9 @@ import com.example.alwayswin.config.WebMvcConfig;
 import com.example.alwayswin.entity.Figure;
 import com.example.alwayswin.mapper.FigureMapper;
 import com.example.alwayswin.service.FigureService;
+import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -91,15 +91,23 @@ public class FigureServiceImpl implements FigureService {
     @Override
     public int editFigure(int fid, Map param) {
         Figure figure = new Figure();
-        BeanUtils.copyProperties(param, figure);
-        figure.setFid(fid);
+        try {
+            BeanUtils.populate(figure, param);
+            figure.setFid(fid);
+        }catch (Exception e) {
+            logger.debug(e.getMessage(), e);
+        }
         return figureMapper.update(figure);
     }
 
     @Override
     public int addFigure(Map param) {
         Figure figure = new Figure();
-        BeanUtils.copyProperties(param, figure);
+        try {
+            BeanUtils.populate(figure, param);
+        }catch (Exception e) {
+            logger.debug(e.getMessage(), e);
+        }
         return figureMapper.add(figure);
     }
 

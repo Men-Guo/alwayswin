@@ -15,7 +15,7 @@ public interface AddressService {
 
     int addAddress(int uid, Map param);
 
-    int editAddress(int aid, Map param);
+    int updateAddress(int aid, Map param);
 
     int deleteAddress(int aid);
 }

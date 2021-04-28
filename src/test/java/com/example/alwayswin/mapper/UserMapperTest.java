@@ -77,8 +77,8 @@ class UserMapperTest {
 
         // login
         try {
-            Timestamp timestamp = DateUtil.String2Timestamp("2021-04-21 16:00:00", "yyyy-MM-dd HH:mm:ss");
-            assertEquals(userMapper.updateLoginStatus(user.getUid(), true, timestamp), 1);
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            assertEquals(1, userMapper.updateLoginStatus(user.getUid(), true, timestamp));
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -87,7 +87,7 @@ class UserMapperTest {
         assertTrue(user.isStatus());
 
         // logout
-        assertEquals(userMapper.updateLogoutStatus(user.getUid(), false), 1);
+        assertEquals(1, userMapper.updateLogoutStatus(user.getUid(), false));
         user = userMapper.getByUid(1);
         assertFalse(user.isStatus());
     }

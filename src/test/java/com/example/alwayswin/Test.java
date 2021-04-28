@@ -28,10 +28,6 @@ public class Test {
         }
 
         System.out.println(user.toString());
-
-
-        org.springframework.beans.BeanUtils.copyProperties(map, user);
-        System.out.println(user.toString());
     }
 
 
