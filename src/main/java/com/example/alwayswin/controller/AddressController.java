@@ -36,7 +36,7 @@ public class AddressController {
     @ResponseBody
     @GetMapping("/user/address/{aid}")
     CommonResult<Address> getByAid(@PathVariable int aid){
-        Address address = addressService.showAddress(aid);
+        Address address = addressService.getAddressByAid(aid);
         if (address == null) {
             return CommonResult.validateFailure();
         }
@@ -52,7 +52,7 @@ public class AddressController {
             return CommonResult.unauthorized();
         else {
             int uid = Integer.valueOf(claims.getAudience());
-            List<Address> addressList = addressService.showAllAddresses(uid);
+            List<Address> addressList = addressService.getAllAddresses(uid);
             if (addressList == null) {
                 return CommonResult.failure();
             }
@@ -64,23 +64,14 @@ public class AddressController {
 
     @ResponseBody
     @PostMapping("/user/address/create")
-    CommonResult addAddress(@RequestHeader("Authorization") String authHeader,
-                                    @RequestBody Map param){
-
-        Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
-        if (claims == null)
-            return CommonResult.unauthorized();
-        else {
-            int uid = Integer.valueOf(claims.getAudience());
-            int res = addressService.addAddress(uid, param);
-            if (res == 1) {
-                logger.info("Add address successfully");
-                return CommonResult.success(res);
-            }
-            else {
-                logger.debug("Add address failed");
-                return CommonResult.failure();
-            }
+    CommonResult addAddress(@RequestBody Map param) {
+        int res = addressService.addAddress(param);
+        if (res == 1) {
+            logger.info("Add address successfully");
+            return CommonResult.success(res);
+        } else {
+            logger.debug("Add address failed");
+            return CommonResult.failure();
         }
     }
 

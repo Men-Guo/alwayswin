@@ -14,11 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
-
-    // todo
-    public static String imageToStorage = "";
-//    public static String imageToStorage = new ApplicationHome(FigureService.class).getSource().
-//            getParentFile().getPath() + "/images/";
+    public static String imageToStorage = "/uploads/images/";
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

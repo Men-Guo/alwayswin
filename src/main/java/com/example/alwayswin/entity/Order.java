@@ -7,7 +7,6 @@ package com.example.alwayswin.entity;
  * @Date: 2021-4-19
  */
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
 
@@ -16,33 +15,35 @@ public class Order {
     private String number;
     private Integer uid;
     private Integer pid;
-    // todo: change to string
-    private Integer aid;
+    private String address;
     private double payment;
     private Timestamp createTime;
-    private String status;
+    private String status;  // ('placed', 'paid', 'shipped', 'received')
+
+    private Product product;
 
     public Order() {
         oid = 0;
         number = "";
         uid = 0;
         pid = 0;
-        aid = 0;
+        address = "";
         payment = 0.0;
         createTime = new Timestamp(0);
         status = "";
     }
 
-        public Order(Integer oid,String number, Integer uid, Integer pid, Integer aid,
+        public Order(Integer oid,String number, Integer uid, Integer pid, String address,
                 double payment, Timestamp createTime, String status) {
             this.oid = oid;
             this.number = number;
             this.uid = uid;
             this.pid = pid;
-            this.aid = aid;
+            this.address = address;
             this.payment = payment;
             this.createTime = createTime;
             this.status = status;
+            product = new Product();
         }
 
     public Integer getOid() {
@@ -77,12 +78,12 @@ public class Order {
         this.pid = pid;
     }
 
-    public Integer getAid() {
-        return aid;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAid(Integer aid) {
-        this.aid = aid;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public double getPayment() {
@@ -109,6 +110,14 @@ public class Order {
         this.createTime = createTime;
     }
 
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
@@ -116,10 +125,11 @@ public class Order {
                 ", number='" + number + '\'' +
                 ", uid=" + uid +
                 ", pid=" + pid +
-                ", aid=" + aid +
+                ", address=" + address +
                 ", payment=" + payment +
                 ", createTime=" + createTime +
                 ", status='" + status + '\'' +
+                ", product='" + product.toString() + '\'' +
                 '}';
     }
 }

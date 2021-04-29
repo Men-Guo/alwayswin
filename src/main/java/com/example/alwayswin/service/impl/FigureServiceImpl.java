@@ -8,10 +8,16 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 
 @Service
@@ -21,7 +27,6 @@ public class FigureServiceImpl implements FigureService {
     @Resource
     private FigureMapper figureMapper;
 
-    // ~/service/images
     private final String uploadPath = WebMvcConfig.imageToStorage;
 
     public FigureServiceImpl(FigureMapper figureMapper) {
@@ -29,49 +34,51 @@ public class FigureServiceImpl implements FigureService {
     }
 
 
-    // todo
-//    public ResponseMsg upload(MultipartFile file) throws FileException {
-//        ResponseMsg msg = new ResponseMsg(HttpServletResponse.SC_BAD_REQUEST, "File upload failed");
-//        String fileName = file.getOriginalFilename();
-//
-//        try {
-//            if (fileName == null) {
-//                throw new FileException("File not uploaded successfully");
-//            }
-//            if (fileName.contains("..")) {
-//                throw new FileException("File has invalid filename");
-//            }
-//            File dir = new File(uploadPath);
-//            if (!dir.exists()){
-//                if (dir.mkdir()) {
-//                    logger.info(String.format("Create file uploading directory-%s", uploadPath));
-//                }else {
-//                    logger.warn(String.format("Fail to create file uploading directory-%s", uploadPath));
-//                    throw new FileException("Fail to create file uploading directory");
-//                }
-//            }
-//            SimpleDateFormat simpleDateFormat;
-//            simpleDateFormat = new SimpleDateFormat("YYYYMMDD");
-//
-//            // Requiring distinctive name -> random generator
-//            Date date = new Date();
-//            String str = simpleDateFormat.format(date);
-//            Random random = new Random();
-//            int imgRan = random.nextInt() * (99999 - 10000 + 1) + 10000;// 获取5位随机数
-//
-//            String intervalName = str + imgRan;
-//            String displayName = intervalName + "_" + fileName;
-//            fileName = uploadPath + displayName;
-//            logger.info(String.format("Uploaded file-%s; Directory-%s",displayName , uploadPath));
-//
-//            File dest = new File(fileName);
-//            file.transferTo(dest);
-//            msg.setStatusAndMessage(HttpServletResponse.SC_OK, "File uploaded!");
-//            return msg;
-//        } catch (Exception e) {
-//            throw new FileException(String.format("[%s] file upload failed", fileName));
-//        }
-//    }
+    public String upload(MultipartFile file) {
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+
+        try {
+            if (fileName == null) {
+                logger.debug("File not uploaded successfully");
+                return null;
+            }
+            if (fileName.contains("..")) {
+                logger.debug("File has invalid filename");
+                return null;
+            }
+            File dir = new File(uploadPath);
+            if (!dir.exists()){
+                if (dir.mkdir()) {
+                    logger.info(String.format("Create file uploading directory-%s", uploadPath));
+                }else {
+                    logger.warn(String.format("Fail to create file uploading directory-%s", uploadPath));
+                    return null;
+                }
+            }
+
+            SimpleDateFormat simpleDateFormat;
+            simpleDateFormat = new SimpleDateFormat("YYYYMMDD");
+            // Requiring distinctive name -> random generator
+            Date date = new Date();
+            String str = simpleDateFormat.format(date);
+            Random random = new Random();
+            int imgRan = (random.nextInt() % (99999 - 10000 + 1)) + 10000;// 获取5位随机数
+
+            String intervalName = str + imgRan;
+            String displayName = intervalName + "_" + fileName;
+            fileName = uploadPath + displayName;
+            logger.info(String.format("Uploaded file-%s; Directory-%s",displayName , uploadPath));
+
+            File dest = new File(fileName);
+            file.transferTo(dest);
+            logger.info("File " + fileName + " uploaded!");
+
+            return fileName;
+        } catch (Exception e) {
+            logger.warn(e.getMessage(), String.format("[%s] file upload failed", fileName));
+        }
+        return null;
+    }
 
     @Override
     public Figure getFigureByFid(int fid) {

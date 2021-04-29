@@ -29,19 +29,18 @@ public class AddressServiceImpl implements AddressService {
         this.addressMapper = addressMapper;
     }
 
-    public Address showAddress(int aid) {
+    public Address getAddressByAid(int aid) {
         return addressMapper.getByAid(aid);
     }
 
-    public List<Address> showAllAddresses(int uid) {
+    public List<Address> getAllAddresses(int uid) {
         return addressMapper.getByUid(uid);
     }
 
-    public int addAddress(int uid, Map param) {
+    public int addAddress(Map param) {
         Address address = new Address();
         try {
             BeanUtils.populate(address, param);
-            address.setUid(uid);
         }catch (Exception e) {
             logger.debug(e.getMessage(), e);
         }

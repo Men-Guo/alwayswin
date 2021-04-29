@@ -9,11 +9,11 @@ import java.util.Map;
 @Service
 public interface AddressService {
 
-    Address showAddress(int aid);
+    Address getAddressByAid(int aid);
 
-    List<Address> showAllAddresses(int uid);
+    List<Address> getAllAddresses(int uid);
 
-    int addAddress(int uid, Map param);
+    int addAddress(Map param);
 
     int updateAddress(int aid, Map param);
 

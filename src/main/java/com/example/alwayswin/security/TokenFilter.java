@@ -31,13 +31,13 @@ import java.util.List;
 
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @Service
-public class TokenFilter extends GenericFilterBean {
+public class TokenFilter extends OncePerRequestFilter  {
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+    protected void doFilterInternal(HttpServletRequest httpRequest,
+                                    HttpServletResponse httpResponse,
+                                    FilterChain chain)
             throws IOException, ServletException{
-
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
 
         String authorizationValue;
         try {
@@ -67,6 +67,6 @@ public class TokenFilter extends GenericFilterBean {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
-        chain.doFilter(request, response);
+        chain.doFilter(httpRequest, httpResponse);
     }
 }

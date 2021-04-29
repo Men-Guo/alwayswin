@@ -18,19 +18,19 @@ public interface BiddingMapper {
 
     @Select("SELECT * from bidding where bid = #{bid}")
     @Results({
-            @Result(property = "product",column = "pid", one=@One(select = "com.alwayswin.mapper.ProductMapper.getByPid"))
+            @Result(property = "product",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getByPid"))
     })
     Bidding getByBid(int bid);
 
     @Select("SELECT * from bidding where uid = #{uid}")
     @Results({
-            @Result(property = "product",column = "pid", one=@One(select = "com.alwayswin.mapper.ProductMapper.getByPid"))
+            @Result(property = "product",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getByPid"))
     })
     List<Bidding> getByUid(int uid);
 
     @Select("SELECT * from bidding where pid = #{pid}")
     @Results({
-            @Result(property = "user",column = "uid", one=@One(select = "com.alwayswin.mapper.UserMapper.getByUid"))
+            @Result(property = "user",column = "uid", one=@One(select = "com.example.alwayswin.mapper.UserMapper.getByUid"))
     })
     List<Bidding> getByPid(int pid);
 
@@ -40,6 +40,7 @@ public interface BiddingMapper {
             "values(#{uid}, #{pid},#{offer}, #{createTime})")
     int add(Bidding bidding);
 
+    // 真的需要这个吗？出价不能反悔的
     @Update("update bidding set " +
             "bidding.uid = #{uid}," +
             "bidding.pid = #{pid}," +

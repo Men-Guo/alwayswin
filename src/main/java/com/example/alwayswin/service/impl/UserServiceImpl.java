@@ -98,9 +98,9 @@ public class UserServiceImpl implements UserService {
         String password = (String)param.get("password");
         try {
             User user = userMapper.getByUsername(username);
-            if (user != null && user.getPassword().equals(password)) {
-                if (userMapper.updateLoginStatus(user.getUid(), true, new Timestamp(System.currentTimeMillis())) == 1)
-                    return JwtUtils.generateToken(user);
+            if (user != null && new BCryptPasswordEncoder().matches(password, user.getPassword())) {
+                userMapper.updateLoginStatus(user.getUid(), true, new Timestamp(System.currentTimeMillis()));
+                return JwtUtils.generateToken(user);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -142,13 +142,11 @@ public class UserServiceImpl implements UserService {
         // 加入user table
         userMapper.add(user);
 
+        // 将基本信息加入user info
         user = userMapper.getByUsername(username);
-        UserInfo userInfo = new UserInfo();
-        userInfo.setUid(user.getUid());
-        userInfo.setRegisDate(new Date(System.currentTimeMillis()));
-        // 加入userInfo
-        return userMapper.addUserInfo(userInfo);
+        return addUserInfo(user.getUid());
     }
+
 
     public int logout(Integer uid) {
         return userMapper.updateLogoutStatus(uid, false);
@@ -160,7 +158,7 @@ public class UserServiceImpl implements UserService {
         String newPassword2 = (String)param.get("newPassword2");
 
         //旧密码不吻合
-        if(!passwordEncoder.matches(oldPassword, userMapper.getByUid(uid).getPassword())) {
+        if(!new BCryptPasswordEncoder().matches(oldPassword, userMapper.getByUid(uid).getPassword())) {
             logger.warn("Old password doesn't match");
             return -1;
         }
@@ -170,7 +168,7 @@ public class UserServiceImpl implements UserService {
             return -2;
         }
         //新密码不合法
-        else if (isValidPassword(newPassword1)) {
+        else if (!isValidPassword(newPassword1)) {
             logger.warn("Password should apply to the rule");
             return -3;
         }
@@ -179,7 +177,8 @@ public class UserServiceImpl implements UserService {
             logger.warn("2 new passwords should match");
             return -4;
         }
-       return userMapper.updatePassword(uid, passwordEncoder.encode(newPassword1));
+
+       return userMapper.updatePassword(uid, new BCryptPasswordEncoder().encode(newPassword1));
     }
 
     /*
@@ -223,7 +222,15 @@ public class UserServiceImpl implements UserService {
         }catch (Exception e) {
             logger.debug(e.getMessage(), e);
         }
-
         return userMapper.updateUserInfo(userInfo);
+    }
+
+    // 加入用户默认信息
+    private int addUserInfo(int uid) {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUid(uid);
+        userInfo.setRegisDate(new Date(System.currentTimeMillis()));
+        // 加入userInfo
+        return userMapper.addUserInfo(userInfo);
     }
 }

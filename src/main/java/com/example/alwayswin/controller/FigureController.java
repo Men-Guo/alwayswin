@@ -9,10 +9,13 @@ import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName: FigureController
@@ -30,6 +33,23 @@ public class FigureController {
 
     public FigureController(FigureService figureService) {
         this.figureService = figureService;
+    }
+
+    @PostMapping("/uploadFigure")
+    public CommonResult<String> uploadFigure(@RequestParam("figure") MultipartFile file) {
+        String fileName = figureService.upload(file);
+        if (fileName == null)
+            return CommonResult.failure("Figure upload failed");
+        else
+            return CommonResult.success(fileName);
+    }
+
+    @PostMapping("/uploadMultipleFigures")
+    public List<CommonResult<String>> uploadMultipleFigures(@RequestParam("figures") MultipartFile[] files) {
+        return Arrays.asList(files)
+                .stream()
+                .map(file -> uploadFigure(file))
+                .collect(Collectors.toList());
     }
 
     @ResponseBody

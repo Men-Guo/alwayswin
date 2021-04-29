@@ -4,14 +4,13 @@ import com.example.alwayswin.entity.Figure;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public interface FigureService {
 
-//    int upload(MultipartFile file) throws FileException;
+    String upload(MultipartFile file);
 
     Figure getFigureByFid(int fid);
 

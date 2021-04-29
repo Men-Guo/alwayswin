@@ -16,39 +16,40 @@ import java.util.List;
 @Repository
 public interface OrderMapper {
     @Select("SELECT * from orders where oid = #{oid}")
+    @Results({
+            @Result(property = "product",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getByPid"))
+    })
     Order getByOid(int oid);
 
     @Select("SELECT * from orders where number = #{number}")
     @Results({
-            @Result(property = "product",column = "pid", one=@One(select = "com.alwayswin.mapper.ProductMapper.getByPid"))
+            @Result(property = "product",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getByPid"))
     })
     Order getByNumber(String number);
 
     @Select("SELECT * from orders where uid = #{uid}")
     @Results({
-            @Result(property = "product",column = "pid", one=@One(select = "com.alwayswin.mapper.ProductMapper.getByPid"))
+            @Result(property = "product",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getByPid"))
     })
     List<Order> getByUid(int uid);
 
-    @Select("SELECT * from orders where uid = #{uid} and status = #{status}")
-    @Results({
-            @Result(property = "product",column = "pid", one=@One(select = "com.alwayswin.mapper.ProductMapper.getByPid"))
-    })
-    List<Order> getByUidAndStatus(int uid, String status);
+    // 哎前端做吧
+//    @Select("SELECT * from orders where uid = #{uid} and status = #{status}")
+//    @Results({
+//            @Result(property = "product",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getByPid"))
+//    })
+//    List<Order> getByUidAndStatus(int uid, String status);
 
     @Options(useGeneratedKeys = true,keyProperty = "oid")
     @Insert("insert into " +
-            "orders(number, uid, pid, aid, payment, create_time, status) " +
-            "values(#{number}, #{uid},#{pid}, #{aid}, #{payment}, #{createTime}, #{status})")
+            "orders(number, uid, pid, address, payment, create_time, status) " +
+            "values(#{number}, #{uid},#{pid}, #{address}, #{payment}, #{createTime}, #{status})")
     int add(Order order);
 
+    // 其他属性不能修改
     @Update("update orders set " +
-            "orders.number = #{number}," +
-            "orders.uid = #{uid}," +
-            "orders.pid = #{pid}," +
-            "orders.aid = #{aid}," +
+            "orders.address = #{address}," +
             "orders.payment = #{payment}," +
-            "orders.create_time = #{createTime}," +
             "orders.status = #{status}" +
             "where orders.oid = #{oid}")
     int update(Order order);

@@ -1,6 +1,8 @@
 package com.example.alwayswin.entity;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @ClassName: Product
@@ -13,7 +15,7 @@ public class Product {
     private Integer uid;
     private String title;
     private String description;
-    private String cate1;
+    private String cate1;   // ('camera', 'cell phone', 'accessory', 'computer', 'tablet', 'network hardware', 'tv', 'smart home', 'portable audio', 'car electronics', 'gaming console', 'vr', 'others')
     private String cate2;
     private String cate3;
     private Timestamp createTime;
@@ -25,6 +27,10 @@ public class Product {
     private double minIncrement;
     private boolean isPassed;
     private boolean isCanceled;
+
+    private ProductStatus productStatus;
+    private List<Figure> figures;
+    private Figure thumbnail;
 
     public Product() {
         pid = 0;
@@ -43,6 +49,10 @@ public class Product {
         minIncrement = 1.0;
         isPassed = true;
         isCanceled = false;
+
+        productStatus = new ProductStatus();
+        figures = new ArrayList<>();
+        thumbnail = new Figure();
     }
 
     public Product(Integer pid, Integer uid, String title, String description, String cate1, String cate2, String cate3,
@@ -192,6 +202,30 @@ public class Product {
         isPassed = passed;
     }
 
+    public ProductStatus getProductStatus() {
+        return productStatus;
+    }
+
+    public void setProductStatus(ProductStatus productStatus) {
+        this.productStatus = productStatus;
+    }
+
+    public List<Figure> getFigures() {
+        return figures;
+    }
+
+    public void setFigures(List<Figure> figures) {
+        this.figures = figures;
+    }
+
+    public Figure getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(Figure thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -211,6 +245,9 @@ public class Product {
                 ", minIncrement=" + minIncrement +
                 ", isPassed=" + isPassed +
                 ", isCanceled=" + isCanceled +
+                ", productStatus=" + productStatus.toString() +
+                ", figures=" + figures.toString() +
+                ", thumbnail=" + thumbnail.toString() +
                 '}';
     }
 }
