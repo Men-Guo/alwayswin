@@ -1,7 +1,6 @@
 package com.example.alwayswin.entity;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 public class ProductPreview {
     private Integer pid;
@@ -9,17 +8,59 @@ public class ProductPreview {
     private String title;
     private Timestamp endTime;
     private double autoWinPrice;
-    private ProductStatus productStatus;
-    private Figure thumbnail;
+    private double price;
+    private String status;
+    private String url;
 
-    public ProductPreview(Integer pid, Integer uid, String title, Timestamp endTime, double autoWinPrice, ProductStatus productStatus, Figure thumbnail) {
+    public ProductPreview(Integer pid, Integer uid, String title, Timestamp endTime, double autoWinPrice, double price, String status, String url) {
         this.pid = pid;
         this.uid = uid;
         this.title = title;
         this.endTime = endTime;
         this.autoWinPrice = autoWinPrice;
-        this.productStatus = productStatus;
-        this.thumbnail = thumbnail;
+        this.price = price;
+        this.status = status;
+        this.url = url;
+    }
+    @Override
+    public String toString() {
+        return "ProductPreview{" +
+                "pid=" + pid +
+                ", uid=" + uid +
+                ", title='" + title + '\'' +
+                ", endTime=" + endTime +
+                ", autoWinPrice=" + autoWinPrice +
+                ", price=" + price +
+                ", status='" + status + '\'' +
+                ", url='" + url + '\'' +
+                '}';
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public Integer getPid() {
@@ -62,32 +103,5 @@ public class ProductPreview {
         this.autoWinPrice = autoWinPrice;
     }
 
-    public ProductStatus getProductStatus() {
-        return productStatus;
-    }
 
-    public void setProductStatus(ProductStatus productStatus) {
-        this.productStatus = productStatus;
-    }
-
-    public Figure getThumbnail() {
-        return thumbnail;
-    }
-
-    public void setThumbnail(Figure thumbnail) {
-        this.thumbnail = thumbnail;
-    }
-
-    @Override
-    public String toString() {
-        return "ProductPreview{" +
-                "pid=" + pid +
-                ", uid=" + uid +
-                ", title='" + title + '\'' +
-                ", endTime=" + endTime +
-                ", autoWinPrice=" + autoWinPrice +
-                ", productStatus=" + productStatus +
-                ", thumbnail=" + thumbnail +
-                '}';
-    }
 }

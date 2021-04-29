@@ -10,13 +10,31 @@ import java.sql.Timestamp;
  */
 public class Figure {
     private Integer fid;
+    private Integer pid;
     private Integer uid;
     private String url;
     private String description;
     private boolean isThumbnail;
     private Timestamp updatedTime;
 
+    public Timestamp getUpdatedTime() {
+        return updatedTime;
+    }
+
+    public void setUpdatedTime(Timestamp updatedTime) {
+        this.updatedTime = updatedTime;
+    }
+
+    public Integer getPid() {
+        return pid;
+    }
+
+    public void setPid(Integer pid) {
+        this.pid = pid;
+    }
+
     public Figure() {
+        pid =0;
         fid = 0;
         uid = 0;
         url = "";
@@ -25,8 +43,9 @@ public class Figure {
         updatedTime = new Timestamp(0);
     }
 
-    public Figure(Integer fid, Integer uid, String url, String description, boolean isThumbnail, Timestamp updatedTime) {
+    public Figure(Integer fid, Integer pid, Integer uid, String url, String description, boolean isThumbnail, Timestamp updatedTime) {
         this.fid = fid;
+        this.pid = pid;
         this.uid = uid;
         this.url = url;
         this.description = description;
@@ -82,6 +101,7 @@ public class Figure {
     public String toString() {
         return "Figure{" +
                 "fid=" + fid +
+                ", pid=" + pid +
                 ", uid=" + uid +
                 ", url='" + url + '\'' +
                 ", description='" + description + '\'' +
