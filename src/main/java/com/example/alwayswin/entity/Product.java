@@ -1,6 +1,8 @@
 package com.example.alwayswin.entity;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @ClassName: Product
@@ -25,6 +27,9 @@ public class Product {
     private double minIncrement;
     private boolean isPassed;
     private boolean isCanceled;
+    private ProductStatus productStatus;
+    private List<Figure> figures;
+    private Figure thumbnail;
 
     public Product() {
         pid = 0;
@@ -43,11 +48,12 @@ public class Product {
         minIncrement = 1.0;
         isPassed = true;
         isCanceled = false;
+        productStatus = new ProductStatus();
+        thumbnail = new Figure();
+        figures = new ArrayList<>();
     }
 
-    public Product(Integer pid, Integer uid, String title, String description, String cate1, String cate2, String cate3,
-                   Timestamp createTime, Timestamp startTime, Timestamp endTime, double startPrice, double autoWinPrice,
-                   double reservedPrice, double minIncrement) {
+    public Product(Integer pid, Integer uid, String title, String description, String cate1, String cate2, String cate3, Timestamp createTime, Timestamp startTime, Timestamp endTime, double startPrice, double autoWinPrice, double reservedPrice, double minIncrement, boolean isPassed, boolean isCanceled, ProductStatus productStatus, List<Figure> figures, Figure thumbnail) {
         this.pid = pid;
         this.uid = uid;
         this.title = title;
@@ -60,8 +66,13 @@ public class Product {
         this.endTime = endTime;
         this.startPrice = startPrice;
         this.autoWinPrice = autoWinPrice;
-        this.reservedPrice  =reservedPrice;
+        this.reservedPrice = reservedPrice;
         this.minIncrement = minIncrement;
+        this.isPassed = isPassed;
+        this.isCanceled = isCanceled;
+        this.productStatus = productStatus;
+        this.figures = figures;
+        this.thumbnail = thumbnail;
     }
 
     public Integer getPid() {
@@ -192,6 +203,30 @@ public class Product {
         isPassed = passed;
     }
 
+    public ProductStatus getProductStatus() {
+        return productStatus;
+    }
+
+    public void setProductStatus(ProductStatus productStatus) {
+        this.productStatus = productStatus;
+    }
+
+    public List<Figure> getFigures() {
+        return figures;
+    }
+
+    public void setFigures(List<Figure> figures) {
+        this.figures = figures;
+    }
+
+    public Figure getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(Figure thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -211,6 +246,9 @@ public class Product {
                 ", minIncrement=" + minIncrement +
                 ", isPassed=" + isPassed +
                 ", isCanceled=" + isCanceled +
+                ", productStatus=" + productStatus +
+                ", figures=" + figures +
+                ", thumbnail=" + thumbnail +
                 '}';
     }
 }

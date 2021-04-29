@@ -28,13 +28,14 @@ public interface ProductMapper {
     Integer checkProduct(int pid);
 
     @Select("select * from product where pid = #{pid}")
-    @Results({
+    @Results(id =  "productEntityMap",
+            value ={
             @Result(property = "productStatus", column = "pid",
-                    one = @One(select = "com.alwayswin.mapper.ProductMapper.getProductStatusByPid")),
+                    one = @One(select = "com.example.alwayswin.mapper.ProductMapper.getProductStatusByPid")),
             @Result(property = "figures", column = "pid",
-                    many = @Many(select = "com.alwayswin.mapper.FigureMapper.getByPid")),
+                    many = @Many(select = "com.example.alwayswin.mapper.FigureMapper.getByPid")),
             @Result(property = "thumbnail", column = "pid",
-                    one = @One(select = "com.alwayswin.mapper.FigureMapper.getThumbnailByPid"))
+                    one = @One(select = "com.example.alwayswin.mapper.FigureMapper.getThumbnailByPid"))
     })
     Product getByPidWithStatusAndFigure(int pid);
 
