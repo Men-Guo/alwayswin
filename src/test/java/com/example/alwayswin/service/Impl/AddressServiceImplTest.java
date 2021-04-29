@@ -80,9 +80,10 @@ class AddressServiceImplTest {
         when(addressMapper.add(any())).thenReturn(1);
 
         Map<String, String> param = new HashMap<>();
+        param.put("uid", "1");
         param.put("name", "xiaoming");
         param.put("location", "NYPD");
-        addressService.addAddress(1, param);
+        addressService.addAddress(param);
     }
 
     //////////      updateAddress        /////////////////

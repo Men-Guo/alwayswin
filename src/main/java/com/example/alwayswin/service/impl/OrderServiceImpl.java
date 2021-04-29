@@ -6,6 +6,7 @@ import com.example.alwayswin.service.OrderService;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -17,6 +18,8 @@ import java.util.Map;
  * @Author: SQ
  * @Date: 2021-4-29
  */
+
+@Service
 public class OrderServiceImpl implements OrderService {
 
     private static Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
