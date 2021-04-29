@@ -8,12 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**
- * @ClassName: ProductMapper
- * @Description:
- * @Author: SQ
- * @Date: 2021-4-19
- */
 
 @Repository
 public interface ProductMapper {
