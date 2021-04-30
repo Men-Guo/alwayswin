@@ -1,4 +1,4 @@
-/*
+
 package com.example.alwayswin.security;
 
 import com.example.alwayswin.entity.User;
@@ -21,24 +21,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-*/
 /**
  * @ClassName: TokenFilter
  * @Description: Token 拦截器，拦截所有请求并验证 Token 是否有效，有效则授权通过，无效则由 Spring Security 根据配置拦截无效请求
  * @Author: SQ
  * @Date: 2021-4-20
- *//*
+ */
 
 
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @Service
-public class TokenFilter extends GenericFilterBean {
+public class TokenFilter extends OncePerRequestFilter  {
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+    protected void doFilterInternal(HttpServletRequest httpRequest,
+                                    HttpServletResponse httpResponse,
+                                    FilterChain chain)
             throws IOException, ServletException{
-
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
 
         String authorizationValue;
         try {
@@ -68,7 +67,6 @@ public class TokenFilter extends GenericFilterBean {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
-        chain.doFilter(request, response);
+        chain.doFilter(httpRequest, httpResponse);
     }
 }
-*/

@@ -45,6 +45,7 @@ public class WishListServiceImpl implements WishListService {
     @Override
     public int deleteWishList(Integer uid, Integer pid) {
         if (wishListMapper.checkDuplicate(pid,uid)==0) {
+            System.out.println("商品不存在");
             return 0;
         }
         return wishListMapper.deleteWishList(uid,pid);

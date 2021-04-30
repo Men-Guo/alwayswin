@@ -26,18 +26,18 @@ public interface UserMapper {
 
     @Options(useGeneratedKeys = true,keyProperty = "uid")
     @Insert("insert into " +
-            "user(username, password, role, status, update_time) " +
-            "values(#{username}, #{password}, #{role}, #{status}, #{updateTime})")
+            "user(username, password, role, status, updated_time) " +
+            "values(#{username}, #{password}, #{role}, #{status}, #{updatedTime})")
     int add(User user);
 
     @Update("update user set " +
             "user.status = #{status}," +
-            "user.update_time = #{updateTime}" +
+            "user.updated_time = #{updatedTime}" +
             "where user.uid = #{uid}")
     int updateLoginStatus(int uid, boolean status, Timestamp updatedTime);
 
     @Update("update user set " +
-            "user.status = #{status}" +
+            "user.status = #{status} " +
             "where user.uid = #{uid}")
     int updateLogoutStatus(int uid, boolean status);
 
@@ -45,6 +45,10 @@ public interface UserMapper {
             "user.password = #{password}" +
             "where user.uid = #{uid}")
     int updatePassword(int uid, String password);
+
+    // for test
+    @Delete("delete from user where uid = #{uid}")
+    int deleteUser(int uid);
 
     /////////          UserInfo          //////////////
 
@@ -68,4 +72,8 @@ public interface UserMapper {
             "user_info.balance = #{balance}" +
             "where user_info.uiid = #{uiid}")
     int updateUserInfo(UserInfo userInfo);
+
+    // for test
+    @Delete("delete from user_info where uid = #{uid}")
+    int deleteUserInfo(int uid);
 }

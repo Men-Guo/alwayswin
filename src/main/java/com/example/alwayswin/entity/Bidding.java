@@ -15,6 +15,9 @@ public class Bidding {
     private double offer;
     private Timestamp createTime;
 
+    private Product product;
+    private User user;
+
     public Bidding() {
         bid = 0;
         uid = 0;
@@ -29,6 +32,8 @@ public class Bidding {
         this.pid = pid;
         this.offer = offer;
         this.createTime = createTime;
+        product = new Product();
+        user = new User();
     }
 
     public Integer getBid() {
@@ -71,6 +76,22 @@ public class Bidding {
         this.createTime = createTime;
     }
 
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public String toString() {
         return "Bidding{" +
@@ -79,6 +100,8 @@ public class Bidding {
                 ", pid=" + pid +
                 ", offer=" + offer +
                 ", createTime=" + createTime +
+                ", product=" + product.toString() +
+                ", user=" + user.toString() +
                 '}';
     }
 }

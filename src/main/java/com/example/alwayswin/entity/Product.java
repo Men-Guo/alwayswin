@@ -15,7 +15,7 @@ public class Product {
     private Integer uid;
     private String title;
     private String description;
-    private String cate1;
+    private String cate1;   // ('camera', 'cell phone', 'accessory', 'computer', 'tablet', 'network hardware', 'tv', 'smart home', 'portable audio', 'car electronics', 'gaming console', 'vr', 'others')
     private String cate2;
     private String cate3;
     private Timestamp createTime;

@@ -1,12 +1,14 @@
-/*
-package com.example.alwayswin.security;
 
+package com.example.alwayswin.config;
+
+import com.example.alwayswin.security.ErrorAuthenticationEntryPoint;
+import com.example.alwayswin.security.TokenFilter;
+import com.example.alwayswin.security.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -17,19 +19,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.annotation.Resource;
 
-*/
+
 /**
  * @ClassName: MySecurityConfig
  * @Description: Spring Security 配置，配置密码存储加密算法，添加拦截器，关闭 Session 管理器，允许跨域访问, 允许登录和注册的 API 无授权访问
  * @Author: SQ
  * @Date: 2021-4-20
- *//*
+ */
 
 
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Resource
     private UserDetailsServiceImpl userDetailsService;
@@ -40,7 +42,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         // 使用 BCryptPasswordEncoder 验证密码
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        authenticationManagerBuilder.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
     }
 
     @Autowired
@@ -68,9 +70,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         //todo: 增加授权接口
         // 允许 登录 注册的 api 的无授权访问，其他需要授权访问
-        httpSecurity.authorizeRequests()
-                .antMatchers("/user/login", "/user/register")
-                .permitAll().anyRequest().authenticated();
+//        httpSecurity.authorizeRequests()
+//                .antMatchers("/user/login", "/user/register")
+//                .permitAll().anyRequest().authenticated();
 //        http.authorizeRequests()
 //                // Authenticate endpoint can be access by anyone
 //                .antMatchers("/api/v1/login").anonymous()
@@ -81,4 +83,4 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // 禁用缓存
         httpSecurity.headers().cacheControl();
     }
-}*/
+}

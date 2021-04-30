@@ -14,7 +14,7 @@ public class UserInfo {
     private String portrait;
     private String phone;
     private String email;
-    private String gender;
+    private String gender;    // ('female', 'male', 'other', 'unknown')
     private Date birthday;
     private Date regisDate;
     private double balance;
