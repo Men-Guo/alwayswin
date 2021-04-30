@@ -1,8 +1,8 @@
 package com.example.alwayswin.controller;
 
+import com.example.alwayswin.utils.commonAPI.CommonResult;
 import com.example.alwayswin.entity.WishList;
 import com.example.alwayswin.service.WishListService;
-import com.example.alwayswin.utils.commonAPI.CommonResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

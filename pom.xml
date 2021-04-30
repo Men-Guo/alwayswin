@@ -105,6 +105,11 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>5.4.6</version>
+        </dependency>
         <!-- Uncomment this next dependency if you are using JDK 10 or earlier and you also want to use
              RSASSA-PSS (PS256, PS384, PS512) algorithms.  JDK 11 or later does not require it for those algorithms:
         <dependency>
