@@ -30,8 +30,10 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/register")
-    public CommonResult register(@Validated @RequestBody Map params) {
+    public CommonResult register(@RequestBody Map params) {
         int res = userService.register(params);
+        if (res == -4)
+            return CommonResult.validateFailure();
         if (res == -1) {
             return CommonResult.validateFailure("Duplicate username, plz get a new one");
         }
@@ -56,9 +58,10 @@ public class UserController {
         return CommonResult.success(token);
     }
 
+    // todo: 改成get了测一下
     @ResponseBody
-    @PutMapping("/logout")
-    CommonResult logout(@RequestHeader("Authorization") String authHeader) {
+    @GetMapping("/logout")
+    public CommonResult logout(@RequestHeader("Authorization") String authHeader) {
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
             return CommonResult.unauthorized();
@@ -73,7 +76,7 @@ public class UserController {
 
     @ResponseBody
     @PutMapping("/user/changePassword")
-    CommonResult changePassword(@RequestHeader("Authorization") String authHeader,
+    public CommonResult changePassword(@RequestHeader("Authorization") String authHeader,
                                 @RequestBody Map param) {
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
@@ -98,7 +101,7 @@ public class UserController {
 
     @ResponseBody
     @GetMapping("/user/myInfo")
-    CommonResult<UserInfo> getUserInfo(@RequestHeader("Authorization") String authHeader) {
+    public CommonResult<UserInfo> getUserInfo(@RequestHeader("Authorization") String authHeader) {
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
             return CommonResult.unauthorized();
@@ -113,7 +116,7 @@ public class UserController {
 
     @ResponseBody
     @PutMapping("/user/myInfo/update")
-    CommonResult updateUserInfo(@RequestHeader("Authorization") String authHeader,
+    public CommonResult updateUserInfo(@RequestHeader("Authorization") String authHeader,
                                        @RequestBody Map param){
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AlwaysWin-server.iml" filepath="$PROJECT_DIR$/AlwaysWin-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/alwayswin.iml" filepath="$PROJECT_DIR$/alwayswin.iml" />
     </modules>
   </component>
 </project>

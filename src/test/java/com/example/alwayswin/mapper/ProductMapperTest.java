@@ -1,4 +1,4 @@
-package com.example.alwayswin;
+package com.example.alwayswin.mapper;
 
 import com.example.alwayswin.entity.Figure;
 import com.example.alwayswin.entity.Product;
