@@ -46,7 +46,7 @@ public class Figure {
         return pid;
     }
 
-    public void setUid(Integer pid) {
+    public void setPid(Integer pid) {
         this.pid = pid;
     }
 
