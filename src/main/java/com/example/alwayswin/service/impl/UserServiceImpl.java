@@ -38,9 +38,6 @@ public class UserServiceImpl implements UserService {
     private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Resource
-    private JwtUtils jwtUtils;
-
-    @Resource
     private PasswordEncoder passwordEncoder;
 
     @Resource
