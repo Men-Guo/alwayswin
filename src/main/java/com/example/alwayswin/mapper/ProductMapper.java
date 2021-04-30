@@ -114,6 +114,7 @@ public interface ProductMapper {
      * @param pid
      * @return
      */
+    @Deprecated
     @Delete("delete figure, product_status,orders,wishlist from product"
             + "left join figure on product.pid = figure.pid "
             + "left join product_status on product.pid = product_status.pid"
@@ -122,9 +123,9 @@ public interface ProductMapper {
             + "where product.pid =#{pid}")
     int deleteFK(int pid);
 
+    @Deprecated
     @Delete("delete from product where pid=#{pid}")
     int delete(int pid);
-
 
     
     /////////          Product Status          //////////////
