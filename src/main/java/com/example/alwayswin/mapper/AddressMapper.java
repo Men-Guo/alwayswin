@@ -28,7 +28,6 @@ public interface AddressMapper {
     int add(Address address);
 
     @Update("update address set " +
-            "address.uid = #{uid}," +
             "address.name = #{name}," +
             "address.phone = #{phone}," +
             "address.location = #{location}," +

@@ -64,7 +64,14 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.update(order);
     }
 
-    public int deleteOrder(int oid) {
-        return orderMapper.delete(oid);
+    public int deleteOrder(int oid, Map param) {
+        String status = (String)param.get("status");
+        if (status == null)
+            return 0;
+        // 只有已完成的订单才能删除
+        if (status.equals("received"))
+            return orderMapper.delete(oid);
+        else
+            return -1;
     }
 }

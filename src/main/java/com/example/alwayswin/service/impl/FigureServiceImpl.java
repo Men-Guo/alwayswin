@@ -87,7 +87,11 @@ public class FigureServiceImpl implements FigureService {
 
     @Override
     public List<Figure> getFiguresByPid(int pid) {
-        return figureMapper.getByPid(pid);
+        List<Figure> figureList = figureMapper.getByPid(pid);
+        // 只有一张图片，默认为封面
+        if (figureList.size() == 1)
+            figureList.get(0).setThumbnail(true);
+        return figureList;
     }
 
     @Override
@@ -96,11 +100,14 @@ public class FigureServiceImpl implements FigureService {
     }
 
     @Override
-    public int editFigure(int fid, Map param) {
+    public int updateFigure(int fid, Map param) {
         Figure figure = new Figure();
         try {
             BeanUtils.populate(figure, param);
             figure.setFid(fid);
+            // 更改封面
+            if (figure.isThumbnail())
+                changeThumbnail(figure);
         }catch (Exception e) {
             logger.debug(e.getMessage(), e);
         }
@@ -112,6 +119,11 @@ public class FigureServiceImpl implements FigureService {
         Figure figure = new Figure();
         try {
             BeanUtils.populate(figure, param);
+            // 更改封面
+            if (figure.isThumbnail()) {
+               changeThumbnail(figure);
+            }
+
         }catch (Exception e) {
             logger.debug(e.getMessage(), e);
         }
@@ -122,5 +134,14 @@ public class FigureServiceImpl implements FigureService {
     @Override
     public int deleteFigure(int fid) {
         return figureMapper.delete(fid);
+    }
+
+
+    private void changeThumbnail(Figure newThumbnail) {
+        Figure oldThumbnail = getThumbnailByPid(newThumbnail.getPid());
+        if (oldThumbnail != null) {
+            oldThumbnail.setThumbnail(false);
+            figureMapper.update(oldThumbnail);
+        }
     }
 }

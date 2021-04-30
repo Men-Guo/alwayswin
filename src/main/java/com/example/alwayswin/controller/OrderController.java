@@ -34,6 +34,9 @@ public class OrderController {
     @ResponseBody
     @GetMapping("/order/{oid}")
     CommonResult<Order> getByOid(@PathVariable int oid){
+        if (oid < 0)
+            return CommonResult.validateFailure();
+
         Order order = orderService.getOrderByOid(oid);
         if (order == null) {
             return CommonResult.validateFailure();
@@ -85,6 +88,9 @@ public class OrderController {
     @ResponseBody
     @PutMapping("/order/update/{oid}")
     CommonResult updateOrder(@RequestBody Map param, @PathVariable int oid){
+        if (oid < 0)
+            return CommonResult.validateFailure();
+
         int res = orderService.updateOrder(oid, param);
         if (res == 1) {
             logger.info("Update order successfully");
@@ -98,11 +104,18 @@ public class OrderController {
 
     @ResponseBody
     @DeleteMapping("/order/delete/{oid}")
-    CommonResult deleteOrder(@PathVariable int oid){
-        int res = orderService.deleteOrder(oid);
+    CommonResult deleteOrder(@RequestBody Map param, @PathVariable int oid){
+        if (oid < 0)
+            return CommonResult.validateFailure();
+
+        int res = orderService.deleteOrder(oid, param);
         if (res == 1) {
             logger.info("Delete order successfully");
             return CommonResult.success(res);
+        }
+        else if (res == -1) {
+            logger.debug("Can't delete an unfinished order");
+            return CommonResult.validateFailure("This order is in process, you can't delete it");
         }
         else {
             logger.debug("Delete order failed");

@@ -18,5 +18,5 @@ public interface OrderService {
 
     int updateOrder(int oid, Map param);
 
-    int deleteOrder(int oid);
+    int deleteOrder(int oid, Map param);
 }

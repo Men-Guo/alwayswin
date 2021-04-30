@@ -20,7 +20,7 @@ public interface FigureService {
 
     int addFigure(Map param);
 
-    int editFigure(int fid, Map param);
+    int updateFigure(int fid, Map param);
 
     int deleteFigure(int fid);
 }

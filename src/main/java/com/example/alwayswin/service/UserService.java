@@ -1,6 +1,5 @@
 package com.example.alwayswin.service;
 
-import com.example.alwayswin.entity.User;
 import com.example.alwayswin.entity.UserInfo;
 import org.springframework.stereotype.Service;
 

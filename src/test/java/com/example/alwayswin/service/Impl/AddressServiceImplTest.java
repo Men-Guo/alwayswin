@@ -83,7 +83,7 @@ class AddressServiceImplTest {
         param.put("uid", "1");
         param.put("name", "xiaoming");
         param.put("location", "NYPD");
-        addressService.addAddress(param);
+        assertEquals(1, addressService.addAddress(param));
     }
 
     //////////      updateAddress        /////////////////

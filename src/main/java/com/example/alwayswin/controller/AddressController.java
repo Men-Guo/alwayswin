@@ -36,6 +36,8 @@ public class AddressController {
     @ResponseBody
     @GetMapping("/user/address/{aid}")
     CommonResult<Address> getByAid(@PathVariable int aid){
+        if (aid < 0)
+            return CommonResult.validateFailure();
         Address address = addressService.getAddressByAid(aid);
         if (address == null) {
             return CommonResult.validateFailure();
@@ -78,6 +80,9 @@ public class AddressController {
     @ResponseBody
     @PutMapping("/user/address/update/{aid}")
     CommonResult updateAddress(@RequestBody Map param, @PathVariable int aid){
+        if (aid < 0)
+            return CommonResult.validateFailure();
+
         int res = addressService.updateAddress(aid, param);
         if (res == 1) {
             logger.info("Edit address successfully");
@@ -92,6 +97,9 @@ public class AddressController {
     @ResponseBody
     @DeleteMapping("/user/address/delete/{aid}")
     CommonResult deleteAddress(@PathVariable int aid){
+        if (aid < 0)
+            return CommonResult.validateFailure();
+
         int res = addressService.deleteAddress(aid);
         if (res == 1) {
             logger.info("Delete address successfully");
