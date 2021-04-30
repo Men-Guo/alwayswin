@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
         String password = (String)param.get("password");
         try {
             User user = userMapper.getByUsername(username);
-            if (user != null && new BCryptPasswordEncoder().matches(password, user.getPassword())) {
+            if (user != null && passwordEncoder.matches(password, user.getPassword())) {
                 userMapper.updateLoginStatus(user.getUid(), true, new Timestamp(System.currentTimeMillis()));
                 return JwtUtils.generateToken(user);
             }
@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
      **/
     public int register(Map param) {
         String username = (String) param.get("username");
-        String password = (String)param.get("password");
+        String password1 = (String)param.get("password1");
         String password2 = (String)param.get("password2");
 
         // 重复用户名
@@ -125,12 +125,12 @@ public class UserServiceImpl implements UserService {
             return -1;
 
         // 密码不合法
-        if (!isValidPassword(password)) {
+        if (!isValidPassword(password1)) {
             logger.warn("Password should apply to the rule");
             return -2;
         }
         // 密码不相等
-        if (!password2.equals(password)) {
+        if (!password2.equals(password1)) {
             logger.warn("Passwords don't match");
             return -3;
         }
@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setUsername(username);
         // 密码加密存储
-        user.setPassword(new BCryptPasswordEncoder().encode(password));
+        user.setPassword(passwordEncoder.encode(password1));
         // 加入user table
         userMapper.add(user);
 
@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserService {
         String newPassword2 = (String)param.get("newPassword2");
 
         //旧密码不吻合
-        if(!new BCryptPasswordEncoder().matches(oldPassword, userMapper.getByUid(uid).getPassword())) {
+        if(!passwordEncoder.matches(oldPassword, userMapper.getByUid(uid).getPassword())) {
             logger.warn("Old password doesn't match");
             return -1;
         }
@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService {
             return -4;
         }
 
-       return userMapper.updatePassword(uid, new BCryptPasswordEncoder().encode(newPassword1));
+       return userMapper.updatePassword(uid, passwordEncoder.encode(newPassword1));
     }
 
     /*
