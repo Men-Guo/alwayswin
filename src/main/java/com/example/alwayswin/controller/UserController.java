@@ -58,9 +58,8 @@ public class UserController {
         return CommonResult.success(token);
     }
 
-    // todo: 改成get了测一下
     @ResponseBody
-    @GetMapping("/logout")
+    @PostMapping(value = "/user/logout")
     public CommonResult logout(@RequestHeader("Authorization") String authHeader) {
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
