@@ -74,7 +74,7 @@ public class UserController {
     }
 
     @ResponseBody
-    @PutMapping("/user/changePassword")
+    @PutMapping("/user/change-password")
     public CommonResult changePassword(@RequestHeader("Authorization") String authHeader,
                                 @RequestBody Map param) {
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
@@ -99,7 +99,7 @@ public class UserController {
     }
 
     @ResponseBody
-    @GetMapping("/user/myInfo")
+    @GetMapping("/user/my-info")
     public CommonResult<UserInfo> getUserInfo(@RequestHeader("Authorization") String authHeader) {
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
@@ -114,7 +114,7 @@ public class UserController {
     }
 
     @ResponseBody
-    @PutMapping("/user/myInfo/update")
+    @PutMapping("/user/my-info/update")
     public CommonResult updateUserInfo(@RequestHeader("Authorization") String authHeader,
                                        @RequestBody Map param){
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));

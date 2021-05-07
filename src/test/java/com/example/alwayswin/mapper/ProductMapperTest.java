@@ -21,8 +21,7 @@ public class ProductMapperTest {
 
     @Test
     public void testMapper(){
-        Product product = new Product();
-        product = productMapper.getByPidWithStatusAndFigure(1);
+        Product product = productMapper.getByPidWithStatusAndFigure(1);
         System.out.println(product);
         //System.out.println(productMapper.getProductStatusByPid(1));
         List<ProductPreview> productPreviews = productMapper.getFilterPreviewProducts("price","DESC");
@@ -50,11 +49,5 @@ public class ProductMapperTest {
         assertEquals(1,num);
         System.out.println(product.getPid());
 
-    }
-
-    @Test
-    public void testMapper4(){
-        //System.out.println(productMapper.getProductStatusByPid(1));
-        assertEquals(1,productMapper.delete(14));
     }
 }

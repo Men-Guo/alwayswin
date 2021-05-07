@@ -18,21 +18,28 @@ public interface BiddingMapper {
 
     @Select("SELECT * from bidding where bid = #{bid}")
     @Results({
-            @Result(property = "product",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getByPid"))
+            @Result(property = "productPreview",column = "pid",
+                    one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getProductPreviewByPid"))
     })
     Bidding getByBid(int bid);
 
+
+    // 某个用户的所有bids
     @Select("SELECT * from bidding where uid = #{uid}")
     @Results({
-            @Result(property = "product",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getByPid"))
+            @Result(property = "productPreview",column = "pid",
+                    one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getProductPreviewByPid"))
     })
     List<Bidding> getByUid(int uid);
 
+
+    // 某个product的所有bids
     @Select("SELECT * from bidding where pid = #{pid}")
     @Results({
             @Result(property = "user",column = "uid", one=@One(select = "com.example.alwayswin.mapper.UserMapper.getByUid"))
     })
     List<Bidding> getByPid(int pid);
+
 
     @Options(useGeneratedKeys = true,keyProperty = "bid")
     @Insert("insert into " +
@@ -40,15 +47,17 @@ public interface BiddingMapper {
             "values(#{uid}, #{pid},#{offer}, #{createTime})")
     int add(Bidding bidding);
 
-    // 真的需要这个吗？出价不能反悔的
-    @Update("update bidding set " +
-            "bidding.uid = #{uid}," +
-            "bidding.pid = #{pid}," +
-            "bidding.offer = #{offer}," +
-            "bidding.create_time = #{createTime}" +
-            "where bidding.bid=#{bid}")
-    int update(Bidding bidding);
+    // bidding不需要update，出价不能反悔的
+//    @Update("update bidding set " +
+//            "bidding.uid = #{uid}," +
+//            "bidding.pid = #{pid}," +
+//            "bidding.offer = #{offer}," +
+//            "bidding.create_time = #{createTime}" +
+//            "where bidding.bid=#{bid}")
+//    int update(Bidding bidding);
 
+    // For test
+    // production中，bidding不需要delete, 也不给你delete
     @Delete("delete from bidding where bid=#{bid}")
     int delete(int bid);
 }

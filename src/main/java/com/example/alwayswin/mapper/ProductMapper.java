@@ -11,33 +11,30 @@ import java.util.List;
 
 @Repository
 public interface ProductMapper {
-    
-    //todo: filter and sorted
 
+    /////////          Product  Preview        //////////////
     /**
      * 不排序返回preview
-     * @return
      */
-    @Select("SELECT product.pid, product.uid,product.title,product.end_time,product.auto_win_price,"
-            + "product_status.price,product_status.`status`, figure.url "
-            + "FROM ((product INNER JOIN product_status on product.pid = product_status.pid)"
-            + "INNER JOIN figure on product.pid = figure.pid)"
-            + "where figure.is_thumbnail=1")
+    @Select("SELECT * from product_preview")
     List<ProductPreview> getPreviewProducts();
 
     /**
      * 根据filter排序返回list preview
-     * @param filter
-     * @param sorted
-     * @return
      */
-    @Select("SELECT product.pid, product.uid,product.title,product.end_time,product.auto_win_price,"
-            + "product_status.price,product_status.`status`, figure.url "
-            + "FROM ((product INNER JOIN product_status on product.pid = product_status.pid)"
-            + "INNER JOIN figure on product.pid = figure.pid)"
-            + "where figure.is_thumbnail=1"
-            + "order by #{filter} #{sorted}")
-    List<ProductPreview> getFilterPreviewProducts(String filter, String sorted);
+    @Select("SELECT * from product_preview order by #{orderColumn} #{ordering}")
+    List<ProductPreview> getFilterPreviewProducts(String orderColumn, String ordering);
+
+    @Select("SELECT * from product_preview where uid =#{uid}")
+    List<ProductPreview> getByUid(int uid);
+
+    @Select("SELECT * from product_preview where cate_1 =#{cate1}")
+    List<ProductPreview> getByCate1(String cate1);
+
+    @Select("SELECT * from product_preview where pid =#{pid}")
+    ProductPreview getProductPreviewByPid(int pid);
+
+
     /////////          Product          //////////////
 
     @Select("select count(*) from product where pid =#{pid}")
@@ -57,25 +54,6 @@ public interface ProductMapper {
                     one = @One(select = "com.example.alwayswin.mapper.FigureMapper.getThumbnailByPid"))
     })
     Product getByPidWithStatusAndFigure(int pid);
-
-    @Select("SELECT product.pid, product.uid,product.title,product.end_time,product.auto_win_price,"
-            + "product_status.price,product_status.`status`, figure.url "
-            + "FROM ((product INNER JOIN product_status on product.pid = product_status.pid)"
-            + "INNER JOIN figure on product.pid = figure.pid)"
-            + "where figure.is_thumbnail=1"
-            + "and uid =#{uid}")
-    List<ProductPreview> getByUid(int uid);
-/*    @Select("select * from product where uid = #{uid}")
-    List<Product> getByUid(int uid);*/
-
-//    @Select("select * from product where cate1 = #{cate1}")
-    @Select("SELECT product.pid, product.uid,product.title,product.end_time,product.auto_win_price,"
-        + "product_status.price,product_status.`status`, figure.url "
-        + "FROM ((product INNER JOIN product_status on product.pid = product_status.pid)"
-        + "INNER JOIN figure on product.pid = figure.pid)"
-        + "where figure.is_thumbnail=1"
-        + "and cate_1 =#{cate1}")
-    List<ProductPreview> getByCate1(String cate1);
 
 //    使用搜索引擎, 在searchService实现
 //    @Select("select * from product where title like CONCAT('%',#{title},'%') ")
@@ -108,22 +86,6 @@ public interface ProductMapper {
             "product.is_canceled = #{isCanceled}" +
             "where product.pid = #{pid}")
     int update(Product product);
-
-    /**
-     * 整个product删除用
-     * @param pid
-     * @return
-     */
-    @Delete("delete figure, product_status,orders,wishlist from product"
-            + "left join figure on product.pid = figure.pid "
-            + "left join product_status on product.pid = product_status.pid"
-            + "left join orders on orders.pid=product.pid"
-            + "left join wishlist on wishlist.pid = product.pid"
-            + "where product.pid =#{pid}")
-    int deleteFK(int pid);
-
-    @Delete("delete from product where pid=#{pid}")
-    int delete(int pid);
 
 
     

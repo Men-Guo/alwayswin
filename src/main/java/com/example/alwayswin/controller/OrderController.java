@@ -72,6 +72,7 @@ public class OrderController {
         }
     }
 
+    // todo: aid to string
     @ResponseBody
     @PostMapping("/order/create")
     CommonResult createOrder(@RequestBody Map param) {
@@ -108,7 +109,7 @@ public class OrderController {
         if (oid < 0)
             return CommonResult.validateFailure();
 
-        int res = orderService.deleteOrder(oid, param);
+        int res = orderService.deleteOrder(oid);
         if (res == 1) {
             logger.info("Delete order successfully");
             return CommonResult.success(res);

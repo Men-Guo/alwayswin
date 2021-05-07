@@ -186,7 +186,7 @@ public class UserServiceImpl implements UserService {
      * @Date: 2021-4-20
      **/
     private boolean isValidPassword(String password) {
-        if (password.length() < 6)
+        if (password.length() < 6 || password.length() > 20 )
             return false;
         else {
             int digitCnt = 0, letterCnt = 0, otherCnt = 0;

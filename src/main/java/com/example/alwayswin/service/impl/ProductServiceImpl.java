@@ -42,9 +42,10 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public Integer deleteProduct(Integer pid) {
-        if (productMapper.checkProduct(pid)==0) return 0;
-        int num = productMapper.deleteFK(pid);
-        return productMapper.delete(pid);
+//        if (productMapper.checkProduct(pid)==0) return 0;
+//        int num = productMapper.deleteFK(pid);
+//        return productMapper.delete(pid);
+        return 1;
     }
 
     /**

@@ -36,7 +36,7 @@ public class AddressController {
     @ResponseBody
     @GetMapping("/user/address/{aid}")
     public CommonResult<Address> getByAid(@PathVariable int aid){
-        if (aid < 0)
+        if (aid <= 0)
             return CommonResult.validateFailure();
         Address address = addressService.getAddressByAid(aid);
         if (address == null) {
@@ -80,7 +80,7 @@ public class AddressController {
     @ResponseBody
     @PutMapping("/user/address/update/{aid}")
     public CommonResult updateAddress(@RequestBody Map param, @PathVariable int aid){
-        if (aid < 0)
+        if (aid <= 0)
             return CommonResult.validateFailure();
 
         int res = addressService.updateAddress(aid, param);
@@ -97,7 +97,7 @@ public class AddressController {
     @ResponseBody
     @DeleteMapping("/user/address/delete/{aid}")
     public CommonResult deleteAddress(@PathVariable int aid){
-        if (aid < 0)
+        if (aid <= 0)
             return CommonResult.validateFailure();
 
         int res = addressService.deleteAddress(aid);
