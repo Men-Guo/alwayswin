@@ -1,8 +1,8 @@
 package com.example.alwayswin.controller;
 
-import com.example.alwayswin.utils.commonAPI.CommonResult;
 import com.example.alwayswin.entity.WishList;
 import com.example.alwayswin.service.WishListService;
+import com.example.alwayswin.utils.commonAPI.CommonResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,22 +17,24 @@ public class WishListController {
     }
 
     /**
-     * 查询某个uid的全部wishlist
+     * 查询某个uid的list 分页
      */
-    @RequestMapping(value = "/wishList/{uid}", method = RequestMethod.GET)
-    public CommonResult<List<WishList>> getWishListsByUid(@PathVariable("uid") Integer uid){
-        List<WishList> wishLists = wishListService.queryWishList(uid);
-        if (wishLists.size()==0) return CommonResult.unauthorized();
-        return CommonResult.success(wishLists);
+    @GetMapping(value = "/wishList/{uid}")
+    public CommonResult<List<WishList>> getWishListsByUid(@PathVariable("uid") Integer uid,
+                                                @RequestParam(defaultValue = "1") Integer page,
+                                                @RequestParam(defaultValue = "10") Integer pageSize){
+        return CommonResult.success(wishListService.queryWishListPage(uid,page,pageSize));
+        //List<WishList> wishLists = wishListService.queryWishList(uid);
+
     }
 
     /**
      * 根据wid查询wishlist
      */
-    @RequestMapping(value ="/wishList/wid/{wid}", method = RequestMethod.GET)
+    @GetMapping(value ="/wishList/wid/{wid}")
     public CommonResult<WishList> getByWid(@PathVariable("wid") Integer wid){
         WishList wishList = wishListService.queryWishListByWid(wid);
-        if (wishList == null) return CommonResult.unauthorized();
+        if (wishList == null) return CommonResult.failure();
         return CommonResult.success(wishList);
     }
 
