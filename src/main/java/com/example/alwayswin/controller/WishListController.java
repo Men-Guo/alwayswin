@@ -28,8 +28,6 @@ public class WishListController {
 
     /**
      * 根据wid查询wishlist
-     * @param wid
-     * @return
      */
     @RequestMapping(value ="/wishList/wid/{wid}", method = RequestMethod.GET)
     public CommonResult<WishList> getByWid(@PathVariable("wid") Integer wid){
@@ -40,9 +38,6 @@ public class WishListController {
 
     /**
      * 根据UID和PID删除数据
-     * @param uid
-     * @param pid
-     * @return
      */
     @DeleteMapping(value ="/wishList/{uid}/{pid}")
     public CommonResult<Object> deleteWishListByUidPid(@PathVariable("uid") Integer uid, @PathVariable("pid") Integer pid){
@@ -54,8 +49,11 @@ public class WishListController {
         }
     }
 
+    /**
+     * 创建wishList
+     */
     @PostMapping(value = "/wishList/create")
-    public CommonResult insertWishList(@RequestBody WishList wishList){
+    public CommonResult<Object> insertWishList(@RequestBody WishList wishList){
         int res = wishListService.addWishList(wishList);
         if (res == 1){
             return CommonResult.success(null);

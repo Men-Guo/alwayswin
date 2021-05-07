@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,8 +30,6 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * 返回一个商品类 完成
-     * @param pid
-     * @return
      */
     @Override
     public Product displayProductDetail(Integer pid) {
@@ -39,8 +38,6 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * 删除 完成
-     * @param pid
-     * @return
      */
     @Override
     public Integer deleteProduct(Integer pid) {
@@ -65,8 +62,6 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * 更新商品 完成
-     * @param product
-     * @return
      */
     @Override
     public Integer updateProduct(Product product) {
@@ -84,32 +79,17 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * 增 完成
-     * @param product
-     * @return
      */
+    @Transactional
     @Override
     public Integer createProduct(Product product) {
         try{
             int num = productMapper.add(product);
-            if (num==0){
-                logger.debug("Add product failure.");
-                return null;
-            }
-            List<Figure> figures= product.getFigures();
-            for (Figure figure : figures){
-                figure.setPid(product.getPid());
-                num = figureMapper.add(figure);
-                if (num==0){
-                    logger.debug("Add the figure failure.");
-                }
-            }
+            if (num==0) throw new Exception("Product add failed");
             ProductStatus productStatus = product.getProductStatus();
             productStatus.setPid(product.getPid());
             num = productMapper.addProductStatus(productStatus);
-            if (num==0){
-                logger.debug("Failed to add product status.");
-                logger.warn("productStatus failed to insert");
-            };
+            if (num==0) throw new Exception("Failed to add product status.");
             return num;
         }catch(Exception e){
             logger.warn(e.getMessage());
@@ -119,7 +99,6 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * 总览 完成
-     * @return
      */
     @Override
     public List<ProductPreview> displayAllProduct() {
@@ -128,13 +107,9 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * 展示全部伴随filter 完成
-     * @param filter
-     * @param sorted
-     * @return
      */
     @Override
     public List<ProductPreview> displayAllProductWithFilter(String filter, String sorted) {
-        List<ProductPreview> productPreviews = new ArrayList<>();
         try{
             if (!(sorted.equals("ASC") || sorted.equals("DESC"))) {
                 logger.debug("The sorted string has typo:" + sorted);
@@ -144,8 +119,7 @@ public class ProductServiceImpl implements ProductService {
                 logger.debug("The filter string has typo." + filter);
                 return null;
             }
-            productPreviews = productMapper.getFilterPreviewProducts(filter,sorted);
-            return productPreviews;
+            return productMapper.getFilterPreviewProducts(filter,sorted);
         }catch(Exception e){
             logger.warn(e.getMessage());
         }
@@ -154,8 +128,6 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * 根据UID返回商品 完成
-     * @param uid
-     * @return
      */
     @Override
     public List<ProductPreview> displayAllProductsByUid(Integer uid) {
@@ -165,8 +137,6 @@ public class ProductServiceImpl implements ProductService {
     /**
      * 根据 Category返回商品 待完善
      * to do filter 和 sorted
-     * @param cate
-     * @return
      */
     @Override
     public List<ProductPreview> displayAllProductsByCate(String cate) {
@@ -195,8 +165,6 @@ public class ProductServiceImpl implements ProductService {
     /**
      * 删除ProductStatus 完成
      * 'pending','waiting','bidding','extended','broughtIn','success','canceled'
-     * @param pid
-     * @return
      */
     @Override
     public Integer deleteProductStatusService(Integer pid) {
@@ -224,8 +192,6 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * 检查ProductStatus 完成
-     * @param status
-     * @return
      */
     private boolean checkProductStatus(String status){
         List<String> statusList = Arrays.asList("pending","waiting","bidding",
@@ -243,8 +209,6 @@ public class ProductServiceImpl implements ProductService {
     /**
      * 更新ProductStatus 待完善
      * 需要加判断 例如bidding之后不能更改成pending/waiting等
-     * @param productStatus
-     * @return
      */
     @Override
     public Integer updateProductStatusService(ProductStatus productStatus) {
@@ -264,8 +228,6 @@ public class ProductServiceImpl implements ProductService {
     /**
      * 添加ProductStatus 待完善
      * 需要添加end_time判断
-     * @param productStatus
-     * @return
      */
     @Override
     public Integer addProductStatusService(ProductStatus productStatus) {
@@ -297,8 +259,6 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * 根据pid展现product status 完成
-     * @param pid
-     * @return
      */
     @Override
     public ProductStatus displayProductStatus(Integer pid) {

@@ -8,11 +8,8 @@ import com.example.alwayswin.utils.commonAPI.CommonResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
@@ -25,7 +22,6 @@ public class ProductController {
 
     /**
      * product详情展示页面 完成
-     * @param pid
      */
     @RequestMapping(value = "/product/{pid}", method = RequestMethod.GET)
     public CommonResult<Product> productDetail(@PathVariable("pid") int pid){
@@ -43,43 +39,43 @@ public class ProductController {
     }
 
     /**
-     * cancel某个pid 完成
-     * @param pid
+     * cancel某个pid 先更改product status 再更改product, 如不完成进行回滚 完成
      */
-    @RequestMapping(value = "/product/cancel/{pid}",method = RequestMethod.POST)
+    @Transactional
+    @PostMapping(value = "/product/cancel/{pid}")
     public CommonResult<Object> cancelProduct(@PathVariable("pid") int pid){
         try{
             if (productService.deleteProductStatusService(pid)!=1){
-                logger.debug("Product Status update fails.See logger");
-                return CommonResult.failure();
+                throw new Exception("Delete Product Status error.");
             }
             if (productService.deleteProduct(pid)!=1){
-                logger.debug("Product update fails, see logger.");
-                return CommonResult.failure();
+                throw new Exception("Delete Product error");
             }
             return CommonResult.success(productService.displayProductDetail(pid));
         }catch(Exception e){
             logger.warn(e.getMessage());
         }
-        return CommonResult.success(null);
+        return CommonResult.failure();
     }
 
     /**
-     * 更新某个pid to do
-     * @param pid
-     * @return
+     * 更新某个pid
      */
-    @RequestMapping(value = "/product/update/{pid}",method = RequestMethod.POST)
-    public CommonResult<Object> updateProduct(@PathVariable("pid") int pid){
-        return null;
+    @PostMapping(value = "/product/post")
+    public CommonResult<Object> updateProduct(@RequestBody Product product){
+        try{
+            Integer num = productService.updateProduct(product);
+            if (num!=1) return CommonResult.failure();
+        }catch(Exception e){
+            logger.warn(e.getMessage());
+        }
+        return CommonResult.success(product);
     }
 
     /**
-     * 添加product 同时添加figure和productStatus 完成
-     * @param product
-     * @return
+     * 添加product 同时添加figure和productStatus 添加了回滚 完成
      */
-    @RequestMapping(value = "/product/create", method = RequestMethod.POST)
+    @PostMapping(value = "/product/create")
     public CommonResult<Object> createProduct(Product product){
         try{
            if (productService.createProduct(product)!=1){
@@ -89,12 +85,11 @@ public class ProductController {
         }catch(Exception e){
             logger.warn(e.getMessage());
         }
-        return CommonResult.success(null);
+        return CommonResult.failure();
     }
 
     /**
      * 返回所有overview完成
-     * @return
      */
     @RequestMapping(value = "/product/overviews", method = RequestMethod.GET)
     public CommonResult<List<ProductPreview>> productOverview(){
@@ -112,11 +107,8 @@ public class ProductController {
 
     /**
      *  返回所有filter后的商品 完成
-     * @param filter
-     * @param sorted
-     * @return
      */
-    @RequestMapping(value = "/product/overviews/{filter}-{sorted}", method = RequestMethod.GET)
+    @RequestMapping(value = "/product/{filter}-{sorted}", method = RequestMethod.GET)
     public CommonResult<List<ProductPreview>> productOverviewFilter(@PathVariable("filter") String filter,
                                               @PathVariable("sorted") String sorted){
         List<ProductPreview> productPreviewList = productService.displayAllProductWithFilter(filter,sorted);
@@ -134,10 +126,8 @@ public class ProductController {
 
     /**
      * 根据uid返回商品preview 完成
-     * @param uid
-     * @return
      */
-    @RequestMapping(value = "/product/uid/{uid}",method = RequestMethod.GET)
+    @GetMapping(value = "/product/uid/{uid}")
     public CommonResult<List<ProductPreview>> productByUid(@PathVariable("uid") int uid){
         List<ProductPreview> productPreviewList = productService.displayAllProductsByUid(uid);
         try{
@@ -154,10 +144,9 @@ public class ProductController {
 
     /**
      * 根据商品cate返回preview 完成
-     * @param cate
-     * @return
+
      */
-    @RequestMapping(value = "/product/category/{cate}",method = RequestMethod.GET)
+    @GetMapping(value = "/product/category/{cate}")
     public CommonResult<List<ProductPreview>> productByUid(@PathVariable("cate") String cate){
         List<ProductPreview> productPreviewList = productService.displayAllProductsByCate(cate);
         try{
@@ -173,18 +162,22 @@ public class ProductController {
     }
 
     /**
-     * 待完成
-     * @return
+     * 更新productStatus完成
      */
-    @RequestMapping(value = "/productStatus/{pid}",method = RequestMethod.POST)
-    public CommonResult<Object> updateProductStatus(){
-        return null;
+    @PostMapping(value = "/productStatus/post")
+    public CommonResult<Object> updateProductStatus(@RequestBody ProductStatus productStatus){
+        try{
+            Integer num = productService.updateProductStatusService(productStatus);
+            if (num==0) return CommonResult.failure();
+        }
+        catch(Exception e){
+            logger.warn(e.getMessage());
+        }
+        return CommonResult.success(null);
     }
 
     /**
      * 根据pid查找product status 完成
-     * @param pid
-     * @return
      */
     @RequestMapping(value = "/productStatus/{pid}", method = RequestMethod.GET)
     public CommonResult<ProductStatus> getProductStatusByPid(@PathVariable("pid") int pid){
