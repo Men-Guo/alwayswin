@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="alwayswin" />
         <module name="AlwaysWin-server" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="alwayswin" target="1.8" />
       <module name="AlwaysWin-server" target="1.8" />
       <module name="wrapper" target="1.5" />
     </bytecodeTargetLevel>
@@ -17,6 +19,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="AlwaysWin-server" options="-parameters" />
+      <module name="alwayswin" options="-parameters" />
     </option>
   </component>
 </project>

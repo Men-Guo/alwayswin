@@ -35,7 +35,7 @@ public class AddressController {
 
     @ResponseBody
     @GetMapping("/user/address/{aid}")
-    CommonResult<Address> getByAid(@PathVariable int aid){
+    public CommonResult<Address> getByAid(@PathVariable int aid){
         if (aid < 0)
             return CommonResult.validateFailure();
         Address address = addressService.getAddressByAid(aid);
@@ -47,7 +47,7 @@ public class AddressController {
 
     @ResponseBody
     @GetMapping("/user/address")
-    CommonResult<List<Address>> getByUid(@RequestHeader("Authorization") String authHeader){
+    public CommonResult<List<Address>> getByUid(@RequestHeader("Authorization") String authHeader){
 
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
@@ -66,7 +66,7 @@ public class AddressController {
 
     @ResponseBody
     @PostMapping("/user/address/create")
-    CommonResult addAddress(@RequestBody Map param) {
+    public CommonResult addAddress(@RequestBody Map param) {
         int res = addressService.addAddress(param);
         if (res == 1) {
             logger.info("Add address successfully");
@@ -79,7 +79,7 @@ public class AddressController {
 
     @ResponseBody
     @PutMapping("/user/address/update/{aid}")
-    CommonResult updateAddress(@RequestBody Map param, @PathVariable int aid){
+    public CommonResult updateAddress(@RequestBody Map param, @PathVariable int aid){
         if (aid < 0)
             return CommonResult.validateFailure();
 
@@ -96,7 +96,7 @@ public class AddressController {
 
     @ResponseBody
     @DeleteMapping("/user/address/delete/{aid}")
-    CommonResult deleteAddress(@PathVariable int aid){
+    public CommonResult deleteAddress(@PathVariable int aid){
         if (aid < 0)
             return CommonResult.validateFailure();
 

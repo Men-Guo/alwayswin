@@ -51,7 +51,7 @@ public class JwtUtils {
                     .setSubject(user.getUsername())
                     .setAudience(user.getUid() + "")    // 根据uid 设置 Token 的接受者
                     .claim("role", user.getRole())  // 在claim 中增加role
-                    .signWith(SignatureAlgorithm.HS512, key)
+                    .signWith(key, SignatureAlgorithm.HS512)
                     .compact();
             return token;
         } catch (Exception e) {
@@ -89,7 +89,7 @@ public class JwtUtils {
             // 解密 Token，获取 Claims 主体
             Claims claims = getClaimFromToken(token);
             if (claims == null) {
-                logger.error("Invalid token");
+                logger.warn("Invalid token");
                 return null;
             }
             // 判断是否过期

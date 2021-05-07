@@ -1,4 +1,4 @@
-package com.example.alwayswin;
+package com.example.alwayswin.service.Impl;
 
 import com.example.alwayswin.entity.WishList;
 import com.example.alwayswin.mapper.WishListMapper;

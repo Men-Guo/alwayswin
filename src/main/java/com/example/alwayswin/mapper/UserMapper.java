@@ -62,13 +62,11 @@ public interface UserMapper {
     int addUserInfo(UserInfo userInfo);
 
     @Update("update user_info set " +
-            "user_info.uid = #{uid}," +
             "user_info.portrait = #{portrait}," +
             "user_info.phone = #{phone}," +
             "user_info.email = #{email}," +
             "user_info.gender = #{gender}," +
             "user_info.birthday = #{birthday}," +
-            "user_info.regis_date = #{regisDate}," +
             "user_info.balance = #{balance}" +
             "where user_info.uiid = #{uiid}")
     int updateUserInfo(UserInfo userInfo);
