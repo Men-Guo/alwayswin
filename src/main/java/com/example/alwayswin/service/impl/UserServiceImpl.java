@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService {
         userMapper.add(user);
 
         // 将基本信息加入user info
-        user = userMapper.getByUsername(username);
+//        user = userMapper.getByUsername(username);
         return addUserInfo(user.getUid());
     }
 

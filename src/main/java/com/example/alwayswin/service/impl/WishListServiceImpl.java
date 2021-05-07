@@ -3,6 +3,7 @@ package com.example.alwayswin.service.impl;
 import com.example.alwayswin.entity.WishList;
 import com.example.alwayswin.mapper.WishListMapper;
 import com.example.alwayswin.service.WishListService;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,20 +27,23 @@ public class WishListServiceImpl implements WishListService {
     @Override
     public Integer addWishList(WishList wishList) {
         if (wishListMapper.checkDuplicate(wishList.getPid(),wishList.getUid())==1) return null;
-        int nums = wishListMapper.insertWishList(wishList);
-        return nums;
+        return wishListMapper.insertWishList(wishList);
     }
 
     @Override
     public List<WishList> queryWishList(Integer uid) {
-        List<WishList> wishLists = wishListMapper.getByUid(uid);
-        return wishLists;
+        return wishListMapper.getByUid(uid);
+    }
+
+    @Override
+    public List<WishList> queryWishListPage(Integer uid, int page, int pageSize) {
+        PageHelper.startPage(page,pageSize);
+        return wishListMapper.getByUid(uid);
     }
 
     @Override
     public WishList queryWishListByWid(Integer wid) {
-        WishList wishlist = wishListMapper.selectWid(wid);
-        return wishlist;
+        return wishListMapper.selectWid(wid);
     }
 
     @Override

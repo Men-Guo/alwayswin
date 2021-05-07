@@ -32,8 +32,6 @@ public class UserController {
     @PostMapping("/register")
     public CommonResult register(@RequestBody Map params) {
         int res = userService.register(params);
-        if (res == -4)
-            return CommonResult.validateFailure();
         if (res == -1) {
             return CommonResult.validateFailure("Duplicate username, plz get a new one");
         }

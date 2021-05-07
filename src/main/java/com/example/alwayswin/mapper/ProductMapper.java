@@ -69,7 +69,6 @@ public interface ProductMapper {
 
     // uid, createTime are NOT allowed to be modified
     @Update("update product set " +
-            "product.uid =#{uid},"+
             "product.title = #{title}," +
             "product.description = #{description}," +
             "product.cate_1 = #{cate1}," +
@@ -77,7 +76,6 @@ public interface ProductMapper {
             "product.cate_3 = #{cate3}," +
             "product.start_time = #{startTime}," +
             "product.end_time = #{endTime}," +
-            "product.create_time = #{createTime}," +
             "product.start_price = #{startPrice}" +
             "product.auto_win_price = #{autoWinPrice}," +
             "product.reserved_price = #{reservedPrice}," +
@@ -87,7 +85,7 @@ public interface ProductMapper {
             "where product.pid = #{pid}")
     int update(Product product);
 
-
+    //todo: delete
     
     /////////          Product Status          //////////////
 

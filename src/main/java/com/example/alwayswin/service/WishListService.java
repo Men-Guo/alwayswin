@@ -11,4 +11,5 @@ public interface WishListService{
     List<WishList> queryWishList(Integer uid);
     WishList queryWishListByWid(Integer wid);
     int deleteWishList(Integer uid, Integer pid);
+    List<WishList> queryWishListPage(Integer uid, int page, int pageSize);
 }
