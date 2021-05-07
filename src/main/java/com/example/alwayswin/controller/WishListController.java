@@ -3,10 +3,7 @@ package com.example.alwayswin.controller;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
 import com.example.alwayswin.entity.WishList;
 import com.example.alwayswin.service.WishListService;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,11 +16,10 @@ public class WishListController {
         this.wishListService = wishListService;
     }
 
-
     /**
      * 查询某个uid的全部wishlist
      */
-    @RequestMapping(value = "/wishList/listAll/{uid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/wishList/{uid}", method = RequestMethod.GET)
     public CommonResult<List<WishList>> getWishListsByUid(@PathVariable("uid") Integer uid){
         List<WishList> wishLists = wishListService.queryWishList(uid);
         if (wishLists.size()==0) return CommonResult.unauthorized();
@@ -48,7 +44,7 @@ public class WishListController {
      * @param pid
      * @return
      */
-    @RequestMapping(value ="/wishList/delete/uid/{uid}/pid/{pid}", method = RequestMethod.GET)
+    @DeleteMapping(value ="/wishList/{uid}/{pid}")
     public CommonResult<Object> deleteWishListByUidPid(@PathVariable("uid") Integer uid, @PathVariable("pid") Integer pid){
         int res = wishListService.deleteWishList(uid,pid);
         if (res == 1){
@@ -58,8 +54,8 @@ public class WishListController {
         }
     }
 
-    @RequestMapping(value = "/wishList/create", method = RequestMethod.POST)
-    public CommonResult insertWishList(WishList wishList){
+    @PostMapping(value = "/wishList/create")
+    public CommonResult insertWishList(@RequestBody WishList wishList){
         int res = wishListService.addWishList(wishList);
         if (res == 1){
             return CommonResult.success(null);

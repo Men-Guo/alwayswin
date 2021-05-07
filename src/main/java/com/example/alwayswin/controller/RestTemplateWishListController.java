@@ -11,6 +11,8 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.Map;
 
+
+@Deprecated
 @RestController
 public class RestTemplateWishListController {
 
