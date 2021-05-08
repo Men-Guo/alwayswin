@@ -27,17 +27,14 @@ public interface ProductMapper {
 
     /**
      * 根据filter排序返回list preview
-     * @param filter
-     * @param sorted
-     * @return
      */
     @Select("SELECT product.pid, product.uid,product.title,product.end_time,product.auto_win_price,"
             + "product_status.price,product_status.`status`, figure.url "
             + "FROM ((product INNER JOIN product_status on product.pid = product_status.pid)"
             + "INNER JOIN figure on product.pid = figure.pid)"
             + "where figure.is_thumbnail=1"
-            + "order by #{filter} #{sorted}")
-    List<ProductPreview> getFilterPreviewProducts(String filter, String sorted);
+            + "order by #{variable} #{order}")
+    List<ProductPreview> getFilterPreviewProducts(String variable, String order);
     /////////          Product          //////////////
 
     @Select("select count(*) from product where pid =#{pid}")

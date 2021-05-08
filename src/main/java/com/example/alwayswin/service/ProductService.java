@@ -45,11 +45,8 @@ public interface ProductService {
 
     /**
      * 根据filter展现数据库
-     * @param filter
-     * @param sorted
-     * @return
      */
-    List<ProductPreview> displayAllProductWithFilter(String filter, String sorted);
+    List<ProductPreview> displayAllProductWithOrder(String variable, String order);
 
     /**
      * 返回某个用户所有卖的商品

@@ -86,8 +86,11 @@ public class ProductServiceImpl implements ProductService {
         try{
             int num = productMapper.add(product);
             if (num==0) throw new Exception("Product add failed");
-            ProductStatus productStatus = product.getProductStatus();
+            ProductStatus productStatus = new ProductStatus();
             productStatus.setPid(product.getPid());
+            productStatus.setPrice(product.getStartPrice());
+            productStatus.setStatus("pending");
+            productStatus.setEndTime(product.getEndTime());
             num = productMapper.addProductStatus(productStatus);
             if (num==0) throw new Exception("Failed to add product status.");
             return num;
@@ -109,17 +112,17 @@ public class ProductServiceImpl implements ProductService {
      * 展示全部伴随filter 完成
      */
     @Override
-    public List<ProductPreview> displayAllProductWithFilter(String filter, String sorted) {
+    public List<ProductPreview> displayAllProductWithOrder(String variable, String order) {
         try{
-            if (!(sorted.equals("ASC") || sorted.equals("DESC"))) {
-                logger.debug("The sorted string has typo:" + sorted);
+            if (!(order.equals("ASC") || order.equals("DESC"))) {
+                logger.debug("The order string has typo:" + order);
                 return null;
             }
-            if (!(filter.equals("auto_win_price") || filter.equals("price"))) {
-                logger.debug("The filter string has typo." + filter);
+            if (!(variable.equals("auto_win_price") || variable.equals("price"))) {
+                logger.debug("The filter string has typo." + variable);
                 return null;
             }
-            return productMapper.getFilterPreviewProducts(filter,sorted);
+            return productMapper.getFilterPreviewProducts(variable,order);
         }catch(Exception e){
             logger.warn(e.getMessage());
         }
