@@ -6,6 +6,7 @@ import com.example.alwayswin.service.BiddingService;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
@@ -18,6 +19,8 @@ import java.util.Map;
  * @Author: SQ
  * @Date: 2021-5-7
  */
+
+@Service
 public class BiddingServiceImpl implements BiddingService {
 
     private static Logger logger = LoggerFactory.getLogger(BiddingServiceImpl.class);

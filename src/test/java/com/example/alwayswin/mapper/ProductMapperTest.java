@@ -1,6 +1,5 @@
 package com.example.alwayswin.mapper;
 
-import com.example.alwayswin.entity.Figure;
 import com.example.alwayswin.entity.Product;
 import com.example.alwayswin.entity.ProductPreview;
 import com.example.alwayswin.mapper.ProductMapper;
@@ -8,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.SQLOutput;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,7 +22,7 @@ public class ProductMapperTest {
         Product product = productMapper.getByPidWithStatusAndFigure(1);
         System.out.println(product);
         //System.out.println(productMapper.getProductStatusByPid(1));
-        List<ProductPreview> productPreviews = productMapper.getFilterPreviewProducts("price","DESC");
+        List<ProductPreview> productPreviews = productMapper.getOrderedPreviewProducts("price","DESC");
         System.out.println(productPreviews);
     }
 
@@ -43,11 +41,9 @@ public class ProductMapperTest {
         product.setTitle("AA");
         product.setDescription("test");
         product.setCate1("cell phone");
-        Figure figure= new Figure();
 
         Integer num = productMapper.add(product);
         assertEquals(1,num);
         System.out.println(product.getPid());
-
     }
 }

@@ -20,16 +20,20 @@ public interface ProductMapper {
     List<ProductPreview> getPreviewProducts();
 
     /**
-     * 根据filter排序返回list preview
+     * 根据排序返回list preview
      */
-    @Select("SELECT * from product_preview order by #{orderColumn} #{ordering}")
-    List<ProductPreview> getFilterPreviewProducts(String orderColumn, String ordering);
+    @Select("SELECT * from product_preview order by #{column} #{ordering}")
+    List<ProductPreview> getOrderedPreviewProducts(String column, String ordering);
 
     @Select("SELECT * from product_preview where uid =#{uid}")
     List<ProductPreview> getByUid(int uid);
 
     @Select("SELECT * from product_preview where cate_1 =#{cate1}")
     List<ProductPreview> getByCate1(String cate1);
+
+    @Select("SELECT * from product_preview where cate_1 =#{cate1} " +
+            "order by #{column} #{ordering}")
+    List<ProductPreview> getOrderedPreviewProductsByCate1(String cate1, String column, String ordering);
 
     @Select("SELECT * from product_preview where pid =#{pid}")
     ProductPreview getProductPreviewByPid(int pid);
@@ -38,7 +42,7 @@ public interface ProductMapper {
     /////////          Product          //////////////
 
     @Select("select count(*) from product where pid =#{pid}")
-    Integer checkProduct(int pid);
+    int checkProduct(int pid);
 
     @Select("select * from product where pid = #{pid}")
     Product getByPid(int pid);
@@ -84,8 +88,6 @@ public interface ProductMapper {
             "product.is_canceled = #{isCanceled}" +
             "where product.pid = #{pid}")
     int update(Product product);
-
-    //todo: delete
     
     /////////          Product Status          //////////////
 
@@ -110,4 +112,14 @@ public interface ProductMapper {
 
     @Delete("delete from product_status where pid=#{pid}")
     int deleteProductStatus(int pid);
+
+
+
+
+
+
+
+    /////////    仅限测试时使用       //////////////
+    @Select("DELETE FROM product WHERE pid = #{pid}")
+    int deleteProduct(int pid);
 }

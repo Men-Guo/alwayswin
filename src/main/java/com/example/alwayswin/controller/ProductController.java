@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -78,7 +80,7 @@ public class ProductController {
      * 添加product 同时添加productStatus 添加了回滚 完成
      */
     @PostMapping(value = "/product/create")
-    public CommonResult<Object> createProduct(Product product){
+    public CommonResult createProduct(Product product){
         try{
            if (productService.createProduct(product)!=1){
                logger.debug("product insert failure.");
@@ -91,15 +93,29 @@ public class ProductController {
     }
 
     /**
-     * 返回所有overview完成
-     * 不排序
+     * 返回product overview
+     * 可选择是否排序，是否筛选
      */
     @RequestMapping(value = "/product/overview", method = RequestMethod.GET)
-    public CommonResult<List<ProductPreview>> productOverview(){
-        List<ProductPreview> productPreviewList = productService.displayAllProduct();
+    public CommonResult<List<ProductPreview>> productOverview(@RequestParam(required = false) String sortedBy,
+                                                              @RequestParam(required = false) String ordering,
+                                                              @RequestParam(required = false) String cate){
+        List<ProductPreview> productPreviewList = null;
+        if (sortedBy == null || ordering == null) {
+            if (cate == null)
+                productPreviewList = productService.displayAllProduct();  // 返回所有商品，默认顺序
+            else
+                productPreviewList = productService.displayAllProductsByCate(cate);  // 返回筛选商品，默认顺序
+        }
+        else {
+            if (cate == null)
+                productPreviewList = productService.displayAllProductSorted(sortedBy, ordering);  // 返回所有商品，排序
+            else
+                productPreviewList = productService.displayProductsByCateAndSorted(cate, sortedBy, ordering);  // 返回筛选商品，排序
+        }
         try{
-            if (productPreviewList.isEmpty()){
-                logger.warn("Database is empty or error to cross database.");
+            if (productPreviewList == null){
+                logger.warn("Database error when executing productOverview" );
                 return CommonResult.failure();
             }
         }catch(Exception e){
@@ -108,46 +124,6 @@ public class ProductController {
         return CommonResult.success(productPreviewList);
     }
 
-    /**
-     *  返回排序后的商品
-     *  @Param: sortedBy
-     *  @Param: ordering
-     */
-    @RequestMapping(value = "/product/overview", method = RequestMethod.GET)
-    public CommonResult<List<ProductPreview>> productOverviewOrdered(@RequestParam String sortedBy,
-                                                                    @RequestParam String ordering)
-    {
-        List<ProductPreview> productPreviewList = productService.displayAllProductSorted(sortedBy, ordering);
-        try{
-            if (productPreviewList.isEmpty()){
-                logger.debug("database is empty or fail to connect to database.");
-                return CommonResult.failure();
-            }
-        }
-        catch(Exception e){
-            logger.warn(e.getMessage());
-        }
-        return CommonResult.success(productPreviewList);
-    }
-
-    /**
-     * 返回根据cate筛选后的商品
-     * @Param: cate
-     */
-    @GetMapping(value = "/product/overview")
-    public CommonResult<List<ProductPreview>> productByCate(@RequestParam String cate){
-        List<ProductPreview> productPreviewList = productService.displayAllProductsByCate(cate);
-        try{
-            if (productPreviewList.isEmpty()){
-                logger.debug("database is empty or fail to connect to database.");
-                return CommonResult.failure();
-            }
-        }
-        catch(Exception e){
-            logger.warn(e.getMessage());
-        }
-        return CommonResult.success(productPreviewList);
-    }
 
     /**
      * 根据uid返回商品preview 完成
@@ -176,7 +152,7 @@ public class ProductController {
      * 更新productStatus完成
      */
     @PostMapping(value = "/productStatus/post")
-    public CommonResult<Object> updateProductStatus(@RequestBody ProductStatus productStatus){
+    public CommonResult updateProductStatus(@RequestBody ProductStatus productStatus){
         try{
             Integer num = productService.updateProductStatusService(productStatus);
             if (num==0) return CommonResult.failure();

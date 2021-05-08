@@ -1,6 +1,8 @@
 package com.example.alwayswin.utils.commonAPI;
 
 
+import com.example.alwayswin.utils.enums.ResultCode;
+
 public class CommonResult<T> {
 
     //状态码

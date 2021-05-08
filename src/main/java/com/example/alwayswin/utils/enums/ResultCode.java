@@ -1,6 +1,8 @@
-package com.example.alwayswin.utils.commonAPI;
+package com.example.alwayswin.utils.enums;
 
-public enum ResultCode implements StatusErrorCode{
+import com.example.alwayswin.utils.commonAPI.StatusErrorCode;
+
+public enum ResultCode implements StatusErrorCode {
 
     SUCCESS(200,"Operate Successfully."),
     FAILED(500,"Operate Failure."),

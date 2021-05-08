@@ -64,6 +64,13 @@ public interface ProductService {
     List<ProductPreview> displayAllProductsByCate(String cate);
 
     /**
+     * 返回排序后某个cate下的所有商品
+     * @param cate
+     * @return
+     */
+    List<ProductPreview> displayProductsByCateAndSorted(String cate, String column, String ordering);
+
+    /**
      * 删除某个商品的当前状态
      * @param pid
      * @return
@@ -85,4 +92,11 @@ public interface ProductService {
     Integer addProductStatusService(ProductStatus productStatus);
 
     ProductStatus displayProductStatus(Integer pid);
+
+
+
+
+    /////////    仅限测试时使用       //////////////
+    // 删除product
+    int deleteProduct(Integer pid);
 }
