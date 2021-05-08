@@ -8,8 +8,10 @@ import java.util.List;
 @Service
 public interface WishListService{
     Integer addWishList(WishList wishList);
-    List<WishList> queryWishList(Integer uid);
     WishList queryWishListByWid(Integer wid);
     int deleteWishList(Integer uid, Integer pid);
-    List<WishList> queryWishListPage(Integer uid, int page, int pageSize);
+    int deleteWishList(Integer wid);
+    List<WishList> queryWishList(Integer uid);
+    List<WishList> queryWishListPage(Integer uid, int pageNum, int pageSize);
+    int checkDuplicate(Integer uid, Integer pid);
 }

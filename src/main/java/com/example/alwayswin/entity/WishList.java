@@ -8,6 +8,8 @@ import java.sql.Timestamp;
  * @Author: SQ
  * @Date: 2021-4-19
  */
+
+// todo: 添加product/preview
 public class WishList {
     private Integer wid;
     private Integer uid;

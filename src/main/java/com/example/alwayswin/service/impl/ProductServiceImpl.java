@@ -111,8 +111,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductPreview> displayAllProductSorted(String sortedBy, String ordering) {
         try{
-            if (!(ordering.toUpperCase().equals("ASC")
-                    || ordering.toUpperCase().equals("DESC"))) {
+            if (!(ordering.toLowerCase().equals("asc")
+                    || ordering.toLowerCase().equals("desc"))) {
                 logger.debug("The ordering string has typo in " + ordering);
                 return null;
             }
@@ -160,7 +160,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductPreview> displayProductsByCateAndSorted(String cate, String sortedBy, String ordering) {
         try{
-            if (!(ordering.toUpperCase().equals("ASC") || ordering.toUpperCase().equals("DESC"))) {
+            if (!(ordering.toLowerCase().equals("asc") || ordering.toLowerCase().equals("desc"))) {
                 logger.debug("The ordering string has typo in " + ordering);
                 return null;
             }

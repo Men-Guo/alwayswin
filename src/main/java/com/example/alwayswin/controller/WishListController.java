@@ -1,15 +1,22 @@
 package com.example.alwayswin.controller;
 
 import com.example.alwayswin.entity.WishList;
+import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.service.WishListService;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import io.jsonwebtoken.Claims;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @RestController
 public class WishListController {
 
+    @Resource
     private final WishListService wishListService;
 
     public WishListController(WishListService wishListService) {
@@ -17,21 +24,46 @@ public class WishListController {
     }
 
     /**
-     * 查询某个uid的list 分页
-     */
-    @GetMapping(value = "/wishList/{uid}")
-    public CommonResult<List<WishList>> getWishListsByUid(@PathVariable("uid") Integer uid,
-                                                @RequestParam(defaultValue = "1") Integer page,
-                                                @RequestParam(defaultValue = "10") Integer pageSize){
-        return CommonResult.success(wishListService.queryWishListPage(uid,page,pageSize));
-        //List<WishList> wishLists = wishListService.queryWishList(uid);
+     * 【分页】查询某个uid的list
 
+    @ResponseBody
+    @GetMapping(value = "/my-wishlist")
+    public CommonResult<PageInfo> getWishListsByUid(@RequestHeader("Authorization") String authHeader,
+                                                @RequestParam(defaultValue = "1") Integer pageNum,
+                                                @RequestParam(defaultValue = "10") Integer pageSize) {
+        Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
+        if (claims == null)
+            return CommonResult.unauthorized();
+
+        int uid = Integer.valueOf(claims.getAudience());
+        PageInfo pageInfo= PageHelper.startPage(pageNum, pageSize)
+                .doSelectPageInfo(() -> wishListService.queryWishList(uid));
+        return CommonResult.success(pageInfo);
+    }
+    */
+
+    
+    /**
+     * 查询某个uid的list
+     */
+    @GetMapping(value = "/my-wishlist")
+    public CommonResult<List<WishList>> getWishListsByUid(@RequestHeader("Authorization") String authHeader) {
+        Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
+        if (claims == null)
+            return CommonResult.unauthorized();
+
+        int uid = Integer.valueOf(claims.getAudience());
+        List<WishList> wishLists = wishListService.queryWishList(uid);
+        if (wishLists == null)
+            return CommonResult.failure();
+        return CommonResult.success(wishLists);
     }
 
     /**
      * 根据wid查询wishlist
      */
-    @GetMapping(value ="/wishList/wid/{wid}")
+    @ResponseBody
+    @GetMapping(value ="/wishlist/wid/{wid}")
     public CommonResult<WishList> getByWid(@PathVariable("wid") Integer wid){
         WishList wishList = wishListService.queryWishListByWid(wid);
         if (wishList == null) return CommonResult.failure();
@@ -39,11 +71,34 @@ public class WishListController {
     }
 
     /**
+     * 根据UID和PID查询该商品是否已经被收藏
+     */
+    @ResponseBody
+    @PostMapping(value ="/wishlist/{uid}/{pid}")
+    public CommonResult getWishListByUidPid(@PathVariable("uid") Integer uid, @PathVariable("pid") Integer pid){
+        int num = wishListService.checkDuplicate(uid, pid);
+        return CommonResult.success(num);
+    }
+
+    // todo: 为什么不deleteByWid?
+    /**
      * 根据UID和PID删除数据
      */
-    @DeleteMapping(value ="/wishList/{uid}/{pid}")
-    public CommonResult<Object> deleteWishListByUidPid(@PathVariable("uid") Integer uid, @PathVariable("pid") Integer pid){
+    @Deprecated
+    @DeleteMapping(value ="/wishlist/{uid}/{pid}")
+    public CommonResult deleteWishListByUidPid(@PathVariable("uid") Integer uid, @PathVariable("pid") Integer pid){
         int res = wishListService.deleteWishList(uid,pid);
+        if (res == 1){
+            return CommonResult.success(null);
+        }else {
+            return CommonResult.failure();
+        }
+    }
+
+    @ResponseBody
+    @DeleteMapping(value ="/wishlist/delete/{wid}")
+    public CommonResult deleteWishListByWid(@PathVariable("wid") Integer wid) {
+        int res = wishListService.deleteWishList(wid);
         if (res == 1){
             return CommonResult.success(null);
         }else {
@@ -54,11 +109,15 @@ public class WishListController {
     /**
      * 创建wishList
      */
-    @PostMapping(value = "/wishList/create")
-    public CommonResult<Object> insertWishList(@RequestBody WishList wishList){
+    @ResponseBody
+    @PostMapping(value = "/wishlist/create")
+    public CommonResult insertWishList(@RequestBody WishList wishList){
         int res = wishListService.addWishList(wishList);
         if (res == 1){
             return CommonResult.success(null);
+        }
+        else if (res == -1){
+            return CommonResult.validateFailure("This product is already in wishList");
         }else {
             return CommonResult.failure();
         }

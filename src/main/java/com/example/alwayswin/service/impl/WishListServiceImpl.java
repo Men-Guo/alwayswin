@@ -7,6 +7,7 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -26,7 +27,9 @@ public class WishListServiceImpl implements WishListService {
 
     @Override
     public Integer addWishList(WishList wishList) {
-        if (wishListMapper.checkDuplicate(wishList.getPid(),wishList.getUid())==1) return null;
+        if (checkDuplicate(wishList.getPid(),wishList.getUid()) == 1)
+            return -1;
+        wishList.setCreateTime(new Timestamp(System.currentTimeMillis()));
         return wishListMapper.insertWishList(wishList);
     }
 
@@ -36,9 +39,12 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public List<WishList> queryWishListPage(Integer uid, int page, int pageSize) {
-        PageHelper.startPage(page,pageSize);
-        return wishListMapper.getByUid(uid);
+    public List<WishList> queryWishListPage(Integer uid, int pageNum, int pageSize) {
+        // 在你需要进行分页的 MyBatis 查询方法前调用 PageHelper.startPage 静态方法即可
+        // 紧跟在这个方法后的第一个MyBatis 查询方法会被进行分页
+        PageHelper.startPage(pageNum, pageSize);
+        List<WishList> wishLists = wishListMapper.getByUid(uid);
+        return wishLists;
     }
 
     @Override
@@ -48,10 +54,18 @@ public class WishListServiceImpl implements WishListService {
 
     @Override
     public int deleteWishList(Integer uid, Integer pid) {
-        if (wishListMapper.checkDuplicate(pid,uid)==0) {
-            System.out.println("商品不存在");
-            return 0;
-        }
         return wishListMapper.deleteWishList(uid,pid);
     }
+
+    @Override
+    public int deleteWishList(Integer wid) {
+        return wishListMapper.deleteWishListByWid(wid);
+    }
+
+    @Override
+    public int checkDuplicate(Integer uid, Integer pid) {
+        return wishListMapper.checkDuplicate(uid, pid);
+    }
+
+
 }

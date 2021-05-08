@@ -4,13 +4,6 @@ import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
-/**
- * @ClassName: WishListMapper
- * @Description:
- * @Author: SQ
- * @Date: 2021-4-19
- */
-
 @Repository
 public interface WishListMapper {
     @Select("select * from wishlist where uid = #{uid}")
@@ -24,6 +17,9 @@ public interface WishListMapper {
 
     @Delete("delete from wishlist where uid=#{uid} and pid =#{pid}")
     int deleteWishList(int uid, int pid);
+
+    @Delete("delete from wishlist where wid=#{wid}")
+    int deleteWishListByWid(int wid);
 
     @Select("Select * from wishlist where wid=#{wid}")
     WishList selectWid(int wid);

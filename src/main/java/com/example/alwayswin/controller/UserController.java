@@ -36,7 +36,7 @@ public class UserController {
             return CommonResult.validateFailure("Duplicate username, plz get a new one");
         }
         else if (res == -2) {
-            return CommonResult.validateFailure("Password doesn't apply to the rule");
+            return CommonResult.validateFailure("Username or Password doesn't apply to the rule");
         }
         else if (res == -3) {
             return CommonResult.validateFailure("Passwords don't match");

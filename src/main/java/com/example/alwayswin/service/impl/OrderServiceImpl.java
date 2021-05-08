@@ -4,6 +4,7 @@ import com.example.alwayswin.entity.Address;
 import com.example.alwayswin.entity.Order;
 import com.example.alwayswin.mapper.OrderMapper;
 import com.example.alwayswin.service.OrderService;
+import com.example.alwayswin.utils.enums.OrderStatusCode;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,8 +72,8 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderMapper.getByOid(oid);
         if (order == null)
             return 0;
-        // 只有已完成的订单才能删除
-        if (order.getStatus().equals("received"))
+        // 检查是否可以删除该订单
+        if (OrderStatusCode.isDeletable(order.getStatus()))
             return orderMapper.delete(oid);
         else
             return -1;
