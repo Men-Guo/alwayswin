@@ -35,7 +35,7 @@ public class FigureController {
         this.figureService = figureService;
     }
 
-    @PostMapping("/uploadFigure")
+    @PostMapping("/figure/upload")
     public CommonResult<String> uploadFigure(@RequestParam("figure") MultipartFile file) {
         String fileName = figureService.upload(file);
         if (fileName == null)
@@ -44,7 +44,7 @@ public class FigureController {
             return CommonResult.success(fileName);
     }
 
-    @PostMapping("/uploadMultipleFigures")
+    @PostMapping("/figure/multiple-uploads")
     public List<CommonResult<String>> uploadMultipleFigures(@RequestParam("figures") MultipartFile[] files) {
         return Arrays.asList(files)
                 .stream()
@@ -93,8 +93,8 @@ public class FigureController {
     }
 
     @ResponseBody
-    @PutMapping("/product/figure/edit/{fid}")
-    CommonResult<Integer> editFigure(@RequestBody Map param, @PathVariable int fid){
+    @PutMapping("/product/figure/update/{fid}")
+    CommonResult<Integer> updateFigure(@RequestBody Map param, @PathVariable int fid){
         if (fid < 0)
             return CommonResult.validateFailure();
         int res = figureService.updateFigure(fid, param);

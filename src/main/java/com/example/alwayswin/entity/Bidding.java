@@ -15,7 +15,7 @@ public class Bidding {
     private double offer;
     private Timestamp createTime;
 
-    private Product product;
+    private ProductPreview productPreview;
     private User user;
 
     public Bidding() {
@@ -32,7 +32,7 @@ public class Bidding {
         this.pid = pid;
         this.offer = offer;
         this.createTime = createTime;
-        product = new Product();
+        productPreview = new ProductPreview();
         user = new User();
     }
 
@@ -76,12 +76,12 @@ public class Bidding {
         this.createTime = createTime;
     }
 
-    public Product getProduct() {
-        return product;
+    public ProductPreview getProductPreview() {
+        return productPreview;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductPreview(ProductPreview productPreview) {
+        this.productPreview = productPreview;
     }
 
     public User getUser() {
@@ -100,7 +100,7 @@ public class Bidding {
                 ", pid=" + pid +
                 ", offer=" + offer +
                 ", createTime=" + createTime +
-                ", product=" + product.toString() +
+                ", product=" + productPreview.toString() +
                 ", user=" + user.toString() +
                 '}';
     }

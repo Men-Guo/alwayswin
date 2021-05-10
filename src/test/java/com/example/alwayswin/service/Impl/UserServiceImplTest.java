@@ -120,13 +120,25 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void illegalPasswordWithInvalidLengthExceptionWithRegister() {
+    public void illegalPasswordWithTooShortLengthExceptionWithRegister() {
         when(userMapper.getByUsername("Jason")).thenReturn(null);
 
         Map<String, String> param = new HashMap<>();
         param.put("username", "Jason");
         param.put("password", "ABC12");
         param.put("password2", "ABC12");
+
+        assertEquals(-2,userService.register(param));
+    }
+
+    @Test
+    public void illegalPasswordWithTooLongLengthExceptionWithRegister() {
+        when(userMapper.getByUsername("Jason")).thenReturn(null);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("username", "Jason");
+        param.put("password", "ABC000000000000000000000000000000000000000000000000000000000000000000");
+        param.put("password2", "ABC000000000000000000000000000000000000000000000000000000000000000000");
 
         assertEquals(-2,userService.register(param));
     }

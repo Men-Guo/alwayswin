@@ -22,37 +22,90 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class WishListServiceTest {
 
-    private RestTemplate restTemplate;
-
     @Autowired
     private WishListServiceImpl wishListService = new WishListServiceImpl();
-
     @Autowired
     private WishListMapper wishListMapper;
 
     @Test
-    public void happy_path_with_wish_list(){
+    public void happyPathAddingWishList(){
+        WishList wishList = new WishList();
+        wishList.setUid(1);
+        wishList.setPid(8);
+        assertEquals(1,wishListService.addWishList(wishList));
+    }
+
+    @Test
+    public void happyPathQueryWishListWithUid(){
+        assertEquals(4,wishListService.queryWishList(1).size());
+    }
+
+    @Test
+    public void printOutHappyPathQueryWishListWithUid(){
+        System.out.println(wishListService.queryWishList(1));
+    }
+
+    @Test
+    public void NoSuchUid(){
+        assertEquals(0,wishListService.queryWishList(-1).size());
+    }
+
+
+
+    @Test
+    public void addDuplicatedWishList(){
         WishList wishList = new WishList();
         wishList.setUid(1);
         wishList.setPid(3);
-        wishList.setCreateTime(new Timestamp(System.currentTimeMillis()));
-
-        //查找成功
-        assertEquals(1,wishListMapper.checkDuplicate(wishList.getPid(),wishList.getUid()));
-
-        //查找失败
-        wishList.setPid(2);
-        assertEquals(0,wishListMapper.checkDuplicate(wishList.getPid(),wishList.getUid()));
-
-        //插入成功
-        assertEquals(1,wishListService.addWishList(wishList));
-        //插入失败
-        assertEquals(null,wishListService.addWishList(wishList));
-
-        //删除成功
-        assertEquals(1,wishListService.deleteWishList(1,2));
-        //删除失败
-        assertEquals(0,wishListService.deleteWishList(1,2));
-        //assertEquals(1,wishListService.addWishList(wishlist));
+        assertEquals(0,wishListService.addWishList(wishList));
     }
+
+    @Test
+    public void addNotExistUidToWishList(){
+        WishList wishList = new WishList();
+        wishList.setUid(-1);
+        wishList.setPid(3);
+        assertEquals(0,wishListService.addWishList(wishList));
+    }
+
+    @Test
+    public void addNotExistPidToWishList(){
+        WishList wishList = new WishList();
+        wishList.setUid(1);
+        wishList.setPid(-1);
+        assertEquals(0,wishListService.addWishList(wishList));
+    }
+
+    @Test
+    public void addNotExistBothUidAndPidToWishList(){
+        WishList wishList = new WishList();
+        wishList.setUid(-1);
+        wishList.setPid(-1);
+        assertEquals(0,wishListService.addWishList(wishList));
+    }
+
+    @Test
+    public void happyPathDeleteWishList(){
+        assertEquals(1,wishListService.deleteWishList(1,3));
+    }
+
+    @Test
+    public void SoSuchUidAndPidDeleteWishList(){
+        assertEquals(0,wishListService.deleteWishList(55,24));
+        assertEquals(0,wishListService.deleteWishList(-1,3));
+        assertEquals(0,wishListService.deleteWishList(1,-3));
+        assertEquals(0,wishListService.deleteWishList(-1,-3));
+    }
+
+    @Test
+    public void happyPathDeleteWishListWithWid(){
+        assertEquals(1,wishListService.deleteWishList(31));
+    }
+
+    @Test
+    public void SoSuchWidDeleteWishList(){
+        assertEquals(0,wishListService.deleteWishList(-1));
+        assertEquals(0,wishListService.deleteWishList(22));
+    }
+
 }

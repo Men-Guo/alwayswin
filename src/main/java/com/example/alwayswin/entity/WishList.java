@@ -8,17 +8,28 @@ import java.sql.Timestamp;
  * @Author: SQ
  * @Date: 2021-4-19
  */
+
 public class WishList {
     private Integer wid;
     private Integer uid;
     private Integer pid;
     private Timestamp createTime;
+    private ProductPreview productPreview;
 
     public WishList() {
         wid = 0;
         uid = 0;
         pid = 0;
         createTime = new Timestamp(0);
+        productPreview = new ProductPreview();
+    }
+
+    public ProductPreview getProductPreview() {
+        return productPreview;
+    }
+
+    public void setProductPreview(ProductPreview productPreview) {
+        this.productPreview = productPreview;
     }
 
     public WishList(Integer wid, Integer uid, Integer pid, Timestamp createTime) {
@@ -67,6 +78,7 @@ public class WishList {
                 ", uid=" + uid +
                 ", pid=" + pid +
                 ", createTime=" + createTime +
+                ", productPreview=" + productPreview +
                 '}';
     }
 }

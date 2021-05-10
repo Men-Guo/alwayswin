@@ -1,19 +1,18 @@
 package com.example.alwayswin.service.impl;
 
-import com.example.alwayswin.entity.Figure;
 import com.example.alwayswin.entity.Product;
 import com.example.alwayswin.entity.ProductPreview;
 import com.example.alwayswin.entity.ProductStatus;
-import com.example.alwayswin.mapper.FigureMapper;
 import com.example.alwayswin.mapper.ProductMapper;
 import com.example.alwayswin.service.ProductService;
+import com.example.alwayswin.utils.enums.ProductCateCode;
+import com.example.alwayswin.utils.enums.ProductStatusCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,8 +24,6 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductMapper productMapper;
 
-    @Autowired
-    private FigureMapper figureMapper;
 
     /**
      * 返回一个商品类 完成
@@ -40,14 +37,14 @@ public class ProductServiceImpl implements ProductService {
      * 删除 完成
      */
     @Override
-    public Integer deleteProduct(Integer pid) {
+    public Integer cancelProduct(Integer pid) {
         try{
-            if (productMapper.checkProduct(pid)==0){
+            Product product = productMapper.getByPid(pid);
+            if (product == null){
                 logger.debug("No product with the pid =" + pid);
                 return null;
             }
-            Product product = productMapper.getByPid(pid);
-            if (product.isCanceled()) {
+            else if (product.isCanceled()) {
                 logger.debug("The product already canceled.");
                 return null;
             }
@@ -78,14 +75,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * 增 完成
+     * 在product和product_status中添加entry
      */
     @Transactional
     @Override
     public Integer createProduct(Product product) {
         try{
             int num = productMapper.add(product);
-            if (num==0) throw new Exception("Product add failed");
+            if (num == 0) throw new Exception("Product add failed");
             ProductStatus productStatus = new ProductStatus();
             productStatus.setPid(product.getPid());
             productStatus.setPrice(product.getStartPrice());
@@ -109,20 +106,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * 展示全部伴随filter 完成
+     * 根据定义的排序展现products
      */
     @Override
-    public List<ProductPreview> displayAllProductWithOrder(String variable, String order) {
+    public List<ProductPreview> displayAllProductSorted(String sortedBy, String ordering) {
         try{
-            if (!(order.equals("ASC") || order.equals("DESC"))) {
-                logger.debug("The order string has typo:" + order);
+            if (!(ordering.toLowerCase().equals("asc")
+                    || ordering.toLowerCase().equals("desc"))) {
+                logger.debug("The ordering string has typo in " + ordering);
                 return null;
             }
-            if (!(variable.equals("auto_win_price") || variable.equals("price"))) {
-                logger.debug("The filter string has typo." + variable);
+            if (!(sortedBy.equals("auto_win_price")
+                    || sortedBy.equals("autoWinPrice")
+                    || sortedBy.equals("price"))) {
+                logger.debug("The sortedBy string has typo in " + sortedBy);
                 return null;
             }
-            return productMapper.getFilterPreviewProducts(variable,order);
+            return productMapper.getOrderedPreviewProducts(sortedBy, ordering);
         }catch(Exception e){
             logger.warn(e.getMessage());
         }
@@ -138,32 +138,47 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * 根据 Category返回商品 待完善
-     * to do filter 和 sorted
+     * 根据 Category返回商品
      */
     @Override
     public List<ProductPreview> displayAllProductsByCate(String cate) {
-        List<String> cateLists = Arrays.asList("camera","cell phone","accessory","computer"
-                ,"tablet","network hardware","tv","smart home","portable audio","car electronics","gaming console"
-                ,"vr","others");
-        boolean found = true;
-        try{
-            for (String string: cateLists){
-                if (string.equals(cate)){
-                    found = false;
-                    break;
-                }
-            }
-            if (found) {
+        try {
+            if (!ProductCateCode.contains(cate)) {
                 logger.debug("The category is not in the category list, double check.");
                 return null;
             }
             return productMapper.getByCate1(cate);
+        } catch (Exception e) {
+            logger.warn(e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * 根据 Category和顺序 返回商品
+     */
+    @Override
+    public List<ProductPreview> displayProductsByCateAndSorted(String cate, String sortedBy, String ordering) {
+        try{
+            if (!(ordering.toLowerCase().equals("asc") || ordering.toLowerCase().equals("desc"))) {
+                logger.debug("The ordering string has typo in " + ordering);
+                return null;
+            }
+            else if (!(sortedBy.equals("auto_win_price") || sortedBy.equals("autoWinPrice") || sortedBy.equals("price"))) {
+                logger.debug("The sortedBy string has typo in " + sortedBy);
+                return null;
+            }
+            else if (!ProductCateCode.contains(cate)) {
+                logger.debug("The category is not in the category list, double check.");
+                return null;
+            }
+            return productMapper.getOrderedPreviewProductsByCate1(cate, sortedBy, ordering);
         }catch(Exception e){
             logger.warn(e.getMessage());
         }
         return null;
     }
+
 
     /**
      * 删除ProductStatus 完成
@@ -193,21 +208,6 @@ public class ProductServiceImpl implements ProductService {
         return null;
     }
 
-    /**
-     * 检查ProductStatus 完成
-     */
-    private boolean checkProductStatus(String status){
-        List<String> statusList = Arrays.asList("pending","waiting","bidding",
-                "extended","broughtIn","success","canceled");
-        boolean found = true;
-        for (String sta: statusList){
-            if (sta.equals(status)){
-                found= false;
-                break;
-            }
-        }
-        return found;
-    }
 
     /**
      * 更新ProductStatus 待完善
@@ -216,8 +216,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Integer updateProductStatusService(ProductStatus productStatus) {
         try{
-            boolean found = checkProductStatus(productStatus.getStatus());
-            if (found){
+            if (!ProductStatusCode.contains(productStatus.getStatus())){
                 logger.debug("ProductStatus mistakes.");
                 return null;
             }
@@ -245,7 +244,7 @@ public class ProductServiceImpl implements ProductService {
                 logger.debug("Product pid already exists.");
                 return null;
             }
-            if (checkProductStatus(productStatus.getStatus())){
+            if (!ProductStatusCode.contains(productStatus.getStatus())){
                 logger.debug("Product status is illegal");
                 return null;
             }
@@ -266,6 +265,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductStatus displayProductStatus(Integer pid) {
         return productMapper.getProductStatusByPid(pid);
+    }
+
+
+
+
+
+
+
+
+    /////////    仅限测试时使用       //////////////
+    public int deleteProduct(Integer pid) {
+        return productMapper.deleteProduct(pid);
     }
 
 }

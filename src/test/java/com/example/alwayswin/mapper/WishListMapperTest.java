@@ -68,9 +68,9 @@ public class WishListMapperTest {
     }
 
     @Test
-    public void DuplicatedUidAndPid(){
-        assertEquals(1,wishListMapper.checkDuplicate(6,1));
-        assertEquals(0,wishListMapper.checkDuplicate(-1,1));
+    public void DuplicatedUidAndPid() {
+        assertEquals(1, wishListMapper.checkDuplicate(6, 1));
+        assertEquals(0, wishListMapper.checkDuplicate(-1, 1));
     }
 
 }

@@ -11,34 +11,38 @@ import java.util.List;
 
 @Repository
 public interface ProductMapper {
-    
-    //todo: filter and sorted
 
+    /////////          Product  Preview        //////////////
     /**
      * 不排序返回preview
-     * @return
      */
-    @Select("SELECT product.pid, product.uid,product.title,product.end_time,product.auto_win_price,"
-            + "product_status.price,product_status.`status`, figure.url "
-            + "FROM ((product INNER JOIN product_status on product.pid = product_status.pid)"
-            + "INNER JOIN figure on product.pid = figure.pid)"
-            + "where figure.is_thumbnail=1")
+    @Select("SELECT * from product_preview")
     List<ProductPreview> getPreviewProducts();
 
     /**
-     * 根据filter排序返回list preview
+     * 根据排序返回list preview
      */
-    @Select("SELECT product.pid, product.uid,product.title,product.end_time,product.auto_win_price,"
-            + "product_status.price,product_status.`status`, figure.url "
-            + "FROM ((product INNER JOIN product_status on product.pid = product_status.pid)"
-            + "INNER JOIN figure on product.pid = figure.pid)"
-            + "where figure.is_thumbnail=1"
-            + "order by #{variable} #{order}")
-    List<ProductPreview> getFilterPreviewProducts(String variable, String order);
+    @Select("SELECT * from product_preview order by #{column} #{ordering}")
+    List<ProductPreview> getOrderedPreviewProducts(String column, String ordering);
+
+    @Select("SELECT * from product_preview where uid =#{uid}")
+    List<ProductPreview> getByUid(int uid);
+
+    @Select("SELECT * from product_preview where cate_1 =#{cate1}")
+    List<ProductPreview> getByCate1(String cate1);
+
+    @Select("SELECT * from product_preview where cate_1 =#{cate1} " +
+            "order by #{column} #{ordering}")
+    List<ProductPreview> getOrderedPreviewProductsByCate1(String cate1, String column, String ordering);
+
+    @Select("SELECT * from product_preview where pid =#{pid}")
+    ProductPreview getProductPreviewByPid(int pid);
+
+
     /////////          Product          //////////////
 
     @Select("select count(*) from product where pid =#{pid}")
-    Integer checkProduct(int pid);
+    int checkProduct(int pid);
 
     @Select("select * from product where pid = #{pid}")
     Product getByPid(int pid);
@@ -55,25 +59,6 @@ public interface ProductMapper {
     })
     Product getByPidWithStatusAndFigure(int pid);
 
-    @Select("SELECT product.pid, product.uid,product.title,product.end_time,product.auto_win_price,"
-            + "product_status.price,product_status.`status`, figure.url "
-            + "FROM ((product INNER JOIN product_status on product.pid = product_status.pid)"
-            + "INNER JOIN figure on product.pid = figure.pid)"
-            + "where figure.is_thumbnail=1"
-            + "and uid =#{uid}")
-    List<ProductPreview> getByUid(int uid);
-/*    @Select("select * from product where uid = #{uid}")
-    List<Product> getByUid(int uid);*/
-
-//    @Select("select * from product where cate1 = #{cate1}")
-    @Select("SELECT product.pid, product.uid,product.title,product.end_time,product.auto_win_price,"
-        + "product_status.price,product_status.`status`, figure.url "
-        + "FROM ((product INNER JOIN product_status on product.pid = product_status.pid)"
-        + "INNER JOIN figure on product.pid = figure.pid)"
-        + "where figure.is_thumbnail=1"
-        + "and cate_1 =#{cate1}")
-    List<ProductPreview> getByCate1(String cate1);
-
 //    使用搜索引擎, 在searchService实现
 //    @Select("select * from product where title like CONCAT('%',#{title},'%') ")
 //    List<Product> getByTitle(String title);
@@ -88,7 +73,6 @@ public interface ProductMapper {
 
     // uid, createTime are NOT allowed to be modified
     @Update("update product set " +
-            "product.uid =#{uid},"+
             "product.title = #{title}," +
             "product.description = #{description}," +
             "product.cate_1 = #{cate1}," +
@@ -96,7 +80,6 @@ public interface ProductMapper {
             "product.cate_3 = #{cate3}," +
             "product.start_time = #{startTime}," +
             "product.end_time = #{endTime}," +
-            "product.create_time = #{createTime}," +
             "product.start_price = #{startPrice}" +
             "product.auto_win_price = #{autoWinPrice}," +
             "product.reserved_price = #{reservedPrice}," +
@@ -105,25 +88,6 @@ public interface ProductMapper {
             "product.is_canceled = #{isCanceled}" +
             "where product.pid = #{pid}")
     int update(Product product);
-
-    /**
-     * 整个product删除用
-     * @param pid
-     * @return
-     */
-    @Deprecated
-    @Delete("delete figure, product_status,orders,wishlist from product"
-            + "left join figure on product.pid = figure.pid "
-            + "left join product_status on product.pid = product_status.pid"
-            + "left join orders on orders.pid=product.pid"
-            + "left join wishlist on wishlist.pid = product.pid"
-            + "where product.pid =#{pid}")
-    int deleteFK(int pid);
-
-    @Deprecated
-    @Delete("delete from product where pid=#{pid}")
-    int delete(int pid);
-
     
     /////////          Product Status          //////////////
 
@@ -148,4 +112,14 @@ public interface ProductMapper {
 
     @Delete("delete from product_status where pid=#{pid}")
     int deleteProductStatus(int pid);
+
+
+
+
+
+
+
+    /////////    仅限测试时使用       //////////////
+    @Select("DELETE FROM product WHERE pid = #{pid}")
+    int deleteProduct(int pid);
 }

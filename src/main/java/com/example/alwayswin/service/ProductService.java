@@ -17,11 +17,11 @@ public interface ProductService {
     Product displayProductDetail(Integer pid);
 
     /**
-     * 删除Product和其FK表内的数据
+     * 取消product
      * @param pid
      * @return
      */
-    Integer deleteProduct(Integer pid);
+    Integer cancelProduct(Integer pid);
 
     /**
      * 更新product表
@@ -44,9 +44,10 @@ public interface ProductService {
     List<ProductPreview> displayAllProduct();
 
     /**
-     * 根据filter展现数据库
+     * 根据定义的排序展现products
+     * @return
      */
-    List<ProductPreview> displayAllProductWithOrder(String variable, String order);
+    List<ProductPreview> displayAllProductSorted(String column, String ordering);
 
     /**
      * 返回某个用户所有卖的商品
@@ -61,6 +62,13 @@ public interface ProductService {
      * @return
      */
     List<ProductPreview> displayAllProductsByCate(String cate);
+
+    /**
+     * 返回排序后某个cate下的所有商品
+     * @param cate
+     * @return
+     */
+    List<ProductPreview> displayProductsByCateAndSorted(String cate, String column, String ordering);
 
     /**
      * 删除某个商品的当前状态
@@ -84,4 +92,11 @@ public interface ProductService {
     Integer addProductStatusService(ProductStatus productStatus);
 
     ProductStatus displayProductStatus(Integer pid);
+
+
+
+
+    /////////    仅限测试时使用       //////////////
+    // 删除product
+    int deleteProduct(Integer pid);
 }

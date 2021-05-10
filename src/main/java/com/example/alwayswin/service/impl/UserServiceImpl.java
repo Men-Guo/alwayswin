@@ -120,10 +120,9 @@ public class UserServiceImpl implements UserService {
         // 重复用户名
         if (userMapper.getByUsername(username) != null)
             return -1;
-
-        // 密码不合法
-        if (!isValidPassword(password1)) {
-            logger.warn("Password should apply to the rule");
+        // 用户名或密码不合法
+        if (!isValid(username) || !isValid(password1)) {
+            logger.warn("Username and Password should apply to the rule");
             return -2;
         }
         // 密码不相等
@@ -140,7 +139,7 @@ public class UserServiceImpl implements UserService {
         userMapper.add(user);
 
         // 将基本信息加入user info
-        user = userMapper.getByUsername(username);
+//        user = userMapper.getByUsername(username);
         return addUserInfo(user.getUid());
     }
 
@@ -165,7 +164,7 @@ public class UserServiceImpl implements UserService {
             return -2;
         }
         //新密码不合法
-        else if (!isValidPassword(newPassword1)) {
+        else if (!isValid(newPassword1)) {
             logger.warn("Password should apply to the rule");
             return -3;
         }
@@ -179,14 +178,14 @@ public class UserServiceImpl implements UserService {
     }
 
     /*
-     * @Description: 密码规则。长度大于等于6位且数字字母混合, 字符滚粗
+     * @Description: 用户名及密码规则。长度6~20 且数字字母混合, 除下划线外的字符滚粗
      * @Param: [password]
      * @Return: boolean
      * @Author: SQ
      * @Date: 2021-4-20
      **/
-    private boolean isValidPassword(String password) {
-        if (password.length() < 6)
+    private boolean isValid(String password) {
+        if (password.length() < 6 || password.length() > 20 )
             return false;
         else {
             int digitCnt = 0, letterCnt = 0, otherCnt = 0;
@@ -195,7 +194,7 @@ public class UserServiceImpl implements UserService {
                     digitCnt++;
                 else if (Character.isLetter(c))
                     letterCnt++;
-                else {
+                else if (c != '_') {
                     otherCnt++;
                     break;
                 }

@@ -6,16 +6,21 @@ public class ProductPreview {
     private Integer pid;
     private Integer uid;
     private String title;
+    private String cate1;   // ('camera', 'cell phone', 'accessory', 'computer', 'tablet', 'network hardware', 'tv', 'smart home', 'portable audio', 'car electronics', 'gaming console', 'vr', 'others')
     private Timestamp endTime;
     private double autoWinPrice;
     private double price;
     private String status;
     private String url;
 
-    public ProductPreview(Integer pid, Integer uid, String title, Timestamp endTime, double autoWinPrice, double price, String status, String url) {
+    public ProductPreview() {}
+
+    public ProductPreview(Integer pid, Integer uid, String title, String cate1,
+                          Timestamp endTime, double autoWinPrice, double price, String status, String url) {
         this.pid = pid;
         this.uid = uid;
         this.title = title;
+        this.cate1 = cate1;
         this.endTime = endTime;
         this.autoWinPrice = autoWinPrice;
         this.price = price;
@@ -28,6 +33,7 @@ public class ProductPreview {
                 "pid=" + pid +
                 ", uid=" + uid +
                 ", title='" + title + '\'' +
+                ", cate1='" + cate1 + '\'' +
                 ", endTime=" + endTime +
                 ", autoWinPrice=" + autoWinPrice +
                 ", price=" + price +
@@ -85,6 +91,14 @@ public class ProductPreview {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getCate1() {
+        return cate1;
+    }
+
+    public void setCate1(String cate1) {
+        this.cate1 = cate1;
     }
 
     public Timestamp getEndTime() {

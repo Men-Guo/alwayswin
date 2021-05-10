@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import javax.annotation.Resource;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -105,6 +106,7 @@ public class FigureServiceImpl implements FigureService {
         try {
             BeanUtils.populate(figure, param);
             figure.setFid(fid);
+            figure.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
             // 更改封面
             if (figure.isThumbnail())
                 changeThumbnail(figure);
@@ -119,6 +121,7 @@ public class FigureServiceImpl implements FigureService {
         Figure figure = new Figure();
         try {
             BeanUtils.populate(figure, param);
+            figure.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
             // 更改封面
             if (figure.isThumbnail()) {
                changeThumbnail(figure);

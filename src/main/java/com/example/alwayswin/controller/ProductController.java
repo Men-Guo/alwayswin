@@ -3,13 +3,17 @@ package com.example.alwayswin.controller;
 import com.example.alwayswin.entity.Product;
 import com.example.alwayswin.entity.ProductPreview;
 import com.example.alwayswin.entity.ProductStatus;
+import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.service.impl.ProductServiceImpl;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
+import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -48,7 +52,7 @@ public class ProductController {
             if (productService.deleteProductStatusService(pid)!=1){
                 throw new Exception("Delete Product Status error.");
             }
-            if (productService.deleteProduct(pid)!=1){
+            if (productService.cancelProduct(pid)!=1){
                 throw new Exception("Delete Product error");
             }
             return CommonResult.success(productService.displayProductDetail(pid));
@@ -73,7 +77,7 @@ public class ProductController {
     }
 
     /**
-     * 添加product 同时添加figure和productStatus 添加了回滚 完成
+     * 添加product 同时添加productStatus 添加了回滚 完成
      */
     @PostMapping(value = "/product/create")
     public CommonResult<Object> createProduct(Product product){
@@ -89,14 +93,29 @@ public class ProductController {
     }
 
     /**
-     * 返回所有overview完成
+     * 返回product overview
+     * 可选择是否排序，是否筛选
      */
-    @RequestMapping(value = "/product/overviews", method = RequestMethod.GET)
-    public CommonResult<List<ProductPreview>> productOverview(){
-        List<ProductPreview> productPreviewList = productService.displayAllProduct();
+    @RequestMapping(value = "/product/overview", method = RequestMethod.GET)
+    public CommonResult<List<ProductPreview>> productOverview(@RequestParam(required = false) String sortedBy,
+                                                              @RequestParam(required = false) String ordering,
+                                                              @RequestParam(required = false) String cate){
+        List<ProductPreview> productPreviewList = null;
+        if (sortedBy == null || ordering == null) {
+            if (cate == null)
+                productPreviewList = productService.displayAllProduct();  // 返回所有商品，默认顺序
+            else
+                productPreviewList = productService.displayAllProductsByCate(cate);  // 返回筛选商品，默认顺序
+        }
+        else {
+            if (cate == null)
+                productPreviewList = productService.displayAllProductSorted(sortedBy, ordering);  // 返回所有商品，排序
+            else
+                productPreviewList = productService.displayProductsByCateAndSorted(cate, sortedBy, ordering);  // 返回筛选商品，排序
+        }
         try{
-            if (productPreviewList.isEmpty()){
-                logger.warn("Database is empty or error to cross database.");
+            if (productPreviewList == null){
+                logger.warn("Database error when executing productOverview" );
                 return CommonResult.failure();
             }
         }catch(Exception e){
@@ -111,7 +130,7 @@ public class ProductController {
     @RequestMapping(value = "/product/{filter}-{sorted}", method = RequestMethod.GET)
     public CommonResult<List<ProductPreview>> productOverviewFilter(@PathVariable("variable") String variable,
                                               @PathVariable("order") String order){
-        List<ProductPreview> productPreviewList = productService.displayAllProductWithOrder(variable,order);
+        List<ProductPreview> productPreviewList = productService.displayAllProductSorted(variable,order);
         try{
             if (productPreviewList.isEmpty()){
                 logger.debug("database is empty or fail to connect to database.");
@@ -127,38 +146,24 @@ public class ProductController {
     /**
      * 根据uid返回商品preview 完成
      */
-    @GetMapping(value = "/product/uid/{uid}")
-    public CommonResult<List<ProductPreview>> productByUid(@PathVariable("uid") int uid){
-        List<ProductPreview> productPreviewList = productService.displayAllProductsByUid(uid);
-        try{
-            if (productPreviewList.isEmpty()){
-                logger.debug("database is empty or fail to connect to database.");
-                return CommonResult.failure();
+    @GetMapping(value = "/user/my-products")
+    public CommonResult<List<ProductPreview>> productByUid(@RequestHeader("Authorization") String authHeader){
+        Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
+        if (claims == null)
+            return CommonResult.unauthorized();
+        else {
+            int uid = Integer.valueOf(claims.getAudience());
+            List<ProductPreview> productPreviewList = productService.displayAllProductsByUid(uid);
+            try {
+                if (productPreviewList == null) {
+                    logger.debug("Database error in productByUid");
+                    return CommonResult.failure();
+                }
+            } catch (Exception e) {
+                logger.warn(e.getMessage());
             }
+            return CommonResult.success(productPreviewList);
         }
-        catch(Exception e){
-            logger.warn(e.getMessage());
-        }
-        return CommonResult.success(productPreviewList);
-    }
-
-    /**
-     * 根据商品cate返回preview 完成
-
-     */
-    @GetMapping(value = "/product/category/{cate}")
-    public CommonResult<List<ProductPreview>> productByUid(@PathVariable("cate") String cate){
-        List<ProductPreview> productPreviewList = productService.displayAllProductsByCate(cate);
-        try{
-            if (productPreviewList.isEmpty()){
-                logger.debug("database is empty or fail to connect to database.");
-                return CommonResult.failure();
-            }
-        }
-        catch(Exception e){
-            logger.warn(e.getMessage());
-        }
-        return CommonResult.success(productPreviewList);
     }
 
     /**

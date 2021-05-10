@@ -1,14 +1,17 @@
 package com.example.alwayswin.service.impl;
 
+import com.example.alwayswin.entity.Address;
 import com.example.alwayswin.entity.Order;
 import com.example.alwayswin.mapper.OrderMapper;
 import com.example.alwayswin.service.OrderService;
+import com.example.alwayswin.utils.enums.OrderStatusCode;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +50,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         try {
             BeanUtils.populate(order, param);
+            order.setCreateTime(new Timestamp(System.currentTimeMillis()));
         }catch (Exception e) {
             logger.debug(e.getMessage(), e);
         }
@@ -64,12 +68,12 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.update(order);
     }
 
-    public int deleteOrder(int oid, Map param) {
-        String status = (String)param.get("status");
-        if (status == null)
+    public int deleteOrder(int oid) {
+        Order order = orderMapper.getByOid(oid);
+        if (order == null)
             return 0;
-        // 只有已完成的订单才能删除
-        if (status.equals("received"))
+        // 检查是否可以删除该订单
+        if (OrderStatusCode.isDeletable(order.getStatus()))
             return orderMapper.delete(oid);
         else
             return -1;

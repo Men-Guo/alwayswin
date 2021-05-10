@@ -32,13 +32,11 @@ public class UserController {
     @PostMapping("/register")
     public CommonResult register(@RequestBody Map params) {
         int res = userService.register(params);
-        if (res == -4)
-            return CommonResult.validateFailure();
         if (res == -1) {
             return CommonResult.validateFailure("Duplicate username, plz get a new one");
         }
         else if (res == -2) {
-            return CommonResult.validateFailure("Password doesn't apply to the rule");
+            return CommonResult.validateFailure("Username or Password doesn't apply to the rule");
         }
         else if (res == -3) {
             return CommonResult.validateFailure("Passwords don't match");
@@ -74,7 +72,7 @@ public class UserController {
     }
 
     @ResponseBody
-    @PutMapping("/user/changePassword")
+    @PutMapping("/user/change-password")
     public CommonResult changePassword(@RequestHeader("Authorization") String authHeader,
                                 @RequestBody Map param) {
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
@@ -99,7 +97,7 @@ public class UserController {
     }
 
     @ResponseBody
-    @GetMapping("/user/myInfo")
+    @GetMapping("/user/my-info")
     public CommonResult<UserInfo> getUserInfo(@RequestHeader("Authorization") String authHeader) {
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
@@ -114,7 +112,7 @@ public class UserController {
     }
 
     @ResponseBody
-    @PutMapping("/user/myInfo/update")
+    @PutMapping("/user/my-info/update")
     public CommonResult updateUserInfo(@RequestHeader("Authorization") String authHeader,
                                        @RequestBody Map param){
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));

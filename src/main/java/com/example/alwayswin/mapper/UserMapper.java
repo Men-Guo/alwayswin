@@ -68,7 +68,7 @@ public interface UserMapper {
             "user_info.gender = #{gender}," +
             "user_info.birthday = #{birthday}," +
             "user_info.balance = #{balance}" +
-            "where user_info.uiid = #{uiid}")
+            "where user_info.uid = #{uid}")
     int updateUserInfo(UserInfo userInfo);
 
     // for test
