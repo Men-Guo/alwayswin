@@ -42,7 +42,7 @@ public class WishListController {
     }
     */
 
-    
+
     /**
      * 查询某个uid的list
      */
@@ -80,7 +80,6 @@ public class WishListController {
         return CommonResult.success(num);
     }
 
-    // todo: 为什么不deleteByWid?
     /**
      * 根据UID和PID删除数据
      */

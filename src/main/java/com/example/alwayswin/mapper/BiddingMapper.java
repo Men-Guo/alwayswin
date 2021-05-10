@@ -19,7 +19,9 @@ public interface BiddingMapper {
     @Select("SELECT * from bidding where bid = #{bid}")
     @Results({
             @Result(property = "productPreview",column = "pid",
-                    one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getProductPreviewByPid"))
+                    one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getProductPreviewByPid")),
+            @Result(property = "user",column = "uid",
+                    one=@One(select = "com.example.alwayswin.mapper.UserMapper.getByUid"))
     })
     Bidding getByBid(int bid);
 
@@ -56,7 +58,8 @@ public interface BiddingMapper {
 //            "where bidding.bid=#{bid}")
 //    int update(Bidding bidding);
 
-    // For test
+
+    // 仅限 test
     // production中，bidding不需要delete, 也不给你delete
     @Delete("delete from bidding where bid=#{bid}")
     int delete(int bid);

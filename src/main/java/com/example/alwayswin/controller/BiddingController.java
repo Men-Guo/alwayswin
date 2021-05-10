@@ -3,6 +3,7 @@ package com.example.alwayswin.controller;
 import com.example.alwayswin.entity.Bidding;
 import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.service.BiddingService;
+import com.example.alwayswin.service.OrderService;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
 import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
@@ -26,6 +27,8 @@ public class BiddingController {
 
     @Resource
     private BiddingService biddingService;
+    @Resource
+    private OrderService orderService;
 
     public BiddingController(BiddingService biddingService) {
         this.biddingService = biddingService;
@@ -78,12 +81,26 @@ public class BiddingController {
 
     @ResponseBody
     @PostMapping("/product/bids/create")
-    public CommonResult addBidding(@RequestBody Map param) {
+    public CommonResult addBidding(@RequestHeader("Authorization") String authHeader,
+                                   @RequestBody Map param) {
         int res = biddingService.addBid(param);
-        if (res == 1) {
+        if (res < 0) {
+            if (res == -1)
+                return CommonResult.validateFailure("This product is not in auction!");
+            else if (res == -2)
+                return CommonResult.validateFailure("This auction has ended!");
+            else // res == -3
+                return CommonResult.validateFailure("You need to offer a higher bid");
+        }
+        else if (res > 0){
             logger.info("Add bid successfully");
+            if (res == 2) {  // 竞标成功，创建订单
+                res = orderService.addOrder(param);  // param 中含有了uid, pid, offer
+                logger.info("Create order successfully");
+            }
             return CommonResult.success(res);
-        } else {
+        }
+        else {
             logger.debug("Add bid failed");
             return CommonResult.failure();
         }

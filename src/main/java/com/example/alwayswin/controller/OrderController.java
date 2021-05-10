@@ -72,6 +72,7 @@ public class OrderController {
         }
     }
 
+    // 测试用，实际情况下用户无法自行创建order
     @ResponseBody
     @PostMapping("/order/create")
     CommonResult createOrder(@RequestBody Map param) {

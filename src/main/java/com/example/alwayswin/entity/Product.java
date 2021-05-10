@@ -23,7 +23,7 @@ public class Product {
     private Timestamp endTime;
     private double startPrice;
     private double autoWinPrice;
-    private double reservedPrice;
+    private double reservedPrice;  // start price <= reserved price <= auto win price
     private double minIncrement;
     private boolean isPassed;
     private boolean isCanceled;

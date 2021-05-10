@@ -4,7 +4,9 @@ import com.example.alwayswin.config.WebMvcConfig;
 import com.example.alwayswin.entity.Figure;
 import com.example.alwayswin.mapper.FigureMapper;
 import com.example.alwayswin.service.FigureService;
+import com.example.alwayswin.utils.RandomStringUtil;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -62,9 +64,7 @@ public class FigureServiceImpl implements FigureService {
             // Requiring distinctive name -> random generator
             Date date = new Date();
             String str = simpleDateFormat.format(date);
-            Random random = new Random();
-            int imgRan = (random.nextInt() % (99999 - 10000 + 1)) + 10000;// 获取5位随机数
-
+            String imgRan = RandomStringUtil.createRandomString(5);
             String intervalName = str + imgRan;
             String displayName = intervalName + "_" + fileName;
             fileName = uploadPath + displayName;

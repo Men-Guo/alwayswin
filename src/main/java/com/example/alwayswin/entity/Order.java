@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 
 public class Order {
     private Integer oid;
-    private String number;  // 八位日期 + 五位大写字母数字随机组合
+    private String number;  // 8位大写字母数字随机组合
     private Integer uid;
     private Integer pid;
     private String address;

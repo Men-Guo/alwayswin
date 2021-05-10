@@ -4,6 +4,7 @@ import com.example.alwayswin.entity.Address;
 import com.example.alwayswin.entity.Order;
 import com.example.alwayswin.mapper.OrderMapper;
 import com.example.alwayswin.service.OrderService;
+import com.example.alwayswin.utils.RandomStringUtil;
 import com.example.alwayswin.utils.enums.OrderStatusCode;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
@@ -50,7 +51,9 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         try {
             BeanUtils.populate(order, param);
+            order.setNumber(RandomStringUtil.createRandomString(8));
             order.setCreateTime(new Timestamp(System.currentTimeMillis()));
+            order.setStatus(OrderStatusCode.PLACED.getStatus());
         }catch (Exception e) {
             logger.debug(e.getMessage(), e);
         }
