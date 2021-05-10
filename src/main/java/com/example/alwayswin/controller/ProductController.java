@@ -109,9 +109,9 @@ public class ProductController {
      *  返回所有filter后的商品 完成
      */
     @RequestMapping(value = "/product/{filter}-{sorted}", method = RequestMethod.GET)
-    public CommonResult<List<ProductPreview>> productOverviewFilter(@PathVariable("filter") String filter,
-                                              @PathVariable("sorted") String sorted){
-        List<ProductPreview> productPreviewList = productService.displayAllProductWithFilter(filter,sorted);
+    public CommonResult<List<ProductPreview>> productOverviewFilter(@PathVariable("variable") String variable,
+                                              @PathVariable("order") String order){
+        List<ProductPreview> productPreviewList = productService.displayAllProductWithOrder(variable,order);
         try{
             if (productPreviewList.isEmpty()){
                 logger.debug("database is empty or fail to connect to database.");

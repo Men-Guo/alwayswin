@@ -12,6 +12,13 @@ import java.sql.Timestamp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+//to do
+/*
+* 1.uid重复的pid
+* 2.create time error
+* 3.插入时 uid 不存在
+* 4.插入时 pid 不存在
+* */
 @SpringBootTest
 public class WishListServiceTest {
 
