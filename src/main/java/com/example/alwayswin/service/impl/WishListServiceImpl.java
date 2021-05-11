@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class WishListServiceImpl implements WishListService {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     //引用DAO
     @Autowired
     private WishListMapper wishListMapper;
@@ -31,13 +31,9 @@ public class WishListServiceImpl implements WishListService {
     @Autowired
     private UserMapper userMapper;
 
-    public void setWishListMapper(WishListMapper wishListMapper) {
-        this.wishListMapper = wishListMapper;
-    }
-
     @Override
     public Integer addWishList(WishList wishList){
-        if (checkDuplicate(wishList.getPid(),wishList.getUid()) == 1)
+        if (checkDuplicate(wishList.getUid(),wishList.getPid()) != 0)
         {
             logger.debug("Duplicated pid and uid");
             return 0;
@@ -73,6 +69,7 @@ public class WishListServiceImpl implements WishListService {
     @Override
     public WishList queryWishListByWid(Integer wid) {
         WishList wishList = wishListMapper.selectWid(wid);
+        if (null == wishList) return null;
         wishList.setProductPreview(productMapper.getProductPreviewByPid(wishList.getPid()));
         return wishList;
     }
@@ -95,6 +92,6 @@ public class WishListServiceImpl implements WishListService {
 
     @Override
     public int checkDuplicate(Integer uid, Integer pid) {
-        return wishListMapper.checkDuplicate(uid, pid);
+        return wishListMapper.checkDuplicate(pid, uid);
     }
 }

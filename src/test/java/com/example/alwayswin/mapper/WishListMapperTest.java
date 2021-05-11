@@ -2,8 +2,10 @@ package com.example.alwayswin.mapper;
 
 import com.example.alwayswin.entity.WishList;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.xml.crypto.Data;
 import java.util.Date;
@@ -13,6 +15,7 @@ import java.sql.Timestamp;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
 public class WishListMapperTest {
 
@@ -56,8 +59,41 @@ public class WishListMapperTest {
     }
 
     @Test
+    public void insertWishListWithNoSuchPid(){
+        WishList wishList=new WishList();
+        wishList.setPid(-4);
+        wishList.setUid(58);
+        Date date = new Date();
+        wishList.setCreateTime(new Timestamp(date.getTime()));
+        Integer res = wishListMapper.insertWishList(wishList);
+        assertEquals(0,res);
+    }
+
+    @Test
+    public void insertWishListNoSuchUid(){
+        WishList wishList=new WishList();
+        wishList.setPid(4);
+        wishList.setUid(-58);
+        Date date = new Date();
+        wishList.setCreateTime(new Timestamp(date.getTime()));
+        Integer res = wishListMapper.insertWishList(wishList);
+        assertEquals(0,res);
+    }
+
+    @Test
+    public void insertWishListBothNoExist(){
+        WishList wishList=new WishList();
+        wishList.setPid(-4);
+        wishList.setUid(-58);
+        Date date = new Date();
+        wishList.setCreateTime(new Timestamp(date.getTime()));
+        Integer res = wishListMapper.insertWishList(wishList);
+        assertEquals(1,res);
+    }
+
+    @Test
     public void deleteWishListHappyPath(){
-        assertEquals(1, wishListMapper.deleteWishList(58,4));
+        assertEquals(1, wishListMapper.deleteWishList(2,2));
     }
 
     @Test

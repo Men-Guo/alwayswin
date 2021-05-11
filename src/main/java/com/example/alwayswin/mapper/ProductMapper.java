@@ -50,6 +50,7 @@ public interface ProductMapper {
     @Select("select * from product where pid = #{pid}")
     @Results(id =  "productEntityMap",
             value ={
+            @Result(property = "pid", column = "pid"),
             @Result(property = "productStatus", column = "pid",
                     one = @One(select = "com.example.alwayswin.mapper.ProductMapper.getProductStatusByPid")),
             @Result(property = "figures", column = "pid",

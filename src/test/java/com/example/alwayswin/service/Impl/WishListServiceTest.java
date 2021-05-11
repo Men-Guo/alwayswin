@@ -1,48 +1,45 @@
 package com.example.alwayswin.service.Impl;
 
 import com.example.alwayswin.entity.WishList;
-import com.example.alwayswin.mapper.WishListMapper;
+import com.example.alwayswin.service.WishListService;
 import com.example.alwayswin.service.impl.WishListServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.client.RestTemplate;
-
-import java.sql.Timestamp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-//to do
-/*
-* 1.uid重复的pid
-* 2.create time error
-* 3.插入时 uid 不存在
-* 4.插入时 pid 不存在
-* */
 @SpringBootTest
 public class WishListServiceTest {
 
     @Autowired
-    private WishListServiceImpl wishListService = new WishListServiceImpl();
-    @Autowired
-    private WishListMapper wishListMapper;
+    private final WishListService wishListService = new WishListServiceImpl();
 
     @Test
     public void happyPathAddingWishList(){
         WishList wishList = new WishList();
-        wishList.setUid(1);
-        wishList.setPid(8);
+        wishList.setUid(3);
+        wishList.setPid(7);
         assertEquals(1,wishListService.addWishList(wishList));
+        wishList.setUid(5);
+        wishList.setPid(7);
+        assertEquals(1, wishListService.addWishList(wishList));
+    }
+
+    @Test
+    public void happyPathQueryWid(){
+        assertEquals(3, wishListService.queryWishListByWid(3).getWid());
+    }
+
+    @Test
+    public void NoSuchWid(){
+        assertNull(wishListService.queryWishListByWid(-3));
     }
 
     @Test
     public void happyPathQueryWishListWithUid(){
-        assertEquals(4,wishListService.queryWishList(1).size());
-    }
-
-    @Test
-    public void printOutHappyPathQueryWishListWithUid(){
-        System.out.println(wishListService.queryWishList(1));
+        assertEquals(3,wishListService.queryWishList(1).size());
     }
 
     @Test
@@ -50,13 +47,27 @@ public class WishListServiceTest {
         assertEquals(0,wishListService.queryWishList(-1).size());
     }
 
+    @Test
+    public void addWishListNoSuchUid(){
+        WishList wishList = new WishList();
+        wishList.setUid(-1);
+        wishList.setPid(3);
+        assertEquals(0,wishListService.addWishList(wishList));
+    }
 
+    @Test
+    public void addWishListNoSuchPid(){
+        WishList wishList = new WishList();
+        wishList.setUid(1);
+        wishList.setPid(-3);
+        assertEquals(0,wishListService.addWishList(wishList));
+    }
 
     @Test
     public void addDuplicatedWishList(){
         WishList wishList = new WishList();
-        wishList.setUid(1);
-        wishList.setPid(3);
+        wishList.setUid(2);
+        wishList.setPid(2);
         assertEquals(0,wishListService.addWishList(wishList));
     }
 
@@ -86,7 +97,7 @@ public class WishListServiceTest {
 
     @Test
     public void happyPathDeleteWishList(){
-        assertEquals(1,wishListService.deleteWishList(1,3));
+        assertEquals(1,wishListService.deleteWishList(3,8));
     }
 
     @Test
@@ -99,7 +110,7 @@ public class WishListServiceTest {
 
     @Test
     public void happyPathDeleteWishListWithWid(){
-        assertEquals(1,wishListService.deleteWishList(31));
+        assertEquals(1,wishListService.deleteWishList(66));
     }
 
     @Test
@@ -108,4 +119,9 @@ public class WishListServiceTest {
         assertEquals(0,wishListService.deleteWishList(22));
     }
 
+    @Test
+    public void TestDuplicate(){
+        assertEquals(1, wishListService.checkDuplicate(1,6));
+        assertEquals(0,wishListService.checkDuplicate(0,-1));
+    }
 }
