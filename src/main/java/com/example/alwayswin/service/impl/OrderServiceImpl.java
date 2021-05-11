@@ -35,8 +35,9 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     UserMapper userMapper;
 
-    public OrderServiceImpl(OrderMapper orderMapper) {
+    public OrderServiceImpl(OrderMapper orderMapper, UserMapper userMapper) {
         this.orderMapper = orderMapper;
+        this.userMapper = userMapper;
     }
 
     public Order getOrderByOid(int oid) {
@@ -97,7 +98,7 @@ public class OrderServiceImpl implements OrderService {
                     return -3;  // buyer 不允许进行其他操作了
             }
             // 操作者是卖家
-            else if (uid == order.getProduct().getUid()) {
+            else if (uid == oldOrder.getProduct().getUid()) {
                 // paid -> shipped
                 if (oldOrder.getStatus().equals(OrderStatusCode.PAID.getStatus())) {
                     if (order.getStatus().equals(OrderStatusCode.SHIPPED.getStatus())) {
@@ -107,6 +108,10 @@ public class OrderServiceImpl implements OrderService {
                 }
                 else
                     return -3;  // seller 不允许进行其他操作了
+            }
+            // 操作者既不是买家也不是卖家
+            else {
+                return -3;  // permission denied
             }
             order.setOid(oid);
         }catch (Exception e) {

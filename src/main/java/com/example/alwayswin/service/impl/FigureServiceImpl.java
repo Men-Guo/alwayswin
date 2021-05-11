@@ -37,6 +37,7 @@ public class FigureServiceImpl implements FigureService {
     }
 
 
+    //todo: 还没写test
     public String upload(MultipartFile file) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 

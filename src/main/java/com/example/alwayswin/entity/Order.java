@@ -31,6 +31,7 @@ public class Order {
         payment = 0.0;
         createTime = new Timestamp(0);
         status = "";
+        product = new Product();
     }
 
         public Order(Integer oid,String number, Integer uid, Integer pid, String address,
