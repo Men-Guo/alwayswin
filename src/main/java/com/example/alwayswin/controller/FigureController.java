@@ -55,8 +55,6 @@ public class FigureController {
     @ResponseBody
     @GetMapping("/product/figure/{fid}")
     CommonResult<Figure> getByFid(@PathVariable int fid){
-        if (fid <= 0)
-            return CommonResult.validateFailure();
         Figure figure = figureService.getFigureByFid(fid);
         if (figure == null) {
             return CommonResult.validateFailure();
@@ -67,9 +65,6 @@ public class FigureController {
     @ResponseBody
     @GetMapping("/product/{pid}/figures")
     CommonResult<List<Figure>> getByPid(@PathVariable int pid) {
-        if (pid <= 0)
-            return CommonResult.validateFailure();
-
         List<Figure> figureList = figureService.getFiguresByPid(pid);
         if (figureList == null) {
             return CommonResult.failure();
@@ -95,8 +90,6 @@ public class FigureController {
     @ResponseBody
     @PutMapping("/product/figure/update/{fid}")
     CommonResult<Integer> updateFigure(@RequestBody Map param, @PathVariable int fid){
-        if (fid < 0)
-            return CommonResult.validateFailure();
         int res = figureService.updateFigure(fid, param);
         if (res == 1) {
             logger.info("Edit figure successfully");
@@ -111,9 +104,6 @@ public class FigureController {
     @ResponseBody
     @DeleteMapping("/product/figure/delete/{fid}")
     CommonResult<Integer> deleteFigure(@PathVariable int fid){
-        if (fid < 0)
-            return CommonResult.validateFailure();
-
         int res = figureService.deleteFigure(fid);
         if (res == 1) {
             logger.info("Delete figure successfully");

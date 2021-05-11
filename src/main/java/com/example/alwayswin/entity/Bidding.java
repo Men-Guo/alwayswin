@@ -24,6 +24,8 @@ public class Bidding {
         pid = 0;
         offer = 0.0;
         createTime = new Timestamp(0);
+        productPreview = new ProductPreview();
+        user = new User();
     }
 
     public Bidding(Integer bid, Integer uid, Integer pid, double offer, Timestamp createTime) {

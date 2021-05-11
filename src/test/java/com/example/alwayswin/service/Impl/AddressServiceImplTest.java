@@ -4,6 +4,7 @@ import com.example.alwayswin.entity.Address;
 import com.example.alwayswin.mapper.AddressMapper;
 import com.example.alwayswin.service.AddressService;
 import com.example.alwayswin.service.impl.AddressServiceImpl;
+import org.apache.commons.collections.map.HashedMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -86,14 +87,50 @@ class AddressServiceImplTest {
         assertEquals(1, addressService.addAddress(param));
     }
 
+    @Test
+    public void exceptionWithAddAddress() {
+        when(addressMapper.add(any())).thenReturn(0);
+
+        Map<String, String> param = new HashedMap();
+        param.put("uid", null);
+        param.put("name", null);
+        param.put("phone", "911");
+        param.put("location", "NYPD");
+        param.put("state", "NYPD");
+        param.put("zipCode", "111111");
+        assertEquals(0, addressService.addAddress(param));
+    }
+
     //////////      updateAddress        /////////////////
+    @Test
     public void happyPathWithUpdateAddress() {
         when(addressMapper.update(any(Address.class))).thenReturn(1);
 
         Map<String, String> param = new HashMap<>();
-        param.put("name", "xiaoming");
+        param.put("aid", null);
+        param.put("uid", null);
+        param.put("name", "Arthur's grandfather");
+        param.put("phone", "911");
         param.put("location", "NYPD");
-        addressService.updateAddress(1, param);
+        param.put("state", "NYPD");
+        param.put("zipCode", "111111");
+        assertEquals(1, addressService.updateAddress(2, param));
+    }
+
+
+    @Test
+    public void exceptionWithUpdateAddress() {
+        when(addressMapper.update(any())).thenReturn(0);
+
+        Map<String, String> param = new HashedMap();
+        param.put("uid", "1");
+        param.put("name", "Arthur's grandfather");
+        param.put("phone", "911");
+        param.put("location", "NYPD");
+        param.put("state", "NYPD");
+        param.put("zipCode", "111111");
+
+        assertEquals(0, addressService.updateAddress(2, param));
     }
 
 

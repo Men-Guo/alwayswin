@@ -214,6 +214,12 @@ public class UserServiceImpl implements UserService {
         UserInfo userInfo = new UserInfo();
         try {
             BeanUtils.populate(userInfo, param);
+            // 如果涉及到充钱扣钱的话
+            int amount = 0;
+            if (param.containsKey("amount")) {
+                amount = (int) param.get("amount");  // amount 会有正负
+                userInfo.setBalance(userInfo.getBalance() + amount);
+            }
             userInfo.setUid(uid);
         }catch (Exception e) {
             logger.debug(e.getMessage(), e);

@@ -28,7 +28,7 @@ class AddressMapperTest {
 
     @Test
     public void addressNotFoundWithGetByAid() {
-        Address address = addressMapper.getByAid(0);
+        Address address = addressMapper.getByAid(-1);
         assertNull(address);
     }
 
@@ -76,12 +76,12 @@ class AddressMapperTest {
     @Test
     public void happyPathWithEditAddress() {
         Address address = addressMapper.getByAid(1);
-        address.setPhone("110");
+        address.setZipCode("00000");
 
         assertEquals(1, addressMapper.update(address));
 
         address = addressMapper.getByAid(1);
-        assertEquals("110", address.getPhone());
+        assertEquals("00000", address.getZipCode());
     }
 
     @Test
@@ -98,6 +98,6 @@ class AddressMapperTest {
 
     @Test
     public void exceptionWithDeleteAddress() {
-        assertEquals(0, addressMapper.delete(2000));
+        assertEquals(0, addressMapper.delete(-1));
     }
 }

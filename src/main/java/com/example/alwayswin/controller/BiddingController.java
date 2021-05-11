@@ -38,8 +38,6 @@ public class BiddingController {
     @ResponseBody
     @GetMapping("/product/bids/{bid}")
     public CommonResult<Bidding> getByBid(@PathVariable int bid){
-        if (bid <= 0)
-            return CommonResult.validateFailure();
         Bidding bidding = biddingService.getByBid(bid);
         if (bidding == null) {
             return CommonResult.validateFailure();
@@ -69,8 +67,6 @@ public class BiddingController {
     @ResponseBody
     @GetMapping("/product/{pid}/bids")
     public CommonResult<List<Bidding>> getByPid(@PathVariable int pid) {
-        if (pid <= 0)
-            return CommonResult.validateFailure();
         List<Bidding> biddingList = biddingService.getBidsByPid(pid);
         if (biddingList == null) {
             return CommonResult.failure();
@@ -89,8 +85,10 @@ public class BiddingController {
                 return CommonResult.validateFailure("This product is not in auction!");
             else if (res == -2)
                 return CommonResult.validateFailure("This auction has ended!");
-            else // res == -3
-                return CommonResult.validateFailure("You need to offer a higher bid");
+            else if (res == -3)
+                return CommonResult.validateFailure("You can't bid for your own product!");
+            else // res == -4
+                return CommonResult.failure("You need to offer a higher bid");
         }
         else if (res > 0){
             logger.info("Add bid successfully");

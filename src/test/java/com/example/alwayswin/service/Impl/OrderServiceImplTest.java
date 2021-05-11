@@ -88,12 +88,7 @@ class OrderServiceImplTest {
 
     //////////      updateOrder        /////////////////
     public void happyPathWithUpdateOrder() {
-        when(orderMapper.update(any(Order.class))).thenReturn(1);
 
-        Map<String, String> param = new HashMap<>();
-        param.put("name", "xiaoming");
-        param.put("location", "NYPD");
-        orderService.updateOrder(1, param);
     }
 
 

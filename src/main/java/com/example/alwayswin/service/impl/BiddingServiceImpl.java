@@ -5,6 +5,7 @@ import com.example.alwayswin.entity.Product;
 import com.example.alwayswin.entity.ProductStatus;
 import com.example.alwayswin.mapper.BiddingMapper;
 import com.example.alwayswin.mapper.ProductMapper;
+import com.example.alwayswin.mapper.UserMapper;
 import com.example.alwayswin.service.BiddingService;
 import com.example.alwayswin.utils.enums.ProductStatusCode;
 import org.apache.commons.beanutils.BeanUtils;
@@ -81,9 +82,13 @@ public class BiddingServiceImpl implements BiddingService {
             // 获取product info
             Product product = productMapper.getByPid(pid);
 
+            // 你不能竞标自己的拍品
+            if (bidding.getUid().equals(product.getUid()))
+                return -3;
+
             // 检查出价和current price + 最小加价
             if(bidding.getOffer() < productStatus.getPrice() + product.getMinIncrement())
-                return -3;
+                return -4;
 
             // 到这一步时，已经保证该商品处于拍卖状态，当前时间没超过ddl，出价有效
             // 新建bid 成功，写入db
@@ -106,23 +111,27 @@ public class BiddingServiceImpl implements BiddingService {
                 {
                     productStatus.setStatus(ProductStatusCode.EXTENDED_1.getStatus());  // bidding -> extended1
                     productStatus.setEndTime(new Timestamp(
-                            System.currentTimeMillis() + 10 * 60 * 1000));  // extend ddl to 10 min later
+                            productStatus.getEndTime().getTime() + 10 * 60 * 1000));  // extend ddl to 10 min later
                 }
             }
             // status == extended1
             else if (productStatus.getStatus().equals(ProductStatusCode.EXTENDED_1.getStatus())) {
-                productStatus.setStatus(ProductStatusCode.EXTENDED_2.getStatus());  // extended1 -> extended2
-                productStatus.setEndTime(new Timestamp(
-                        System.currentTimeMillis() + 5 * 60 * 1000));  // extend ddl to 5 min later
+                if (productStatus.getEndTime().getTime() <= currentTimeStamp.getTime() + 60 * 1000) {
+                    productStatus.setStatus(ProductStatusCode.EXTENDED_2.getStatus());  // extended1 -> extended2
+                    productStatus.setEndTime(new Timestamp(
+                            productStatus.getEndTime().getTime() + 5 * 60 * 1000));  // extend ddl to 5 min later
+                }
             }
             // status == extended2
             else if (productStatus.getStatus().equals(ProductStatusCode.EXTENDED_2.getStatus())) {
-                productStatus.setStatus(ProductStatusCode.EXTENDED_3.getStatus());  // extended2 -> extended3
-                productStatus.setEndTime(new Timestamp(
-                        System.currentTimeMillis() + 1 * 60 * 1000));  // extend ddl to 1 min later
+                if (productStatus.getEndTime().getTime() <= currentTimeStamp.getTime() + 60 * 1000) {
+                    productStatus.setStatus(ProductStatusCode.EXTENDED_3.getStatus());  // extended2 -> extended3
+                    productStatus.setEndTime(new Timestamp(
+                            productStatus.getEndTime().getTime() + 1 * 60 * 1000));  // extend ddl to 1 min later
+                }
             }
             else {  // status == extended3
-                productStatus.setStatus(ProductStatusCode.SUCCESS.getStatus());  // 成功
+                productStatus.setStatus(ProductStatusCode.SUCCESS.getStatus());  // 即拍即中
             }
 
             // 将product status的更新写入db
