@@ -321,28 +321,40 @@ public class UserServiceImplTest {
 
     @Test
     public void happyPathWithAddBalanceInUserInfo() {
-        when(userMapper.updateUserInfo(any(UserInfo.class))).thenReturn(1);
+        when(userMapper.updateUserBalance(any(UserInfo.class))).thenReturn(1);
 
         Map<String, String> param = new HashMap<>();
-        param.put("uid", "1");
-        param.put("gender", "male");
-        param.put("email", "hahaha@gmail.com");
         param.put("balance", "100");
         param.put("amount", "1000");
 
-        assertEquals(1, userService.updateUserInfo(1, param));
+        assertEquals(1, userService.updateUserBalance(1, param));
     }
 
     @Test
     public void happyPathWithReduceBalanceInUserInfo() {
-        when(userMapper.updateUserInfo(any(UserInfo.class))).thenReturn(1);
+        when(userMapper.updateUserBalance(any(UserInfo.class))).thenReturn(1);
 
         Map<String, String> param = new HashMap<>();
-        param.put("uid", "1");
-        param.put("gender", "male");
-        param.put("email", "hahaha@gmail.com");
-        param.put("balance", "100");
+        param.put("balance", "1000");
         param.put("amount", "-1000");
-        assertEquals(1, userService.updateUserInfo(1, param));
+        assertEquals(1, userService.updateUserBalance(1, param));
+    }
+
+    @Test
+    public void noBalanceParamsWithUpdateBalance() {
+        when(userMapper.updateUserBalance(any(UserInfo.class))).thenReturn(1);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("amount", "-1000");
+        assertEquals(-1, userService.updateUserBalance(1, param));
+    }
+
+    @Test
+    public void noAmountParamsWithUpdateBalance() {
+        when(userMapper.updateUserBalance(any(UserInfo.class))).thenReturn(1);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("balance", "1000");
+        assertEquals(-1, userService.updateUserBalance(1, param));
     }
 }

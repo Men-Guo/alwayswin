@@ -66,10 +66,14 @@ public interface UserMapper {
             "user_info.phone = #{phone}," +
             "user_info.email = #{email}," +
             "user_info.gender = #{gender}," +
-            "user_info.birthday = #{birthday}," +
-            "user_info.balance = #{balance}" +
+            "user_info.birthday = #{birthday} " +
             "where user_info.uid = #{uid}")
     int updateUserInfo(UserInfo userInfo);
+
+
+    @Update(("update user_info set user_info.balance = #{balance} where user_info.uid = #{uid}"))
+    int updateUserBalance(UserInfo userInfo);
+
 
     // for test
     @Delete("delete from user_info where uid = #{uid}")

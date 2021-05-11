@@ -20,4 +20,6 @@ public interface UserService {
     UserInfo getUserInfo(Integer uid);
 
     int updateUserInfo(int uid, Map param);
+
+    int updateUserBalance(int uid, Map param);
 }

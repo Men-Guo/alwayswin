@@ -163,17 +163,36 @@ class UserMapperTest {
         UserInfo userInfo = userMapper.getUserInfoByUid(1);
         assertNotNull(userInfo);
 
-        double originalBalance = userInfo.getBalance();
+        String originalGender = userInfo.getGender();
 
         // update
-        userInfo.setBalance(1000);
+        userInfo.setGender("unknown");
         assertEquals(userMapper.updateUserInfo(userInfo), 1);
         // verify change
         userInfo = userMapper.getUserInfoByUid(1);
-        assertEquals(userInfo.getBalance(), 1000);
+        assertEquals("unknown", userInfo.getGender());
+
+        // rollback
+        userInfo.setGender(originalGender);
+        assertEquals(userMapper.updateUserInfo(userInfo), 1);
+    }
+
+    @Test
+    public void happyPathWithUpdateBalance() {
+        UserInfo userInfo = userMapper.getUserInfoByUid(1);
+        assertNotNull(userInfo);
+
+        double originalBalance = userInfo.getBalance();
+
+        // update
+        userInfo.setBalance(5.5);
+        assertEquals(userMapper.updateUserBalance(userInfo), 1);
+        // verify change
+        userInfo = userMapper.getUserInfoByUid(1);
+        assertEquals(userInfo.getBalance(), 5.5);
 
         // rollback
         userInfo.setBalance(originalBalance);
-        assertEquals(userMapper.updateUserInfo(userInfo), 1);
+        assertEquals(userMapper.updateUserBalance(userInfo), 1);
     }
 }

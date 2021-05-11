@@ -215,18 +215,34 @@ public class UserServiceImpl implements UserService {
         UserInfo userInfo = new UserInfo();
         try {
             BeanUtils.populate(userInfo, param);
-            // 如果涉及到充钱扣钱的话
-            int amount = 0;
-            if (param.containsKey("amount")) {
-                amount = Integer.parseInt((String) param.get("amount"));  // amount 会有正负
-                userInfo.setBalance(userInfo.getBalance() + amount);
-            }
             userInfo.setUid(uid);
         }catch (Exception e) {
             logger.debug(e.getMessage(), e);
         }
         return userMapper.updateUserInfo(userInfo);
     }
+
+    // 充值或者扣钱
+    public int updateUserBalance(int uid, Map param) {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUid(uid);
+
+        int amount = 0, balance = 0;
+        if (param.containsKey("balance")) {
+            balance = Integer.parseInt((String) param.get("balance"));
+        }
+        else
+            return -1;
+        if (param.containsKey("amount")) {
+            amount = Integer.parseInt((String) param.get("amount"));  // amount 会有正负
+            userInfo.setBalance(balance + amount);
+        }
+        else
+            return -1;
+        return userMapper.updateUserBalance(userInfo);
+    }
+
+
 
     // 加入用户默认信息
     private int addUserInfo(int uid) {

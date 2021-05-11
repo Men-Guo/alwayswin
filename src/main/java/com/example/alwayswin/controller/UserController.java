@@ -127,4 +127,23 @@ public class UserController {
         }
     }
 
+    // todo: 现在是个假接口，以后接入支付模块
+    @ResponseBody
+    @PutMapping("/user/add-funds")
+    public CommonResult updateBalance(@RequestHeader("Authorization") String authHeader,
+                                       @RequestBody Map param){
+        Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
+        if (claims == null)
+            return CommonResult.unauthorized();
+        else {
+            int uid = Integer.valueOf(claims.getAudience());
+            int res = userService.updateUserBalance(uid, param);  // {balance, amount}
+            if (res == 1)
+                return CommonResult.success(res);
+            else if (res == -1)
+                return CommonResult.failure("Parameters balance and amount needed!");
+            else return CommonResult.failure();
+        }
+    }
+
 }
