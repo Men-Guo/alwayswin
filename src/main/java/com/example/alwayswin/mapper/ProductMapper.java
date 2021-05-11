@@ -81,13 +81,13 @@ public interface ProductMapper {
             "product.cate_3 = #{cate3}," +
             "product.start_time = #{startTime}," +
             "product.end_time = #{endTime}," +
-            "product.start_price = #{startPrice}" +
+            "product.start_price = #{startPrice}," +
             "product.auto_win_price = #{autoWinPrice}," +
             "product.reserved_price = #{reservedPrice}," +
             "product.min_increment = #{minIncrement}," +
             "product.is_passed = #{isPassed}, " +
             "product.is_canceled = #{isCanceled}" +
-            "where product.pid = #{pid}")
+            " where product.pid = #{pid}")
     int update(Product product);
     
     /////////          Product Status          //////////////
@@ -98,7 +98,7 @@ public interface ProductMapper {
     @Options(useGeneratedKeys = true,keyProperty = "psid")
     @Insert("insert into " +
             "product_status(pid, price, status, end_time) " +
-            "values#{pid}, #{price}, #{status}, #{endTime})")
+            "values(#{pid}, #{price}, #{status}, #{endTime})")
     int addProductStatus(ProductStatus productStatus);
 
     @Select("select count(*) from product_status where pid =#{pid}")
@@ -121,6 +121,6 @@ public interface ProductMapper {
 
 
     /////////    仅限测试时使用       //////////////
-    @Select("DELETE FROM product WHERE pid = #{pid}")
+    @Delete("DELETE FROM product WHERE pid = #{pid}")
     int deleteProduct(int pid);
 }

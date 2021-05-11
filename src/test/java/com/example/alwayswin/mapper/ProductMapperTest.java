@@ -2,10 +2,12 @@ package com.example.alwayswin.mapper;
 
 import com.example.alwayswin.entity.Product;
 import com.example.alwayswin.entity.ProductPreview;
+import com.example.alwayswin.entity.ProductStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -98,5 +100,52 @@ public class ProductMapperTest {
         assertEquals(1,productMapper.checkDuplicateProductStatus(1));
     }
 
+    @Test
+    public void deletePid(){
+        assertEquals(1,productMapper.deleteProductStatus(26));
+        assertEquals(1,productMapper.deleteProduct(26));
+    }
 
+    @Test
+    public void insertProductAndProductStatus(){
+        Product product = new Product();
+        product.setUid(2);
+        product.setTitle("test2");
+        product.setCate1("cell phone");
+        product.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        product.setEndTime(new Timestamp(System.currentTimeMillis()));
+        product.setStartTime(new Timestamp(System.currentTimeMillis()));
+        product.setPassed(true);
+        product.setCanceled(false);
+        assertEquals(1, productMapper.add(product));
+
+        ProductStatus productStatus = new ProductStatus();
+        productStatus.setPid(product.getPid());
+        productStatus.setPrice(product.getStartPrice());
+        productStatus.setStatus("pending");
+        productStatus.setEndTime(product.getEndTime());
+        assertEquals(1, productMapper.addProductStatus(productStatus));
+    }
+
+    @Test
+    public void update(){
+        ProductStatus productStatus = new ProductStatus();
+        productStatus.setPid(24);
+        productStatus.setPrice(300);
+        productStatus.setStatus("bidding");
+        productStatus.setEndTime(new Timestamp(System.currentTimeMillis()));
+        assertEquals(1, productMapper.updateProductStatus(productStatus));
+
+        Product product = new Product();
+        product.setPid(24);
+        product.setUid(2);
+        product.setTitle("test333");
+        product.setCate1("cell phone");
+        product.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        product.setEndTime(new Timestamp(System.currentTimeMillis()));
+        product.setStartTime(new Timestamp(System.currentTimeMillis()));
+        product.setPassed(true);
+        product.setCanceled(false);
+        assertEquals(1, productMapper.update(product));
+    }
 }
