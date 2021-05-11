@@ -6,7 +6,6 @@ import com.example.alwayswin.mapper.FigureMapper;
 import com.example.alwayswin.service.FigureService;
 import com.example.alwayswin.utils.RandomStringUtil;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 
 @Service
@@ -36,8 +34,6 @@ public class FigureServiceImpl implements FigureService {
         this.figureMapper = figureMapper;
     }
 
-
-    //todo: 还没写test
     public String upload(MultipartFile file) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
@@ -91,7 +87,7 @@ public class FigureServiceImpl implements FigureService {
     public List<Figure> getFiguresByPid(int pid) {
         List<Figure> figureList = figureMapper.getByPid(pid);
         // 只有一张图片，默认为封面
-        if (figureList.size() == 1)
+        if (figureList != null && figureList.size() == 1)
             figureList.get(0).setThumbnail(true);
         return figureList;
     }

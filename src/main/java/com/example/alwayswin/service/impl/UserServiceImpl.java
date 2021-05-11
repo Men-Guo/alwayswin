@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
     private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Resource
-    private PasswordEncoder passwordEncoder;
+    public PasswordEncoder passwordEncoder;
 
     @Resource
     private UserMapper userMapper;
@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
 //        return JwtUtils.generateToken(userMapper.getByUsername(user.getUsername()));
 //    }
 
-    // for test
+    // for testf
     public String login(Map param) {
         String username = (String)param.get("username");
         String password = (String)param.get("password");
@@ -188,18 +188,19 @@ public class UserServiceImpl implements UserService {
         if (password.length() < 6 || password.length() > 20 )
             return false;
         else {
-            int digitCnt = 0, letterCnt = 0, otherCnt = 0;
+            int digitCnt = 0, letterCnt = 0, underlineCnt = 0;
             for (char c : password.toCharArray()) {
                 if (Character.isDigit(c))
                     digitCnt++;
                 else if (Character.isLetter(c))
                     letterCnt++;
-                else if (c != '_') {
-                    otherCnt++;
-                    break;
+                else if (c == '_') {
+                    underlineCnt++;
                 }
+                else
+                    return false;
             }
-            return digitCnt > 0 && letterCnt > 0 && otherCnt == 0;
+            return  digitCnt > 0 && letterCnt > 0 && underlineCnt >= 0;
         }
     }
 
@@ -217,7 +218,7 @@ public class UserServiceImpl implements UserService {
             // 如果涉及到充钱扣钱的话
             int amount = 0;
             if (param.containsKey("amount")) {
-                amount = (int) param.get("amount");  // amount 会有正负
+                amount = Integer.parseInt((String) param.get("amount"));  // amount 会有正负
                 userInfo.setBalance(userInfo.getBalance() + amount);
             }
             userInfo.setUid(uid);
