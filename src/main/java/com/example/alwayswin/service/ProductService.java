@@ -71,13 +71,6 @@ public interface ProductService {
     List<ProductPreview> displayProductsByCateAndSorted(String cate, String column, String ordering);
 
     /**
-     * 删除某个商品的当前状态
-     * @param pid
-     * @return
-     */
-    Integer deleteProductStatusService(Integer pid);
-
-    /**
      * 更新某个商品当前状态
      * @param productStatus
      * @return
@@ -85,11 +78,9 @@ public interface ProductService {
     Integer updateProductStatusService(ProductStatus productStatus);
 
     /**
-     * 添加productstatus
-     * @param productStatus
-     * @return
+     * 废弃
      */
-    Integer addProductStatusService(ProductStatus productStatus);
+    //Integer addProductStatusService(ProductStatus productStatus);
 
     ProductStatus displayProductStatus(Integer pid);
 

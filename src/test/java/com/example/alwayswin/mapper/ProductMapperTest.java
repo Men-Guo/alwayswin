@@ -107,6 +107,19 @@ public class ProductMapperTest {
     }
 
     @Test
+    public void insertProductOnly() {
+        Product product = new Product();
+        product.setUid(2);
+        product.setTitle("test2");
+        product.setCate1("cell phone");
+        product.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        product.setEndTime(new Timestamp(System.currentTimeMillis()));
+        product.setStartTime(new Timestamp(System.currentTimeMillis()));
+        product.setPassed(true);
+        product.setCanceled(false);
+        assertEquals(1, productMapper.add(product));
+    }
+    @Test
     public void insertProductAndProductStatus(){
         Product product = new Product();
         product.setUid(2);

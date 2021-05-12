@@ -49,10 +49,7 @@ public class ProductController {
     @PostMapping(value = "/product/cancel/{pid}")
     public CommonResult<Object> cancelProduct(@PathVariable("pid") int pid){
         try{
-            if (productService.deleteProductStatusService(pid)!=1){
-                throw new Exception("Delete Product Status error.");
-            }
-            if (productService.cancelProduct(pid)!=1){
+            if (null ==productService.cancelProduct(pid)){
                 throw new Exception("Delete Product error");
             }
             return CommonResult.success(productService.displayProductDetail(pid));

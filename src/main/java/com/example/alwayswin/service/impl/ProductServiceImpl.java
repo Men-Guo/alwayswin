@@ -1,9 +1,9 @@
 package com.example.alwayswin.service.impl;
 
-import com.example.alwayswin.entity.Product;
-import com.example.alwayswin.entity.ProductPreview;
-import com.example.alwayswin.entity.ProductStatus;
+import com.example.alwayswin.entity.*;
+import com.example.alwayswin.mapper.FigureMapper;
 import com.example.alwayswin.mapper.ProductMapper;
+import com.example.alwayswin.mapper.UserMapper;
 import com.example.alwayswin.service.ProductService;
 import com.example.alwayswin.utils.enums.ProductCateCode;
 import com.example.alwayswin.utils.enums.ProductStatusCode;
@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -25,6 +25,11 @@ public class ProductServiceImpl implements ProductService {
     private ProductMapper productMapper;
 
 
+    @Autowired
+    private FigureMapper figureMapper;
+
+    @Autowired
+    private UserMapper userMapper;
     /**
      * 返回一个商品类 完成
      */
@@ -34,22 +39,39 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * 删除 完成
+     * 取消 完成
      */
+    @Transactional
     @Override
     public Integer cancelProduct(Integer pid) {
         try{
-            Product product = productMapper.getByPid(pid);
-            if (product == null){
+            Product product = productMapper.getByPidWithStatusAndFigure(pid);
+            if ( null == product){
                 logger.debug("No product with the pid =" + pid);
                 return null;
             }
-            else if (product.isCanceled()) {
+
+            if (product.isCanceled()) {
                 logger.debug("The product already canceled.");
                 return null;
             }
+            if (!ProductStatusCode.isCancelable(product.getProductStatus().getStatus())){
+                logger.debug("The product is not cancelable.");
+                return null;
+            }
+            ProductStatus productStatus = product.getProductStatus();
+            if (null == productStatus){
+                logger.debug("No product stated, must have some error here.");
+                return null;
+            }
             product.setCanceled(true);
-            return productMapper.update(product);
+            productStatus.setStatus("canceled");
+            if ((productMapper.updateProductStatus(productStatus)==1)
+                    && (productMapper.update(product)==1)){
+                return 1;
+            }else{
+                throw new Exception("Can write into database.");
+            }
         }catch (Exception e){
             logger.warn(e.getMessage());
         }
@@ -63,8 +85,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Integer updateProduct(Product product) {
         try{
-            if (productMapper.checkProduct(product.getPid())==0){
+            Product oldProduct = productMapper.getByPid(product.getPid());
+            if (null == oldProduct){
                 logger.debug("The product doesn't exist.");
+                return null;
+            }
+            if (!ProductCateCode.contains(product.getCate1())){
+                logger.debug("The product cate is illegal.");
                 return null;
             }
             return productMapper.update(product);
@@ -81,6 +108,23 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Integer createProduct(Product product) {
         try{
+            if (product.getAutoWinPrice()==0){
+                logger.debug("The AutoWin price is 0, can't create the product.");
+                return null;
+            }
+            if (!ProductCateCode.contains(product.getCate1())){
+                logger.debug("Cate is illegal.");
+                return null;
+            }
+            product.setCreateTime(new Timestamp(System.currentTimeMillis()));
+            if (product.getStartTime().compareTo(new Timestamp(System.currentTimeMillis()))==0){
+                product.setStartTime(new Timestamp(System.currentTimeMillis()+24*3600*1000L));
+            }
+            product.setPassed(false);
+            product.setCanceled(false);
+            if (product.getEndTime().compareTo(product.getStartTime())==0){
+               product.setEndTime(new Timestamp(System.currentTimeMillis()+7*24*3600*1000L));
+            }
             int num = productMapper.add(product);
             if (num == 0) throw new Exception("Product add failed");
             ProductStatus productStatus = new ProductStatus();
@@ -90,6 +134,13 @@ public class ProductServiceImpl implements ProductService {
             productStatus.setEndTime(product.getEndTime());
             num = productMapper.addProductStatus(productStatus);
             if (num==0) throw new Exception("Failed to add product status.");
+            Figure figure = new Figure();
+            figure.setPid(product.getPid());
+            figure.setThumbnail(true);
+            figure.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
+            figure.setUrl("https://alwayswin-figures.s3.amazonaws.com/icon/default-icon.png");
+            num = figureMapper.add(figure);
+            if (num==0) throw new Exception("Failed to add product figure. Gonna reroll.");
             return num;
         }catch(Exception e){
             logger.warn(e.getMessage());
@@ -134,6 +185,11 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<ProductPreview> displayAllProductsByUid(Integer uid) {
+        User user = userMapper.getByUid(uid);
+        if (null == user){
+            logger.debug("User is not exist.");
+            return null;
+        }
         return productMapper.getByUid(uid);
     }
 
@@ -181,35 +237,6 @@ public class ProductServiceImpl implements ProductService {
 
 
     /**
-     * 删除ProductStatus 完成
-     * 'pending','waiting','bidding','extended','broughtIn','success','canceled'
-     */
-    @Override
-    public Integer deleteProductStatusService(Integer pid) {
-        ProductServiceImpl productService = new ProductServiceImpl();
-        ProductStatus productStatus = productMapper.getProductStatusByPid(pid);
-        try{
-            if (productStatus!=null){
-                if (productStatus.getStatus().equals("pending") ||productStatus.getStatus().equals("waiting")){
-                    productStatus.setStatus("canceled");
-                }else{
-                    logger.debug("The product status can't change since is not pending or waiting.");
-                    return null;
-                }
-            }else{
-                logger.debug("The product status with that pid is not exists.");
-                return null;
-            }
-            return productService.updateProductStatusService(productStatus);
-        }
-        catch(Exception e) {
-            logger.warn(e.getMessage());
-        }
-        return null;
-    }
-
-
-    /**
      * 更新ProductStatus 待完善
      * 需要加判断 例如bidding之后不能更改成pending/waiting等
      */
@@ -227,10 +254,10 @@ public class ProductServiceImpl implements ProductService {
         return null;
     }
 
-    /**
+/*    *//**
      * 添加ProductStatus 待完善
      * 需要添加end_time判断
-     */
+     *//*
     @Override
     public Integer addProductStatusService(ProductStatus productStatus) {
         try{
@@ -257,7 +284,7 @@ public class ProductServiceImpl implements ProductService {
             logger.warn(e.getMessage());
         }
         return null;
-    }
+    }*/
 
     /**
      * 根据pid展现product status 完成
