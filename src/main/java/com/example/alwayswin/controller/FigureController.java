@@ -6,6 +6,7 @@ import com.example.alwayswin.service.FigureService;
 import com.example.alwayswin.service.FigureService;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
 import io.jsonwebtoken.Claims;
+import org.apache.ibatis.annotations.Delete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -35,21 +36,43 @@ public class FigureController {
         this.figureService = figureService;
     }
 
-    @PostMapping("/figure/upload")
-    public CommonResult<String> uploadFigure(@RequestParam("figure") MultipartFile file) {
-        String fileName = figureService.upload(file);
-        if (fileName == null)
-            return CommonResult.failure("Figure upload failed");
-        else
-            return CommonResult.success(fileName);
+    // 传用户头像
+    @PostMapping("/user/my-info/upload-icon")
+    public CommonResult<String> uploadIcon(@RequestBody Map param) {
+        String localPath = (String)param.get("localPath");
+        if (localPath == null)
+            return CommonResult.failure("No local path for figure");
+
+        String url = figureService.uploadFile(localPath, "icon");
+        if (url == null)
+            return CommonResult.failure("Icon upload failed");
+        return CommonResult.success(url);
     }
 
-    @PostMapping("/figure/multiple-uploads")
-    public List<CommonResult<String>> uploadMultipleFigures(@RequestParam("figures") MultipartFile[] files) {
-        return Arrays.asList(files)
-                .stream()
-                .map(file -> uploadFigure(file))
-                .collect(Collectors.toList());
+    // 传单张的product figure
+    @PostMapping("/product/figure/upload")
+    public CommonResult<String> uploadFigure(@RequestBody Map param) {
+        String localPath = (String)param.get("localPath");
+        if (localPath == null)
+            return CommonResult.failure("You need to provide local path for figure");
+
+        String url = figureService.uploadFile(localPath, "product-figure");
+        if (url == null)
+            return CommonResult.failure("Figure upload failed");
+        return CommonResult.success(url);
+    }
+
+    // 传多张product figure
+    @PostMapping("/product/figure/uploads")
+    public CommonResult<List<String>> uploadMultipleFigures(@RequestBody Map param) {
+        String[] localPaths = (String[])param.get("localPaths");
+        if (localPaths == null)
+            return CommonResult.failure("You need to provide local paths for figures");
+
+         List<String> urlList = figureService.uploadFileList(localPaths, "product-figure");
+        if (urlList == null)
+            return CommonResult.failure("Figures upload failed");
+        return CommonResult.success(urlList);
     }
 
     @ResponseBody

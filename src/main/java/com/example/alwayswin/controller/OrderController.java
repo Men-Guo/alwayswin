@@ -33,7 +33,7 @@ public class OrderController {
     }
 
     @ResponseBody
-    @GetMapping("/order/{oid}")
+    @GetMapping("/order/oid/{oid}")
     CommonResult<Order> getByOid(@PathVariable int oid){
         Order order = orderService.getOrderByOid(oid);
         if (order == null) {
@@ -43,7 +43,7 @@ public class OrderController {
     }
 
     @ResponseBody
-    @GetMapping("/order/{number}")
+    @GetMapping("/order/number/{number}")
     CommonResult<Order> getByNumber(@PathVariable String number){
         Order order = orderService.getOrderByNumber(number);
         if (order == null) {
@@ -53,7 +53,7 @@ public class OrderController {
     }
 
     @ResponseBody
-    @GetMapping("/order/all")
+    @GetMapping("/order/my-order")
     CommonResult<List<Order>> getByUid(@RequestHeader("Authorization") String authHeader){
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)

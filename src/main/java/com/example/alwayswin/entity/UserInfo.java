@@ -22,7 +22,7 @@ public class UserInfo {
     public UserInfo() {
         uiid = 0;
         uid = 0;
-        portrait = "";
+        portrait = "https://alwayswin-figures.s3.amazonaws.com/icon/default-icon.png";
         phone = "";
         email = "";
         gender = "unknown";

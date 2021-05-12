@@ -17,19 +17,19 @@ import java.util.List;
 public interface OrderMapper {
     @Select("SELECT * from orders where oid = #{oid}")
     @Results({
-            @Result(property = "product",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getByPid"))
+            @Result(property = "productPreview",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper. getProductPreviewByPid"))
     })
     Order getByOid(int oid);
 
     @Select("SELECT * from orders where number = #{number}")
     @Results({
-            @Result(property = "product",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getByPid"))
+            @Result(property = "productPreview",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper. getProductPreviewByPid"))
     })
     Order getByNumber(String number);
 
     @Select("SELECT * from orders where uid = #{uid}")
     @Results({
-            @Result(property = "product",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getByPid"))
+            @Result(property = "productPreview",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper. getProductPreviewByPid"))
     })
     List<Order> getByUid(int uid);
 
@@ -49,7 +49,6 @@ public interface OrderMapper {
     // 其他属性不能修改
     @Update("update orders set " +
             "orders.address = #{address}," +
-            "orders.payment = #{payment}," +
             "orders.status = #{status}" +
             "where orders.oid = #{oid}")
     int update(Order order);

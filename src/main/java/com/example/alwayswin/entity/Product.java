@@ -28,7 +28,7 @@ public class Product {
     private boolean isPassed;
     private boolean isCanceled;
     private ProductStatus productStatus;
-    private List<Figure> figures;
+    private List<Figure> figures;  // todo: 在mapper里设置一下这个
     private Figure thumbnail;
 
     public Product() {
