@@ -54,7 +54,15 @@ class UserMapperTest {
         user = userMapper.getByUsername("Jason");
         assertNotNull(user);
 
-        assertEquals(userMapper.deleteUser(user.getUid()), 1);
+        int uid = user.getUid();
+
+        //verify userinfo is also added
+        assertNotNull(userMapper.getUserInfoByUid(uid));
+
+        // delete user
+        assertEquals(userMapper.deleteUser(uid), 1);
+        assertNull(userMapper.getByUid(uid));
+        assertNull(userMapper.getUserInfoByUid(uid));
     }
 
 
@@ -128,52 +136,41 @@ class UserMapperTest {
         assertNull(userInfo);
     }
 
-    /////////          addUserInfo          //////////////
     @Test
-    public void happyPathWithAddUserInfo() {
-        // add new user
-        User user = new User();
-        user.setUsername("Jason");
-        user.setPassword("Bourne2");
-        assertEquals(userMapper.add(user), 1);
-
-        // verify new user added
-        user = userMapper.getByUsername("Jason");
-        assertNotNull(user);
-
-        // add new userInfo
-        UserInfo userInfo = new UserInfo();
-        userInfo.setUid(user.getUid());
-        userInfo.setBalance(8000);
-        assertEquals(userMapper.addUserInfo(userInfo), 1);
-
-        // verify userInfo added
-        userInfo = userMapper.getUserInfoByUid(user.getUid());
+    public void happyPathWithUpdateUserInfo() {
+        UserInfo userInfo = userMapper.getUserInfoByUid(1);
         assertNotNull(userInfo);
-        assertEquals(userInfo.getBalance(), 8000);
 
-        // delete user and userInfo
-        assertEquals(1, userMapper.deleteUser(user.getUid()));
-        // uid是外键，userinfo 会被同时删除
-        assertEquals(0, userMapper.deleteUserInfo(user.getUid()));
+        String originalGender = userInfo.getGender();
+
+        // update
+        userInfo.setGender("unknown");
+        assertEquals(userMapper.updateUserInfo(userInfo), 1);
+        // verify change
+        userInfo = userMapper.getUserInfoByUid(1);
+        assertEquals("unknown", userInfo.getGender());
+
+        // rollback
+        userInfo.setGender(originalGender);
+        assertEquals(userMapper.updateUserInfo(userInfo), 1);
     }
 
     @Test
-    public void happyPathWithUpdateUserInfo() {
+    public void happyPathWithUpdateBalance() {
         UserInfo userInfo = userMapper.getUserInfoByUid(1);
         assertNotNull(userInfo);
 
         double originalBalance = userInfo.getBalance();
 
         // update
-        userInfo.setBalance(1000);
-        assertEquals(userMapper.updateUserInfo(userInfo), 1);
+        userInfo.setBalance(5.5);
+        assertEquals(userMapper.updateUserBalance(userInfo), 1);
         // verify change
         userInfo = userMapper.getUserInfoByUid(1);
-        assertEquals(userInfo.getBalance(), 1000);
+        assertEquals(userInfo.getBalance(), 5.5);
 
         // rollback
         userInfo.setBalance(originalBalance);
-        assertEquals(userMapper.updateUserInfo(userInfo), 1);
+        assertEquals(userMapper.updateUserBalance(userInfo), 1);
     }
 }

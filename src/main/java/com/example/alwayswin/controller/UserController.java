@@ -82,13 +82,13 @@ public class UserController {
             int uid = Integer.valueOf(claims.getAudience());
             int res = userService.changePassword(uid, param);
             if (res == -1)
-                return CommonResult.validateFailure("Old password doesn't match");
+                return CommonResult.failure("Old password doesn't match");
             else if (res == -2)
-                return CommonResult.validateFailure("New Password should NOT be equal to old password");
+                return CommonResult.failure("New Password should NOT be equal to old password");
             else if (res == -3)
-                return CommonResult.validateFailure("Password should apply to the rule");
+                return CommonResult.failure("Password should apply to the rule");
             else if (res == -4)
-                return CommonResult.validateFailure("2 new passwords should match");
+                return CommonResult.failure("2 new passwords should match");
             else if (res == 0)
                 return CommonResult.failure();
             else
@@ -120,9 +120,28 @@ public class UserController {
             return CommonResult.unauthorized();
         else {
             int uid = Integer.valueOf(claims.getAudience());
-            int res = userService.updateUserInfo(uid, param);
+            int res = userService.updateUserInfo(uid, param);  // 如果涉及到充钱扣钱的话, param里放一个amount，带正负号的
             if (res == 1)
                 return CommonResult.success(res);
+            else return CommonResult.failure();
+        }
+    }
+
+    // todo: 现在是个假接口，以后接入支付模块
+    @ResponseBody
+    @PutMapping("/user/add-funds")
+    public CommonResult updateBalance(@RequestHeader("Authorization") String authHeader,
+                                       @RequestBody Map param){
+        Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
+        if (claims == null)
+            return CommonResult.unauthorized();
+        else {
+            int uid = Integer.valueOf(claims.getAudience());
+            int res = userService.updateUserBalance(uid, param);  // {balance, amount}
+            if (res == 1)
+                return CommonResult.success(res);
+            else if (res == -1)
+                return CommonResult.failure("Parameters balance and amount needed!");
             else return CommonResult.failure();
         }
     }

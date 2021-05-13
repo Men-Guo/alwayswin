@@ -13,6 +13,7 @@ import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -37,6 +38,8 @@ public class UserServiceImplTest {
         biddingMapper = mock(BiddingMapper.class);
         orderMapper = mock(OrderMapper.class);
         userService = new UserServiceImpl(userMapper, productMapper, biddingMapper, orderMapper);
+
+        ((UserServiceImpl) userService).passwordEncoder = new BCryptPasswordEncoder();
     }
 
     //////////////      login()     //////////////
@@ -91,41 +94,88 @@ public class UserServiceImplTest {
     //////////////      register     //////////////
     @Test
     public void happyPathWithRegister() {
-        when(userMapper.getByUsername("Jason"))
+        when(userMapper.getByUsername(anyString()))
                 .thenReturn(null)
-                .thenReturn(new User(12, "Jason", "ABC123", "user", false, new Timestamp(System.currentTimeMillis())));
+                .thenReturn(new User(12, "Ja3on_Jone5", "ABC123", "user", false, new Timestamp(System.currentTimeMillis())));
 
         Map<String, String> param = new HashMap<>();
-        param.put("username", "Jason");
-        param.put("password", "ABC123");
+        param.put("username", "Ja3on_Jone5");
+        param.put("password1", "ABC123");
         param.put("password2", "ABC123");
 
-        when(userMapper.add(any())).thenReturn(1);
-        when(userMapper.addUserInfo(any())).thenReturn(1);
+        when(userMapper.add(any(User.class))).thenReturn(1);
 
         assertEquals(1,userService.register(param));
     }
 
     @Test
     public void DuplicateUsernameExceptionWithRegister() {
-        User user = new User(0, "Jason", "ABC123", "user", false, new Timestamp(0));
-        when(userMapper.getByUsername("Jason")).thenReturn(user);
+        User user = new User(0, "Ja3on_Jone5", "ABC123", "user", false, new Timestamp(0));
+        when(userMapper.getByUsername(anyString())).thenReturn(user);
 
         Map<String, String> param = new HashMap<>();
-        param.put("username", "Jason");
-        param.put("password", "ABC123");
+        param.put("username", "Ja3on_Jone5");
+        param.put("password1", "ABC123");
         param.put("password2", "ABC123");
 
         assertEquals(-1,userService.register(param));
     }
 
     @Test
-    public void illegalPasswordWithTooShortLengthExceptionWithRegister() {
-        when(userMapper.getByUsername("Jason")).thenReturn(null);
+    public void illegalUsernameWithTooShortLengthExceptionWithRegister() {
+        when(userMapper.getByUsername(anyString())).thenReturn(null);
 
         Map<String, String> param = new HashMap<>();
-        param.put("username", "Jason");
-        param.put("password", "ABC12");
+        param.put("username", "Jas");
+        param.put("password1", "ABC12");
+        param.put("password2", "ABC12");
+
+        assertEquals(-2,userService.register(param));
+    }
+
+    @Test
+    public void illegalUsernameWithTooLongLengthExceptionWithRegister() {
+        when(userMapper.getByUsername(anyString())).thenReturn(null);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("username", "JasJasJasJasJasJasJasJasJasJasJasJasJasJasJasJasJasJasJasJasJas");
+        param.put("password1", "ABC12");
+        param.put("password2", "ABC12");
+
+        assertEquals(-2,userService.register(param));
+    }
+
+    @Test
+    public void illegalUsernameWithNoLettersExceptionWithRegister() {
+        when(userMapper.getByUsername(anyString())).thenReturn(null);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("username", "12345678");
+        param.put("password1", "123456");
+        param.put("password2", "123456");
+
+        assertEquals(-2,userService.register(param));
+    }
+
+    @Test
+    public void illegalUsernameWithIllegalCharsExceptionWithRegister() {
+        when(userMapper.getByUsername(anyString())).thenReturn(null);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("username", "Jason--");
+        param.put("password1", "ABC123");
+        param.put("password2", "ABC123");
+
+        assertEquals(-2,userService.register(param));
+    }
+
+    @Test
+    public void illegalPasswordWithTooShortLengthExceptionWithRegister() {
+        when(userMapper.getByUsername(anyString())).thenReturn(null);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("username", "Ja3on_Jone5");
+        param.put("password1", "ABC12");
         param.put("password2", "ABC12");
 
         assertEquals(-2,userService.register(param));
@@ -133,11 +183,11 @@ public class UserServiceImplTest {
 
     @Test
     public void illegalPasswordWithTooLongLengthExceptionWithRegister() {
-        when(userMapper.getByUsername("Jason")).thenReturn(null);
+        when(userMapper.getByUsername(anyString())).thenReturn(null);
 
         Map<String, String> param = new HashMap<>();
-        param.put("username", "Jason");
-        param.put("password", "ABC000000000000000000000000000000000000000000000000000000000000000000");
+        param.put("username", "Ja3on_Jone5");
+        param.put("password1", "ABC000000000000000000000000000000000000000000000000000000000000000000");
         param.put("password2", "ABC000000000000000000000000000000000000000000000000000000000000000000");
 
         assertEquals(-2,userService.register(param));
@@ -145,35 +195,35 @@ public class UserServiceImplTest {
 
     @Test
     public void illegalPasswordWithNoLettersExceptionWithRegister() {
-        when(userMapper.getByUsername("Jason")).thenReturn(null);
+        when(userMapper.getByUsername(anyString())).thenReturn(null);
 
         Map<String, String> param = new HashMap<>();
-        param.put("username", "Jason");
-        param.put("password", "123456");
-        param.put("password2", "123456");
+        param.put("username", "Ja3on_Jone5");
+        param.put("password1", "123_456");
+        param.put("password2", "123_456");
 
         assertEquals(-2,userService.register(param));
     }
 
     @Test
     public void illegalPasswordWithNoDigitsExceptionWithRegister() {
-        when(userMapper.getByUsername("Jason")).thenReturn(null);
+        when(userMapper.getByUsername(anyString())).thenReturn(null);
 
         Map<String, String> param = new HashMap<>();
-        param.put("username", "Jason");
-        param.put("password", "ABCDEF");
-        param.put("password2", "ABCDEF");
+        param.put("username", "Ja3on_Jone5");
+        param.put("password1", "ABC_DEF");
+        param.put("password2", "ABC_DEF");
 
         assertEquals(-2,userService.register(param));
     }
 
     @Test
     public void illegalPasswordWithIllegalCharsExceptionWithRegister() {
-        when(userMapper.getByUsername("Jason")).thenReturn(null);
+        when(userMapper.getByUsername(anyString())).thenReturn(null);
 
         Map<String, String> param = new HashMap<>();
-        param.put("username", "Jason");
-        param.put("password", "ABC123--");
+        param.put("username", "Ja3on_Jone5");
+        param.put("password1", "ABC123--");
         param.put("password2", "ABC123--");
 
         assertEquals(-2,userService.register(param));
@@ -181,11 +231,11 @@ public class UserServiceImplTest {
 
     @Test
     public void passwordsNotEqualExceptionWithRegister() {
-        when(userMapper.getByUsername("Jason")).thenReturn(null);
+        when(userMapper.getByUsername(anyString())).thenReturn(null);
 
         Map<String, String> param = new HashMap<>();
-        param.put("username", "Jason");
-        param.put("password", "ABC123");
+        param.put("username", "Ja3on_Jone5");
+        param.put("password1", "ABC123");
         param.put("password2", "ABC124");
 
         assertEquals(-3,userService.register(param));
@@ -226,7 +276,7 @@ public class UserServiceImplTest {
 
         Map<String, String> param = new HashMap<>();
         param.put("username", "Arthur");
-        param.put("oldPassword", "ABC122");  // real old password is ABC123
+        param.put("oldPassword", "ABC122");  // real old f is ABC123
         param.put("newPassword1", "ABC124");
         param.put("newPassword2", "ABC124");
 
@@ -259,8 +309,8 @@ public class UserServiceImplTest {
         Map<String, String> param = new HashMap<>();
         param.put("username", "Arthur");
         param.put("oldPassword", "ABC123");
-        param.put("newPassword1", "ABC");  // illegal password
-        param.put("newPassword2", "ABC");
+        param.put("newPassword1", "ABC!!!");  // illegal password
+        param.put("newPassword2", "ABC!!!");
 
         when(userMapper.updatePassword(anyInt(), any())).thenReturn(1);
         assertEquals(-3, userService.changePassword(1, param));
@@ -302,5 +352,44 @@ public class UserServiceImplTest {
         param.put("email", "hahaha@gmail.com");
 
         assertEquals(1, userService.updateUserInfo(1, param));
+    }
+
+    @Test
+    public void happyPathWithAddBalanceInUserInfo() {
+        when(userMapper.updateUserBalance(any(UserInfo.class))).thenReturn(1);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("balance", "100");
+        param.put("amount", "1000");
+
+        assertEquals(1, userService.updateUserBalance(1, param));
+    }
+
+    @Test
+    public void happyPathWithReduceBalanceInUserInfo() {
+        when(userMapper.updateUserBalance(any(UserInfo.class))).thenReturn(1);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("balance", "1000");
+        param.put("amount", "-1000");
+        assertEquals(1, userService.updateUserBalance(1, param));
+    }
+
+    @Test
+    public void noBalanceParamsWithUpdateBalance() {
+        when(userMapper.updateUserBalance(any(UserInfo.class))).thenReturn(1);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("amount", "-1000");
+        assertEquals(-1, userService.updateUserBalance(1, param));
+    }
+
+    @Test
+    public void noAmountParamsWithUpdateBalance() {
+        when(userMapper.updateUserBalance(any(UserInfo.class))).thenReturn(1);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("balance", "1000");
+        assertEquals(-1, userService.updateUserBalance(1, param));
     }
 }

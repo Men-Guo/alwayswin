@@ -25,7 +25,7 @@ class OrderMapperTest {
         Order order = orderMapper.getByOid(1);
         assertNotNull(order);
         assertEquals(1, order.getUid());
-        assertEquals("Play Station 1000", order.getProduct().getTitle());
+        assertEquals("Play Station 1000", order.getProductPreview().getTitle());
     }
 
     @Test

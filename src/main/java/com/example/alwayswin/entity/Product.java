@@ -23,12 +23,12 @@ public class Product {
     private Timestamp endTime;
     private double startPrice;
     private double autoWinPrice;
-    private double reservedPrice;
+    private double reservedPrice;  // start price <= reserved price <= auto win price
     private double minIncrement;
     private boolean isPassed;
     private boolean isCanceled;
     private ProductStatus productStatus;
-    private List<Figure> figures;
+    private List<Figure> figures;  // todo: 在mapper里设置一下这个
     private Figure thumbnail;
 
     public Product() {

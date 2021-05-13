@@ -16,7 +16,7 @@ public interface OrderService {
 
     int addOrder(Map param);
 
-    int updateOrder(int oid, Map param);
+    int updateOrder(int oid, int uid, Map param);  // buyer 和 seller都可以update order，此处uid用来指定操作者是谁
 
     int deleteOrder(int oid);
 }

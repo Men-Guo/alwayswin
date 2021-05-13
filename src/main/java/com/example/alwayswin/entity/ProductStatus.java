@@ -12,7 +12,7 @@ public class ProductStatus {
     private Integer psid;
     private Integer pid;
     private double price;
-    private String status;  // 'pending', 'waiting', 'bidding', 'extended', 'broughtIn', 'success', 'canceled'
+    private String status;  // 'pending', 'waiting', 'bidding', 'extended123', 'broughtIn', 'success', 'canceled'
     private Timestamp endTime;
 
     public ProductStatus() {

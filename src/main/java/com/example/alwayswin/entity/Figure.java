@@ -19,7 +19,7 @@ public class Figure {
     public Figure() {
         fid = 0;
         pid = 0;
-        url = "";
+        url = "https://alwayswin-figures.s3.amazonaws.com/product-figure/default-product-thumbnail.png";
         description = "";
         isThumbnail = true;
         updatedTime = new Timestamp(0);

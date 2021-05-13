@@ -6,6 +6,7 @@ import com.example.alwayswin.service.FigureService;
 import com.example.alwayswin.service.FigureService;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
 import io.jsonwebtoken.Claims;
+import org.apache.ibatis.annotations.Delete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -35,28 +36,40 @@ public class FigureController {
         this.figureService = figureService;
     }
 
-    @PostMapping("/figure/upload")
-    public CommonResult<String> uploadFigure(@RequestParam("figure") MultipartFile file) {
-        String fileName = figureService.upload(file);
-        if (fileName == null)
-            return CommonResult.failure("Figure upload failed");
-        else
-            return CommonResult.success(fileName);
+    // 传用户头像
+    @PostMapping("/user/my-info/upload-icon")
+    public CommonResult<String> uploadIcon(@RequestParam("icon") MultipartFile icon) {
+        String url = figureService.uploadFile(icon, "icon");
+        if (url == null)
+            return CommonResult.failure("Icon upload failed");
+        return CommonResult.success(url);
     }
 
-    @PostMapping("/figure/multiple-uploads")
-    public List<CommonResult<String>> uploadMultipleFigures(@RequestParam("figures") MultipartFile[] files) {
-        return Arrays.asList(files)
-                .stream()
-                .map(file -> uploadFigure(file))
-                .collect(Collectors.toList());
+    // 传单张的product figure
+    @PostMapping("/product/figure/upload")
+    public CommonResult<String> uploadFigure(@RequestParam("figure") MultipartFile figure) {
+        String url = figureService.uploadFile(figure, "product-figure");
+        if (url == null)
+            return CommonResult.failure("Figure upload failed");
+        return CommonResult.success(url);
     }
+
+    // 传多张product figure
+//    @PostMapping("/product/figure/uploads")
+//    public CommonResult<List<String>> uploadMultipleFigures(@RequestBody Map param) {
+//        String[] localPaths = (String[])param.get("localPaths");
+//        if (localPaths == null)
+//            return CommonResult.failure("You need to provide local paths for figures");
+//
+//         List<String> urlList = figureService.uploadFileList(localPaths, "product-figure");
+//        if (urlList == null)
+//            return CommonResult.failure("Figures upload failed");
+//        return CommonResult.success(urlList);
+//    }
 
     @ResponseBody
     @GetMapping("/product/figure/{fid}")
     CommonResult<Figure> getByFid(@PathVariable int fid){
-        if (fid <= 0)
-            return CommonResult.validateFailure();
         Figure figure = figureService.getFigureByFid(fid);
         if (figure == null) {
             return CommonResult.validateFailure();
@@ -67,9 +80,6 @@ public class FigureController {
     @ResponseBody
     @GetMapping("/product/{pid}/figures")
     CommonResult<List<Figure>> getByPid(@PathVariable int pid) {
-        if (pid <= 0)
-            return CommonResult.validateFailure();
-
         List<Figure> figureList = figureService.getFiguresByPid(pid);
         if (figureList == null) {
             return CommonResult.failure();
@@ -95,8 +105,6 @@ public class FigureController {
     @ResponseBody
     @PutMapping("/product/figure/update/{fid}")
     CommonResult<Integer> updateFigure(@RequestBody Map param, @PathVariable int fid){
-        if (fid < 0)
-            return CommonResult.validateFailure();
         int res = figureService.updateFigure(fid, param);
         if (res == 1) {
             logger.info("Edit figure successfully");
@@ -111,9 +119,6 @@ public class FigureController {
     @ResponseBody
     @DeleteMapping("/product/figure/delete/{fid}")
     CommonResult<Integer> deleteFigure(@PathVariable int fid){
-        if (fid < 0)
-            return CommonResult.validateFailure();
-
         int res = figureService.deleteFigure(fid);
         if (res == 1) {
             logger.info("Delete figure successfully");

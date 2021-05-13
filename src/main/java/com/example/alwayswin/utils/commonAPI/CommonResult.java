@@ -1,7 +1,7 @@
 package com.example.alwayswin.utils.commonAPI;
 
 
-import com.example.alwayswin.utils.enums.ResultCode;
+import com.example.alwayswin.utils.enumUtil.ResultCode;
 
 public class CommonResult<T> {
 

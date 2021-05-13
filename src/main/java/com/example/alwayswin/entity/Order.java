@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 
 public class Order {
     private Integer oid;
-    private String number;  // 八位日期 + 五位大写字母数字随机组合
+    private String number;  // 8位大写字母数字随机组合
     private Integer uid;
     private Integer pid;
     private String address;
@@ -20,7 +20,7 @@ public class Order {
     private Timestamp createTime;
     private String status;  // ('placed', 'paid', 'shipped', 'received')
 
-    private Product product;
+    private ProductPreview productPreview;
 
     public Order() {
         oid = 0;
@@ -31,6 +31,7 @@ public class Order {
         payment = 0.0;
         createTime = new Timestamp(0);
         status = "";
+        productPreview = new ProductPreview();
     }
 
         public Order(Integer oid,String number, Integer uid, Integer pid, String address,
@@ -43,7 +44,7 @@ public class Order {
             this.payment = payment;
             this.createTime = createTime;
             this.status = status;
-            product = new Product();
+            productPreview = new ProductPreview();
         }
 
     public Integer getOid() {
@@ -110,12 +111,12 @@ public class Order {
         this.createTime = createTime;
     }
 
-    public Product getProduct() {
-        return product;
+    public ProductPreview getProductPreview() {
+        return productPreview;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductPreview(ProductPreview productPreview) {
+        this.productPreview = productPreview;
     }
 
     @Override
@@ -129,7 +130,7 @@ public class Order {
                 ", payment=" + payment +
                 ", createTime=" + createTime +
                 ", status='" + status + '\'' +
-                ", product='" + product.toString() + '\'' +
+                ", productPreview='" + productPreview.toString() + '\'' +
                 '}';
     }
 }

@@ -36,11 +36,10 @@ class FigureServiceImplTest {
     }
 
     //////////      upload        ///////////////
+    //todo
     @Test
-    @Ignore
     public void happyPathWithUpload() {
-        MultipartFile file = mock(MultipartFile.class);
-        file.getOriginalFilename();
+
     }
 
 
@@ -91,7 +90,7 @@ class FigureServiceImplTest {
     public void happyPathWithGetThumbNailByPid() {
         // Integer fid, Integer pid, String url, String description, boolean isThumbnail, Timestamp updatedTime
         Figure figure = new Figure(1, 1 , "www.baidu.com", "baidu", true, new Timestamp(0));
-        when(figureMapper.getByFid(anyInt())).thenReturn(figure);
+        when(figureMapper.getThumbnailByPid(anyInt())).thenReturn(figure);
 
         Figure figure1 = figureService.getThumbnailByPid(1);
         assertNotNull(figure1);
@@ -118,6 +117,7 @@ class FigureServiceImplTest {
     }
 
     //////////      updateFigure        /////////////////
+    @Test
     public void happyPathWithUpdateFigure() {
         when(figureMapper.update(any(Figure.class))).thenReturn(1);
 
@@ -125,7 +125,40 @@ class FigureServiceImplTest {
         param.put("fid", "1");
         param.put("pid", "1");
         param.put("url", "www.baidu.com");
+        param.put("isThumbnail", "false");
         figureService.updateFigure(1, param);
+    }
+
+    @Test
+    public void happyPathWithChangeThumbnail() {
+        when(figureMapper.update(any(Figure.class))).thenReturn(1);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("fid", "2");
+        param.put("pid", "1");
+        param.put("url", "www.baidu.com");
+        param.put("isThumbnail", "true");
+
+        Figure oldThumbnail = new Figure(1, 1 , "www.google.com", "google", true, new Timestamp(0));
+        when(figureMapper.getThumbnailByPid(1)).thenReturn(oldThumbnail);
+        assertTrue(oldThumbnail.isThumbnail());
+
+        assertEquals(1, figureService.updateFigure(2, param));
+        assertFalse(oldThumbnail.isThumbnail());
+    }
+
+    @Test
+    public void happyPathWithAssignThumbnail() {
+        when(figureMapper.update(any(Figure.class))).thenReturn(1);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("fid", "2");
+        param.put("pid", "1");
+        param.put("url", "www.baidu.com");
+        param.put("isThumbnail", "true");
+
+        when(figureMapper.getThumbnailByPid(1)).thenReturn(null);
+        assertEquals(1, figureService.updateFigure(2, param));
     }
 
 

@@ -39,7 +39,7 @@ public class WishListController {
     }
     */
 
-    
+
     /**
      * 查询某个uid的list
      */

@@ -46,7 +46,7 @@ public interface UserMapper {
             "where user.uid = #{uid}")
     int updatePassword(int uid, String password);
 
-    // for test
+    // for test, userinfo is also deleted
     @Delete("delete from user where uid = #{uid}")
     int deleteUser(int uid);
 
@@ -55,23 +55,17 @@ public interface UserMapper {
     @Select("select * from user_info where uid = #{uid}")
     UserInfo getUserInfoByUid(int uid);
 
-    @Options(useGeneratedKeys = true,keyProperty = "uiid")
-    @Insert("insert into " +
-            "user_info(uid, portrait, phone, email, gender, birthday, regis_date, balance) " +
-            "values(#{uid}, #{portrait}, #{phone}, #{email}, #{gender}, #{birthday}, #{regisDate}, #{balance})")
-    int addUserInfo(UserInfo userInfo);
 
     @Update("update user_info set " +
             "user_info.portrait = #{portrait}," +
             "user_info.phone = #{phone}," +
             "user_info.email = #{email}," +
             "user_info.gender = #{gender}," +
-            "user_info.birthday = #{birthday}," +
-            "user_info.balance = #{balance}" +
+            "user_info.birthday = #{birthday} " +
             "where user_info.uid = #{uid}")
     int updateUserInfo(UserInfo userInfo);
 
-    // for test
-    @Delete("delete from user_info where uid = #{uid}")
-    int deleteUserInfo(int uid);
+
+    @Update(("update user_info set user_info.balance = #{balance} where user_info.uid = #{uid}"))
+    int updateUserBalance(UserInfo userInfo);
 }

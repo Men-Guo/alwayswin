@@ -1,84 +1,57 @@
 package com.example.alwayswin.service.impl;
 
-import com.example.alwayswin.config.WebMvcConfig;
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.AccessControlList;
+import com.amazonaws.services.s3.model.CanonicalGrantee;
+import com.amazonaws.services.s3.model.Permission;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
+import com.amazonaws.services.s3.transfer.Upload;
 import com.example.alwayswin.entity.Figure;
 import com.example.alwayswin.mapper.FigureMapper;
 import com.example.alwayswin.service.FigureService;
+import com.example.alwayswin.utils.enumUtil.ImageType;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 
 @Service
 public class FigureServiceImpl implements FigureService {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    private String BUCKET_NAME = "alwayswin-figures";
+
+    private String BUCKET_URL = "https://alwayswin-figures.s3.amazonaws.com/";
+
+    private final Regions REGION = Regions.US_EAST_1;
+
+    private AmazonS3 s3client = null;
+
     @Resource
     private FigureMapper figureMapper;
 
-    private final String uploadPath = WebMvcConfig.imageToStorage;
-
     public FigureServiceImpl(FigureMapper figureMapper) {
         this.figureMapper = figureMapper;
-    }
-
-
-    public String upload(MultipartFile file) {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-
-        try {
-            if (fileName == null) {
-                logger.debug("File not uploaded successfully");
-                return null;
-            }
-            if (fileName.contains("..")) {
-                logger.debug("File has invalid filename");
-                return null;
-            }
-            File dir = new File(uploadPath);
-            if (!dir.exists()){
-                if (dir.mkdir()) {
-                    logger.info(String.format("Create file uploading directory-%s", uploadPath));
-                }else {
-                    logger.warn(String.format("Fail to create file uploading directory-%s", uploadPath));
-                    return null;
-                }
-            }
-
-            SimpleDateFormat simpleDateFormat;
-            simpleDateFormat = new SimpleDateFormat("YYYYMMDD");
-            // Requiring distinctive name -> random generator
-            Date date = new Date();
-            String str = simpleDateFormat.format(date);
-            Random random = new Random();
-            int imgRan = (random.nextInt() % (99999 - 10000 + 1)) + 10000;// 获取5位随机数
-
-            String intervalName = str + imgRan;
-            String displayName = intervalName + "_" + fileName;
-            fileName = uploadPath + displayName;
-            logger.info(String.format("Uploaded file-%s; Directory-%s",displayName , uploadPath));
-
-            File dest = new File(fileName);
-            file.transferTo(dest);
-            logger.info("File " + fileName + " uploaded!");
-
-            return fileName;
-        } catch (Exception e) {
-            logger.warn(e.getMessage(), String.format("[%s] file upload failed", fileName));
-        }
-        return null;
     }
 
     @Override
@@ -88,11 +61,7 @@ public class FigureServiceImpl implements FigureService {
 
     @Override
     public List<Figure> getFiguresByPid(int pid) {
-        List<Figure> figureList = figureMapper.getByPid(pid);
-        // 只有一张图片，默认为封面
-        if (figureList.size() == 1)
-            figureList.get(0).setThumbnail(true);
-        return figureList;
+        return figureMapper.getByPid(pid);
     }
 
     @Override
@@ -133,9 +102,16 @@ public class FigureServiceImpl implements FigureService {
         return figureMapper.add(figure);
     }
 
-    // todo: delete from server as well
     @Override
     public int deleteFigure(int fid) {
+        Figure figure = getFigureByFid(fid);
+        if (figure == null)
+            return 0;
+        String url = figure.getUrl();
+        // 先从bucket里删掉
+        deleteFigureFromS3(url);
+
+        // 再从数据库删掉
         return figureMapper.delete(fid);
     }
 
@@ -147,4 +123,109 @@ public class FigureServiceImpl implements FigureService {
             figureMapper.update(oldThumbnail);
         }
     }
+
+//    public String uploadFile1(String localPath, String s3FolderName) {
+//
+//        File f = new File(localPath);
+//        TransferManager transferManager = TransferManagerBuilder.standard().build();
+//        String s3Filename = null;
+//        try {
+//            s3Filename = getS3Filename(localPath, s3FolderName);
+//            transferManager.upload(BUCKET_NAME, s3Filename, f);
+//        } catch (AmazonServiceException e) {
+//            logger.error(e.getErrorMessage());
+//            return null;
+//        }
+//        finally {
+//            transferManager.shutdownNow();
+//        }
+//        return BUCKET_URL + s3Filename;
+//    }
+
+    public String uploadFile(MultipartFile file, String s3FolderName) {
+        if(StringUtils.isEmpty(file.getName())) {
+            logger.error("Filename is empty");
+            return null;
+        }
+
+        String filename = file.getOriginalFilename();
+        String suffix = filename.substring(filename.lastIndexOf(".") + 1);
+        if(!ImageType.contains(suffix)) {
+            logger.error("Not a supported image file");
+            return null;
+        }
+
+        String s3Filename = null;
+        try {
+            s3Filename = s3FolderName + '/' + filename;
+            File tempFile = new File(filename);
+            FileUtils.copyInputStreamToFile(file.getInputStream(), tempFile);
+
+            // upload to s3
+            PutObjectRequest request = new PutObjectRequest(BUCKET_NAME, s3Filename, tempFile);
+            initAWSClient();
+            s3client.putObject(request);
+
+            // delete from server
+            if(tempFile.exists()) {
+                tempFile.delete();
+            }
+
+        } catch (AmazonServiceException | IOException e) {
+            logger.info(e.getMessage());
+            return null;
+        }
+        logger.info("Uploaded file: {}",filename);
+        return BUCKET_URL + s3Filename;
+    }
+    //    public List<String> uploadFileList(String[] localPaths, String s3FolderName) {
+//        // convert the file paths to a list of File objects (required by the
+//        // uploadFileList method)
+//        ArrayList<File> files = new ArrayList<>();
+//        List<String> urlList = new ArrayList<>();
+//        for (String path : localPaths) {
+//            files.add(new File(path));
+//            urlList.add(BUCKET_URL + getS3Filename(path, s3FolderName));
+//        }
+//
+//        TransferManager transferManager = TransferManagerBuilder.standard().build();
+//        try {
+//            transferManager.uploadFileList(BUCKET_NAME,
+//                    s3FolderName,
+//                    new File("."),   // directory
+//                    files);
+//
+//        } catch (AmazonServiceException e) {
+//            logger.error(e.getErrorMessage());
+//            return null;
+//        }
+//        finally {
+//            transferManager.shutdownNow();
+//        }
+//        return urlList;
+//    }
+
+
+
+    private void deleteFigureFromS3(String url) {
+//        url https://alwayswin-figures.s3.amazonaws.com/product-figure/default-product-thumbnail.png
+        String[] strings = url.substring("https://".length()).split("/", 2);
+        String keyName = strings[1];
+        try {
+            initAWSClient();
+            s3client.deleteObject(BUCKET_NAME, keyName);
+        } catch (AmazonServiceException e) {
+            logger.error(e.getErrorMessage());
+        }
+    }
+
+    private void initAWSClient() {
+        if (this.s3client == null) {
+            this.s3client = AmazonS3ClientBuilder.standard()
+//                    .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                    .withRegion(this.REGION)
+                    .build();
+        }
+    }
+
 }

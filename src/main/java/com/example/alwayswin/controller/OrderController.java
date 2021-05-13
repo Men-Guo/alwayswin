@@ -4,6 +4,7 @@ import com.example.alwayswin.entity.Order;
 import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.service.OrderService;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
+import com.example.alwayswin.utils.enumUtil.ResultCode;
 import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,11 +33,8 @@ public class OrderController {
     }
 
     @ResponseBody
-    @GetMapping("/order/{oid}")
+    @GetMapping("/order/oid/{oid}")
     CommonResult<Order> getByOid(@PathVariable int oid){
-        if (oid < 0)
-            return CommonResult.validateFailure();
-
         Order order = orderService.getOrderByOid(oid);
         if (order == null) {
             return CommonResult.validateFailure();
@@ -45,7 +43,7 @@ public class OrderController {
     }
 
     @ResponseBody
-    @GetMapping("/order/{number}")
+    @GetMapping("/order/number/{number}")
     CommonResult<Order> getByNumber(@PathVariable String number){
         Order order = orderService.getOrderByNumber(number);
         if (order == null) {
@@ -55,7 +53,7 @@ public class OrderController {
     }
 
     @ResponseBody
-    @GetMapping("/order/all")
+    @GetMapping("/order/my-order")
     CommonResult<List<Order>> getByUid(@RequestHeader("Authorization") String authHeader){
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
@@ -72,6 +70,7 @@ public class OrderController {
         }
     }
 
+    // 测试用，实际情况下用户无法自行创建order
     @ResponseBody
     @PostMapping("/order/create")
     CommonResult createOrder(@RequestBody Map param) {
@@ -88,27 +87,44 @@ public class OrderController {
 
     @ResponseBody
     @PutMapping("/order/update/{oid}")
-    CommonResult updateOrder(@RequestBody Map param, @PathVariable int oid){
-        if (oid < 0)
-            return CommonResult.validateFailure();
+    CommonResult updateOrder(@RequestHeader("Authorization") String authHeader,
+                             @RequestBody Map param, @PathVariable int oid){
+        Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
+        if (claims == null)
+            return CommonResult.unauthorized();
+        int uid = Integer.valueOf(claims.getAudience());
 
-        int res = orderService.updateOrder(oid, param);
-        if (res == 1) {
-            logger.info("Update order successfully");
-            return CommonResult.success(res);
-        }
-        else {
+        int res = orderService.updateOrder(oid, uid, param);  // 此处uid指的是操作者，不是订单的拥有者
+        if (res == 0) {
             logger.debug("Update order failed");
             return CommonResult.failure();
+        }
+        else if (res == -1) {
+            logger.debug("Wrong order status code");
+            return CommonResult.failure("Wrong order status code");
+        }
+        else if (res == -2) {
+            logger.debug("You can't update the order to this status");
+            return CommonResult.failure("You can't update the order to this status");
+        }
+        else if (res == -3) {
+            logger.debug("Permission denied");
+            return CommonResult.validateFailure(ResultCode.FORBIDDEN);
+        }
+        else if (res == -4) {
+            // 此处前端跳转到充值页面
+            logger.debug("Oops, you don't have enough money for this order, please add funds first");
+            return CommonResult.validateFailure("Oops, you don't have enough money for this order, please add funds first");
+        }
+        else {
+            logger.info("Order update successfully");
+            return CommonResult.success(res);
         }
     }
 
     @ResponseBody
     @DeleteMapping("/order/delete/{oid}")
-    CommonResult deleteOrder(@RequestBody Map param, @PathVariable int oid){
-        if (oid < 0)
-            return CommonResult.validateFailure();
-
+    CommonResult deleteOrder(@PathVariable int oid){
         int res = orderService.deleteOrder(oid);
         if (res == 1) {
             logger.info("Delete order successfully");
