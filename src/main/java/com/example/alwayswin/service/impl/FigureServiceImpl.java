@@ -37,10 +37,6 @@ import java.util.Map;
 public class FigureServiceImpl implements FigureService {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private String accessKey = "ASIAVPKU3FJU6KG75LQT";
-
-    private String secretKey = "OtaFLYawvumbSsn7PL11rzx7zD5WsjaQUDM+jSr/";
-
     private String BUCKET_NAME = "alwayswin-figures";
 
     private String BUCKET_URL = "https://alwayswin-figures.s3.amazonaws.com/";
@@ -155,7 +151,7 @@ public class FigureServiceImpl implements FigureService {
             PutObjectRequest request = new PutObjectRequest(BUCKET_NAME, s3Filename, tempFile);
             initAWSClient();
             s3client.putObject(request);
-            
+
             // delete from server
             if(tempFile.exists()) {
                 tempFile.delete();
@@ -209,7 +205,6 @@ public class FigureServiceImpl implements FigureService {
     }
 
     private void initAWSClient() {
-        AWSCredentials credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
         if (this.s3client == null) {
             this.s3client = AmazonS3ClientBuilder.standard()
 //                    .withCredentials(new AWSStaticCredentialsProvider(credentials))
