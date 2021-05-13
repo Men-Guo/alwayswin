@@ -143,12 +143,13 @@ public class FigureServiceImpl implements FigureService {
 //    }
 
     public String uploadFile(MultipartFile file, String s3FolderName) {
-        if(StringUtils.isEmpty(file.getName())) {
+        String filename = file.getOriginalFilename();
+
+        if(StringUtils.isEmpty(filename)) {
             logger.error("Filename is empty");
             return null;
         }
 
-        String filename = file.getOriginalFilename();
         String suffix = filename.substring(filename.lastIndexOf(".") + 1);
         if(!ImageType.contains(suffix)) {
             logger.error("Not a supported image file");
