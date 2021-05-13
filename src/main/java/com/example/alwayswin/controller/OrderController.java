@@ -4,7 +4,7 @@ import com.example.alwayswin.entity.Order;
 import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.service.OrderService;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
-import com.example.alwayswin.utils.enums.ResultCode;
+import com.example.alwayswin.utils.enumUtil.ResultCode;
 import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

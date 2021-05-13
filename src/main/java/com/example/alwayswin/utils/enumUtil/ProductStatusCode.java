@@ -1,4 +1,4 @@
-package com.example.alwayswin.utils.enums;
+package com.example.alwayswin.utils.enumUtil;
 
 public enum ProductStatusCode {
     PENDING("pending", true),  // 审核中

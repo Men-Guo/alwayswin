@@ -1,4 +1,4 @@
-package com.example.alwayswin.utils.enums;
+package com.example.alwayswin.utils.enumUtil;
 
 import com.example.alwayswin.utils.commonAPI.StatusErrorCode;
 

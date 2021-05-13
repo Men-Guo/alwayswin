@@ -5,15 +5,14 @@ import com.example.alwayswin.entity.ProductPreview;
 import com.example.alwayswin.entity.ProductStatus;
 import com.example.alwayswin.mapper.ProductMapper;
 import com.example.alwayswin.service.ProductService;
-import com.example.alwayswin.utils.enums.ProductCateCode;
-import com.example.alwayswin.utils.enums.ProductStatusCode;
+import com.example.alwayswin.utils.enumUtil.ProductCateCode;
+import com.example.alwayswin.utils.enumUtil.ProductStatusCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service

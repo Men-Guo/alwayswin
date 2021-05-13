@@ -6,7 +6,7 @@ import com.example.alwayswin.mapper.OrderMapper;
 import com.example.alwayswin.mapper.UserMapper;
 import com.example.alwayswin.service.OrderService;
 import com.example.alwayswin.utils.RandomStringUtil;
-import com.example.alwayswin.utils.enums.OrderStatusCode;
+import com.example.alwayswin.utils.enumUtil.OrderStatusCode;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

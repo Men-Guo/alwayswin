@@ -16,8 +16,10 @@ import com.amazonaws.services.s3.transfer.Upload;
 import com.example.alwayswin.entity.Figure;
 import com.example.alwayswin.mapper.FigureMapper;
 import com.example.alwayswin.service.FigureService;
+import com.example.alwayswin.utils.enumUtil.ImageType;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -141,10 +143,22 @@ public class FigureServiceImpl implements FigureService {
 //    }
 
     public String uploadFile(MultipartFile file, String s3FolderName) {
+        if(StringUtils.isEmpty(file.getName())) {
+            logger.error("Filename is empty");
+            return null;
+        }
+
+        String filename = file.getOriginalFilename();
+        String suffix = filename.substring(filename.lastIndexOf(".") + 1);
+        if(!ImageType.contains(suffix)) {
+            logger.error("Not a supported image file");
+            return null;
+        }
+
         String s3Filename = null;
         try {
-            s3Filename = s3FolderName + '/' + file.getOriginalFilename();
-            File tempFile = new File(file.getOriginalFilename());
+            s3Filename = s3FolderName + '/' + filename;
+            File tempFile = new File(filename);
             FileUtils.copyInputStreamToFile(file.getInputStream(), tempFile);
 
             // upload to s3
@@ -161,6 +175,7 @@ public class FigureServiceImpl implements FigureService {
             logger.info(e.getMessage());
             return null;
         }
+        logger.info("Uploaded file: {}",filename);
         return BUCKET_URL + s3Filename;
     }
     //    public List<String> uploadFileList(String[] localPaths, String s3FolderName) {
