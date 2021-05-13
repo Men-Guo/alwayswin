@@ -4,10 +4,9 @@ import com.example.alwayswin.entity.*;
 import com.example.alwayswin.mapper.FigureMapper;
 import com.example.alwayswin.mapper.ProductMapper;
 import com.example.alwayswin.mapper.UserMapper;
-import com.example.alwayswin.service.FigureService;
 import com.example.alwayswin.service.ProductService;
-import com.example.alwayswin.utils.enums.ProductCateCode;
-import com.example.alwayswin.utils.enums.ProductStatusCode;
+import com.example.alwayswin.utils.enumUtil.ProductCateCode;
+import com.example.alwayswin.utils.enumUtil.ProductStatusCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,6 +135,7 @@ public class ProductServiceImpl implements ProductService {
             }
             int num = productMapper.add(product);
             if (num == 0) throw new Exception("Product add failed");
+
             ProductStatus productStatus = new ProductStatus();
             productStatus.setPid(product.getPid());
             productStatus.setPrice(product.getStartPrice());
