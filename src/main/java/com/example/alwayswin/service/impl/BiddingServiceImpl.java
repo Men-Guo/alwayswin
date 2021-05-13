@@ -131,7 +131,8 @@ public class BiddingServiceImpl implements BiddingService {
                 }
             }
             else {  // status == extended3
-                productStatus.setStatus(ProductStatusCode.SUCCESS.getStatus());  // 即拍即中
+                if(bidding.getOffer() >= product.getReservedPrice())  // 大于保留价
+                    productStatus.setStatus(ProductStatusCode.SUCCESS.getStatus());  // 即拍即中
             }
 
             // 将product status的更新写入db

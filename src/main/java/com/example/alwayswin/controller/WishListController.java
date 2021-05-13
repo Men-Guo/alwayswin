@@ -4,8 +4,6 @@ import com.example.alwayswin.entity.WishList;
 import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.service.WishListService;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

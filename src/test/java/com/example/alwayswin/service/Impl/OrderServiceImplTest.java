@@ -1,7 +1,7 @@
 package com.example.alwayswin.service.Impl;
 
 import com.example.alwayswin.entity.Order;
-import com.example.alwayswin.entity.Product;
+import com.example.alwayswin.entity.ProductPreview;
 import com.example.alwayswin.entity.UserInfo;
 import com.example.alwayswin.mapper.OrderMapper;
 import com.example.alwayswin.mapper.UserMapper;
@@ -282,10 +282,10 @@ class OrderServiceImplTest {
                 1, 1, "", 1000,
                 new Timestamp(System.currentTimeMillis()), "paid");
 
-        Product product = new Product();
-        product.setUid(2);  // seller is 2
-        product.setPid(1);
-        order.setProduct(product);
+        ProductPreview productPreview = new ProductPreview();
+        productPreview.setUid(2);  // seller is 2
+        productPreview.setPid(1);
+        order.setProductPreview(productPreview);
 
         when(orderMapper.getByOid(anyInt())).thenReturn(order);
 
@@ -310,10 +310,10 @@ class OrderServiceImplTest {
                 1, 1, "", 1000,
                 new Timestamp(System.currentTimeMillis()), "paid");
 
-        Product product = new Product();
-        product.setPid(1);
-        product.setUid(2);  // seller is 2
-        order.setProduct(product);
+        ProductPreview productPreview = new ProductPreview();
+        productPreview.setPid(1);
+        productPreview.setUid(2);  // seller is 2
+        order.setProductPreview(productPreview);
 
         when(orderMapper.getByOid(anyInt())).thenReturn(order);
 
@@ -336,10 +336,10 @@ class OrderServiceImplTest {
                 1, 1, "", 1000,
                 new Timestamp(System.currentTimeMillis()), "placed");
 
-        Product product = new Product();
-        product.setUid(2);  // seller is 2
-        product.setPid(1);
-        order.setProduct(product);
+        ProductPreview productPreview = new ProductPreview();
+        productPreview.setUid(2);  // seller is 2
+        productPreview.setPid(1);
+        order.setProductPreview(productPreview);
 
         when(orderMapper.getByOid(anyInt())).thenReturn(order);
 
@@ -363,10 +363,10 @@ class OrderServiceImplTest {
                 1, 1, "", 1000,
                 new Timestamp(System.currentTimeMillis()), "placed");
 
-        Product product = new Product();
-        product.setUid(2);  // seller is 2
-        product.setPid(1);
-        order.setProduct(product);
+        ProductPreview productPreview = new ProductPreview();
+        productPreview.setUid(2);  // seller is 2
+        productPreview.setPid(1);
+        order.setProductPreview(productPreview);
 
         when(orderMapper.getByOid(anyInt())).thenReturn(order);
 

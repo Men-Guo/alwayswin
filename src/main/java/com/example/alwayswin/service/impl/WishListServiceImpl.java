@@ -3,7 +3,6 @@ package com.example.alwayswin.service.impl;
 import com.example.alwayswin.entity.WishList;
 import com.example.alwayswin.mapper.WishListMapper;
 import com.example.alwayswin.service.WishListService;
-import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,9 +39,6 @@ public class WishListServiceImpl implements WishListService {
 
     @Override
     public List<WishList> queryWishListPage(Integer uid, int pageNum, int pageSize) {
-        // 在你需要进行分页的 MyBatis 查询方法前调用 PageHelper.startPage 静态方法即可
-        // 紧跟在这个方法后的第一个MyBatis 查询方法会被进行分页
-        PageHelper.startPage(pageNum, pageSize);
         List<WishList> wishLists = wishListMapper.getByUid(uid);
         return wishLists;
     }

@@ -9,9 +9,9 @@ import java.util.Map;
 
 @Service
 public interface FigureService {
-    String uploadFile(String localPath, String s3FolderName);
+    String uploadFile(MultipartFile file, String s3FolderName);
 
-    List<String> uploadFileList(String[] localPaths, String s3FolderName);
+//    List<String> uploadFileList(String[] localPaths, String s3FolderName);
 
     Figure getFigureByFid(int fid);
 

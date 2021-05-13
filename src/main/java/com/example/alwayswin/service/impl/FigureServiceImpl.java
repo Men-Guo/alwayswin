@@ -1,23 +1,32 @@
 package com.example.alwayswin.service.impl;
 
 import com.amazonaws.AmazonServiceException;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.AccessControlList;
+import com.amazonaws.services.s3.model.CanonicalGrantee;
+import com.amazonaws.services.s3.model.Permission;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
-import com.example.alwayswin.config.WebMvcConfig;
 import com.example.alwayswin.entity.Figure;
 import com.example.alwayswin.mapper.FigureMapper;
 import com.example.alwayswin.service.FigureService;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,14 +37,20 @@ import java.util.Map;
 public class FigureServiceImpl implements FigureService {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final String BUCKET_NAME = "alwayswin-figures";
-    private final String BUCKET_URL = "https://alwayswin-figures.s3.amazonaws.com/";
+    private String accessKey = "ASIAVPKU3FJU6KG75LQT";
+
+    private String secretKey = "OtaFLYawvumbSsn7PL11rzx7zD5WsjaQUDM+jSr/";
+
+    private String BUCKET_NAME = "alwayswin-figures";
+
+    private String BUCKET_URL = "https://alwayswin-figures.s3.amazonaws.com/";
+
     private final Regions REGION = Regions.US_EAST_1;
+
+    private AmazonS3 s3client = null;
 
     @Resource
     private FigureMapper figureMapper;
-
-    private final String uploadPath = WebMvcConfig.imageToStorage;
 
     public FigureServiceImpl(FigureMapper figureMapper) {
         this.figureMapper = figureMapper;
@@ -48,11 +63,7 @@ public class FigureServiceImpl implements FigureService {
 
     @Override
     public List<Figure> getFiguresByPid(int pid) {
-        List<Figure> figureList = figureMapper.getByPid(pid);
-        // 只有一张图片，默认为封面
-        if (figureList != null && figureList.size() == 1)
-            figureList.get(0).setThumbnail(true);
-        return figureList;
+        return figureMapper.getByPid(pid);
     }
 
     @Override
@@ -115,76 +126,95 @@ public class FigureServiceImpl implements FigureService {
         }
     }
 
-    public String uploadFile(String localPath, String s3FolderName) {
+//    public String uploadFile1(String localPath, String s3FolderName) {
+//
+//        File f = new File(localPath);
+//        TransferManager transferManager = TransferManagerBuilder.standard().build();
+//        String s3Filename = null;
+//        try {
+//            s3Filename = getS3Filename(localPath, s3FolderName);
+//            transferManager.upload(BUCKET_NAME, s3Filename, f);
+//        } catch (AmazonServiceException e) {
+//            logger.error(e.getErrorMessage());
+//            return null;
+//        }
+//        finally {
+//            transferManager.shutdownNow();
+//        }
+//        return BUCKET_URL + s3Filename;
+//    }
 
-        File f = new File(localPath);
-        TransferManager transferManager = TransferManagerBuilder.standard().build();
+    public String uploadFile(MultipartFile file, String s3FolderName) {
         String s3Filename = null;
         try {
-            s3Filename = getS3Filename(localPath, s3FolderName);
-            transferManager.upload(BUCKET_NAME, s3Filename, f);
-        } catch (AmazonServiceException e) {
-            logger.error(e.getErrorMessage());
+            s3Filename = s3FolderName + '/' + file.getOriginalFilename();
+            File tempFile = new File(file.getOriginalFilename());
+            FileUtils.copyInputStreamToFile(file.getInputStream(), tempFile);
+
+            // upload to s3
+            PutObjectRequest request = new PutObjectRequest(BUCKET_NAME, s3Filename, tempFile);
+            initAWSClient();
+            s3client.putObject(request);
+            
+            // delete from server
+            if(tempFile.exists()) {
+                tempFile.delete();
+            }
+
+        } catch (AmazonServiceException | IOException e) {
+            logger.info(e.getMessage());
             return null;
-        }
-        finally {
-            transferManager.shutdownNow();
         }
         return BUCKET_URL + s3Filename;
     }
+    //    public List<String> uploadFileList(String[] localPaths, String s3FolderName) {
+//        // convert the file paths to a list of File objects (required by the
+//        // uploadFileList method)
+//        ArrayList<File> files = new ArrayList<>();
+//        List<String> urlList = new ArrayList<>();
+//        for (String path : localPaths) {
+//            files.add(new File(path));
+//            urlList.add(BUCKET_URL + getS3Filename(path, s3FolderName));
+//        }
+//
+//        TransferManager transferManager = TransferManagerBuilder.standard().build();
+//        try {
+//            transferManager.uploadFileList(BUCKET_NAME,
+//                    s3FolderName,
+//                    new File("."),   // directory
+//                    files);
+//
+//        } catch (AmazonServiceException e) {
+//            logger.error(e.getErrorMessage());
+//            return null;
+//        }
+//        finally {
+//            transferManager.shutdownNow();
+//        }
+//        return urlList;
+//    }
 
-
-    public List<String> uploadFileList(String[] localPaths, String s3FolderName) {
-        // convert the file paths to a list of File objects (required by the
-        // uploadFileList method)
-        ArrayList<File> files = new ArrayList<>();
-        List<String> urlList = new ArrayList<>();
-        for (String path : localPaths) {
-            files.add(new File(path));
-            urlList.add(BUCKET_URL + getS3Filename(path, s3FolderName));
-        }
-
-        TransferManager transferManager = TransferManagerBuilder.standard().build();
-        try {
-            transferManager.uploadFileList(BUCKET_NAME,
-                    s3FolderName,
-                    new File("."),   // directory
-                    files);
-
-        } catch (AmazonServiceException e) {
-            logger.error(e.getErrorMessage());
-            return null;
-        }
-        finally {
-            transferManager.shutdownNow();
-        }
-        return urlList;
-    }
-
-
-    private String getS3Filename(String localPath, String s3FolderName) {
-        String[] strings = localPath.split("/");
-        String originalFilename = strings[strings.length - 1];  // 最后一个是文件名
-
-        String s3Filename = null;
-        if (s3FolderName != null) {
-            s3Filename = s3FolderName + '/' + originalFilename;
-        } else {
-            s3Filename = originalFilename;
-        }
-        return s3Filename;
-    }
 
 
     private void deleteFigureFromS3(String url) {
 //        url https://alwayswin-figures.s3.amazonaws.com/product-figure/default-product-thumbnail.png
         String[] strings = url.substring("https://".length()).split("/", 2);
         String keyName = strings[1];
-        final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(REGION).build();
         try {
-            s3.deleteObject(BUCKET_NAME, keyName);
+            initAWSClient();
+            s3client.deleteObject(BUCKET_NAME, keyName);
         } catch (AmazonServiceException e) {
             logger.error(e.getErrorMessage());
+        }
+    }
+
+    private void initAWSClient() {
+        AWSCredentials credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
+        if (this.s3client == null) {
+            this.s3client = AmazonS3ClientBuilder.standard()
+//                    .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                    .withRegion(this.REGION)
+                    .build();
         }
     }
 

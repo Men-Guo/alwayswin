@@ -104,7 +104,6 @@ public class UserServiceImplTest {
         param.put("password2", "ABC123");
 
         when(userMapper.add(any(User.class))).thenReturn(1);
-        when(userMapper.addUserInfo(any(UserInfo.class))).thenReturn(1);
 
         assertEquals(1,userService.register(param));
     }
@@ -130,6 +129,42 @@ public class UserServiceImplTest {
         param.put("username", "Jas");
         param.put("password1", "ABC12");
         param.put("password2", "ABC12");
+
+        assertEquals(-2,userService.register(param));
+    }
+
+    @Test
+    public void illegalUsernameWithTooLongLengthExceptionWithRegister() {
+        when(userMapper.getByUsername(anyString())).thenReturn(null);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("username", "JasJasJasJasJasJasJasJasJasJasJasJasJasJasJasJasJasJasJasJasJas");
+        param.put("password1", "ABC12");
+        param.put("password2", "ABC12");
+
+        assertEquals(-2,userService.register(param));
+    }
+
+    @Test
+    public void illegalUsernameWithNoLettersExceptionWithRegister() {
+        when(userMapper.getByUsername(anyString())).thenReturn(null);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("username", "12345678");
+        param.put("password1", "123456");
+        param.put("password2", "123456");
+
+        assertEquals(-2,userService.register(param));
+    }
+
+    @Test
+    public void illegalUsernameWithIllegalCharsExceptionWithRegister() {
+        when(userMapper.getByUsername(anyString())).thenReturn(null);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("username", "Jason--");
+        param.put("password1", "ABC123");
+        param.put("password2", "ABC123");
 
         assertEquals(-2,userService.register(param));
     }
@@ -164,8 +199,8 @@ public class UserServiceImplTest {
 
         Map<String, String> param = new HashMap<>();
         param.put("username", "Ja3on_Jone5");
-        param.put("password1", "123456");
-        param.put("password2", "123456");
+        param.put("password1", "123_456");
+        param.put("password2", "123_456");
 
         assertEquals(-2,userService.register(param));
     }
@@ -176,8 +211,8 @@ public class UserServiceImplTest {
 
         Map<String, String> param = new HashMap<>();
         param.put("username", "Ja3on_Jone5");
-        param.put("password1", "ABCDEF");
-        param.put("password2", "ABCDEF");
+        param.put("password1", "ABC_DEF");
+        param.put("password2", "ABC_DEF");
 
         assertEquals(-2,userService.register(param));
     }

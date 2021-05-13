@@ -36,11 +36,10 @@ class FigureServiceImplTest {
     }
 
     //////////      upload        ///////////////
+    //todo
     @Test
-    @Ignore  // todo
     public void happyPathWithUpload() {
-        MultipartFile file = mock(MultipartFile.class);
-        file.getOriginalFilename();
+
     }
 
 

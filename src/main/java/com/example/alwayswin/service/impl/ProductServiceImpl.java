@@ -84,7 +84,6 @@ public class ProductServiceImpl implements ProductService {
             int num = productMapper.add(product);
             if (num == 0) throw new Exception("Product add failed");
 
-            // TODO: set other values in productStatus
             ProductStatus productStatus = new ProductStatus();
             productStatus.setPid(product.getPid());
 

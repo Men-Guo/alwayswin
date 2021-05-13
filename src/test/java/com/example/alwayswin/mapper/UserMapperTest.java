@@ -54,7 +54,15 @@ class UserMapperTest {
         user = userMapper.getByUsername("Jason");
         assertNotNull(user);
 
-        assertEquals(userMapper.deleteUser(user.getUid()), 1);
+        int uid = user.getUid();
+
+        //verify userinfo is also added
+        assertNotNull(userMapper.getUserInfoByUid(uid));
+
+        // delete user
+        assertEquals(userMapper.deleteUser(uid), 1);
+        assertNull(userMapper.getByUid(uid));
+        assertNull(userMapper.getUserInfoByUid(uid));
     }
 
 
@@ -126,36 +134,6 @@ class UserMapperTest {
     public void ExceptionWhenGetUserInfo() {
         UserInfo userInfo = userMapper.getUserInfoByUid(0);
         assertNull(userInfo);
-    }
-
-    /////////          addUserInfo          //////////////
-    @Test
-    public void happyPathWithAddUserInfo() {
-        // add new user
-        User user = new User();
-        user.setUsername("Jason");
-        user.setPassword("Bourne2");
-        assertEquals(userMapper.add(user), 1);
-
-        // verify new user added
-        user = userMapper.getByUsername("Jason");
-        assertNotNull(user);
-
-        // add new userInfo
-        UserInfo userInfo = new UserInfo();
-        userInfo.setUid(user.getUid());
-        userInfo.setBalance(8000);
-        assertEquals(userMapper.addUserInfo(userInfo), 1);
-
-        // verify userInfo added
-        userInfo = userMapper.getUserInfoByUid(user.getUid());
-        assertNotNull(userInfo);
-        assertEquals(userInfo.getBalance(), 8000);
-
-        // delete user and userInfo
-        assertEquals(1, userMapper.deleteUser(user.getUid()));
-        // uid是外键，userinfo 会被同时删除
-        assertEquals(0, userMapper.deleteUserInfo(user.getUid()));
     }
 
     @Test

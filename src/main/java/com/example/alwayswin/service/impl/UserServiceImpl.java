@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService {
         if (userMapper.getByUsername(username) != null)
             return -1;
         // 用户名或密码不合法
-        if (!isValid(username) || !isValid(password1)) {
+        if (!isValidUsername(username) || !isValidPassword(password1)) {
             logger.warn("Username and Password should apply to the rule");
             return -2;
         }
@@ -136,11 +136,8 @@ public class UserServiceImpl implements UserService {
         // 密码加密存储
         user.setPassword(passwordEncoder.encode(password1));
         // 加入user table
-        userMapper.add(user);
-
-        // 将基本信息加入user info
-//        user = userMapper.getByUsername(username);
-        return addUserInfo(user.getUid());
+        // trigger会负责将基本信息加入user info
+        return userMapper.add(user);
     }
 
 
@@ -164,7 +161,7 @@ public class UserServiceImpl implements UserService {
             return -2;
         }
         //新密码不合法
-        else if (!isValid(newPassword1)) {
+        else if (!isValidPassword(newPassword1)) {
             logger.warn("Password should apply to the rule");
             return -3;
         }
@@ -178,13 +175,41 @@ public class UserServiceImpl implements UserService {
     }
 
     /*
-     * @Description: 用户名及密码规则。长度6~20 且数字字母混合, 除下划线外的字符滚粗
+     * @Description: 用户名规则。长度6~20，由字母(required)、数字(optional)组成, 除下划线外的字符滚粗
+     * @Param: [username]
+     * @Return: boolean
+     * @Author: SQ
+     * @Date: 2021-4-20
+     **/
+    private boolean isValidUsername(String username) {
+        if (username.length() < 6 || username.length() > 20 )
+            return false;
+        else {
+            int digitCnt = 0, letterCnt = 0, underlineCnt = 0;
+            for (char c : username.toCharArray()) {
+                if (Character.isDigit(c))
+                    digitCnt++;
+                else if (Character.isLetter(c))
+                    letterCnt++;
+                else if (c == '_') {
+                    underlineCnt++;
+                }
+                else
+                    return false;
+            }
+            return  digitCnt >= 0 && letterCnt > 0 && underlineCnt >= 0;
+        }
+    }
+
+
+    /*
+     * @Description: 密码规则。长度6~20 且数字字母混合, 除下划线外的字符滚粗
      * @Param: [password]
      * @Return: boolean
      * @Author: SQ
      * @Date: 2021-4-20
      **/
-    private boolean isValid(String password) {
+    private boolean isValidPassword(String password) {
         if (password.length() < 6 || password.length() > 20 )
             return false;
         else {
@@ -242,14 +267,4 @@ public class UserServiceImpl implements UserService {
         return userMapper.updateUserBalance(userInfo);
     }
 
-
-
-    // 加入用户默认信息
-    private int addUserInfo(int uid) {
-        UserInfo userInfo = new UserInfo();
-        userInfo.setUid(uid);
-        userInfo.setRegisDate(new Date(System.currentTimeMillis()));
-        // 加入userInfo
-        return userMapper.addUserInfo(userInfo);
-    }
 }

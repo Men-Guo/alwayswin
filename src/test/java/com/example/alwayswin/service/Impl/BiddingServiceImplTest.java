@@ -352,7 +352,33 @@ class BiddingServiceImplTest {
         assertTrue(productStatus.getEndTime().after(new Timestamp(System.currentTimeMillis() + 1 * 60 * 1000)));
     }
 
-    // extended3 阶段拍必得
+    // extended3 阶段正常bid（没超过保留价）
+    @Test
+    public void extended3NotExceedingReservedPriceWithAddBid() {
+        ProductStatus productStatus = new ProductStatus(0, 8, 100, "extended3",
+                new Timestamp(System.currentTimeMillis() + 50 * 1000));  // 50s
+        when(productMapper.getProductStatusByPid(anyInt())).thenReturn(productStatus);
+
+        Product product = new Product();
+        product.setPid(8);
+        product.setUid(1);
+        product.setStartPrice(100);
+        product.setAutoWinPrice(150);
+        product.setMinIncrement(10);
+        product.setReservedPrice(130);
+        when(productMapper.getByPid(anyInt())).thenReturn(product);
+
+        when(biddingMapper.add(any(Bidding.class))).thenReturn(1);
+        when(productMapper.updateProductStatus(any(ProductStatus.class))).thenReturn(1);
+        Map<String, String> param = new HashedMap();
+        param.put("uid", "2");
+        param.put("pid", "8");
+        param.put("offer", "120");
+        assertEquals(1, biddingService.addBid(param));
+        assertEquals("extended3", productStatus.getStatus());
+    }
+
+    // extended3 阶段拍中（超过保留价）
     @Test
     public void extended3WithAddBid() {
         ProductStatus productStatus = new ProductStatus(0, 8, 100, "extended3",

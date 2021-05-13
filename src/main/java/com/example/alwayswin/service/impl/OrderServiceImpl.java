@@ -98,7 +98,7 @@ public class OrderServiceImpl implements OrderService {
                     return -3;  // buyer 不允许进行其他操作了
             }
             // 操作者是卖家
-            else if (uid == oldOrder.getProduct().getUid()) {
+            else if (uid == oldOrder.getProductPreview().getUid()) {
                 // paid -> shipped
                 if (oldOrder.getStatus().equals(OrderStatusCode.PAID.getStatus())) {
                     if (order.getStatus().equals(OrderStatusCode.SHIPPED.getStatus())) {
