@@ -21,6 +21,7 @@ public class ProductController {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+
     @Autowired
     ProductServiceImpl productService = new ProductServiceImpl();
 

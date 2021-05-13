@@ -4,6 +4,7 @@ import com.example.alwayswin.entity.*;
 import com.example.alwayswin.mapper.FigureMapper;
 import com.example.alwayswin.mapper.ProductMapper;
 import com.example.alwayswin.mapper.UserMapper;
+import com.example.alwayswin.service.FigureService;
 import com.example.alwayswin.service.ProductService;
 import com.example.alwayswin.utils.enums.ProductCateCode;
 import com.example.alwayswin.utils.enums.ProductStatusCode;
@@ -26,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Autowired
-    private FigureMapper figureMapper;
+    private  FigureMapper figureMapper;
 
     @Autowired
     private UserMapper userMapper;
@@ -104,7 +105,7 @@ public class ProductServiceImpl implements ProductService {
     /**
      * 在product和product_status中添加entry
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Integer createProduct(Product product) {
         try{
@@ -138,6 +139,7 @@ public class ProductServiceImpl implements ProductService {
             figure.setPid(product.getPid());
             figure.setThumbnail(true);
             figure.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
+            figure.setDescription("default picture.");
             figure.setUrl("https://alwayswin-figures.s3.amazonaws.com/icon/default-icon.png");
             num = figureMapper.add(figure);
             if (num==0) throw new Exception("Failed to add product figure. Gonna reroll.");
@@ -302,8 +304,15 @@ public class ProductServiceImpl implements ProductService {
 
 
     /////////    仅限测试时使用       //////////////
+    //删除的话要进行联排删除, 太麻烦了 暂时不写
+/*    @Transactional(rollbackFor = Exception.class)
     public int deleteProduct(Integer pid) {
-        return productMapper.deleteProduct(pid);
-    }
+        try{
+            if (productMapper.deleteProduct(pid);)
+        }catch(Exception e){
+            logger.warn(e.getMessage());
+        }
+        return 0;
+    }*/
 
 }

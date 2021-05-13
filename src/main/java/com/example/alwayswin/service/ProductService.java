@@ -89,5 +89,5 @@ public interface ProductService {
 
     /////////    仅限测试时使用       //////////////
     // 删除product
-    int deleteProduct(Integer pid);
+    //int deleteProduct(Integer pid);
 }

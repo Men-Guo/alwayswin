@@ -1,5 +1,6 @@
 package com.example.alwayswin.mapper;
 
+import com.example.alwayswin.entity.Figure;
 import com.example.alwayswin.entity.Product;
 import com.example.alwayswin.entity.ProductPreview;
 import com.example.alwayswin.entity.ProductStatus;
@@ -18,6 +19,19 @@ public class ProductMapperTest {
     @Autowired
     ProductMapper productMapper;
 
+    @Autowired
+    FigureMapper figureMapper;
+
+    @Test
+    public void testFigure(){
+        Figure figure = new Figure();
+        figure.setPid(30);
+        figure.setThumbnail(true);
+        figure.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
+        figure.setDescription("default picture.");
+        figure.setUrl("https://alwayswin-figures.s3.amazonaws.com/icon/default-icon.png");
+        assertEquals(1, figureMapper.add(figure));
+    }
     //ProductPreviews
     @Test
     public void happyPathGetProductAndProductPreview(){
@@ -28,7 +42,7 @@ public class ProductMapperTest {
         System.out.println(productPreviews);
         productPreviews = productMapper.getOrderedPreviewProducts("price","ASC");
         System.out.println(productPreviews);
-        assertEquals(13,productPreviews.size());
+        assertEquals(14,productPreviews.size());
     }
 
     @Test

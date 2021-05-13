@@ -34,14 +34,7 @@ public class ProductServiceImplTest {
         assertTrue(figure.isThumbnail());
         List<Figure> figures = product.getFigures();
         System.out.println(figures);
-        assertEquals(2, figures.size());
-    }
-
-    @Test
-    public void happyPathQueryProductOnly(){
-        Product product = productService.displayProductDetail(27);
-        System.out.println(product);
-        assertEquals(0, product.getProductStatus().getPid());
+        assertEquals(3, figures.size());
     }
 
     @Test
@@ -51,25 +44,23 @@ public class ProductServiceImplTest {
 
     @Test
     public void happyPathUpdateProduct(){
-        Product product = productService.displayProductDetail(24);
+        Product product = productService.displayProductDetail(8);
         product.setCanceled(false);
-        assertEquals(1,productService.updateProduct(product));
+        assertEquals(8,productService.updateProduct(product));
     }
 
     @Test
     public void happyPathUpdateProductStatus(){
-        Product product = productService.displayProductDetail(24);
+        Product product = productService.displayProductDetail(8);
         ProductStatus productStatus = product.getProductStatus();
         productStatus.setStatus("waiting");
         assertEquals(1,productService.updateProductStatusService(productStatus));
     }
 
-
-
     @Test
     public void happyPathCancelProduct(){
-        assertEquals(1,productService.cancelProduct(24));
-        Product product = productService.displayProductDetail(24);
+        assertEquals(1,productService.cancelProduct(34));
+        Product product = productService.displayProductDetail(34);
         ProductStatus productStatus = product.getProductStatus();
         assertTrue(product.isCanceled());
         assertEquals("canceled",productStatus.getStatus());
@@ -137,14 +128,14 @@ public class ProductServiceImplTest {
     public void happyPathDisplayAllProductPreviews(){
         List<ProductPreview> productPreviews = productService.displayAllProduct();
         System.out.println(productPreviews);
-        assertEquals(14,productPreviews.size());
+        assertEquals(23,productPreviews.size());
     }
 
     @Test
     public void happyPathDisplayAllProductPreviewsOrders(){
         List<ProductPreview> productPreviews = productService.displayAllProductSorted("auto_win_price","asc");
         System.out.println(productPreviews);
-        assertEquals(14,productPreviews.size());
+        assertEquals(23,productPreviews.size());
 
         List<ProductPreview> productPreviews2 = productService.displayAllProductSorted("auto_win_price","ASC");
         System.out.println(productPreviews2);
@@ -152,28 +143,28 @@ public class ProductServiceImplTest {
 
         productPreviews = productService.displayAllProductSorted("auto_win_price","DESC");
         System.out.println(productPreviews);
-        assertEquals(14,productPreviews.size());
+        assertEquals(23,productPreviews.size());
         productPreviews2 = productService.displayAllProductSorted("auto_win_price","desc");
         System.out.println(productPreviews2);
 
 
         productPreviews = productService.displayAllProductSorted("autoWinPrice","asc");
         System.out.println(productPreviews);
-        assertEquals(14,productPreviews.size());
+        assertEquals(23,productPreviews.size());
 
         productPreviews2 = productService.displayAllProductSorted("autoWinPrice","ASC");
         System.out.println(productPreviews2);
 
         productPreviews = productService.displayAllProductSorted("autoWinPrice","DESC");
         System.out.println(productPreviews);
-        assertEquals(14,productPreviews.size());
+        assertEquals(23,productPreviews.size());
         productPreviews2 = productService.displayAllProductSorted("autoWinPrice","desc");
         System.out.println(productPreviews2);
 
 
         productPreviews = productService.displayAllProductSorted("auto_win_price","asc");
         System.out.println(productPreviews);
-        assertEquals(14,productPreviews.size());
+        assertEquals(23,productPreviews.size());
 
         productPreviews2 = productService.displayAllProductSorted("price","ASC");
         System.out.println(productPreviews2);
@@ -181,7 +172,7 @@ public class ProductServiceImplTest {
 
         productPreviews = productService.displayAllProductSorted("price","DESC");
         System.out.println(productPreviews);
-        assertEquals(14,productPreviews.size());
+        assertEquals(23,productPreviews.size());
         productPreviews2 = productService.displayAllProductSorted("price","desc");
         System.out.println(productPreviews2);
 
@@ -209,7 +200,7 @@ public class ProductServiceImplTest {
     public void displayProductsByCateOrder(){
         List<ProductPreview> productPreviews = productService.displayProductsByCateAndSorted("cell phone","auto_win_price","asc");
         System.out.println(productPreviews);
-        assertEquals(12,productPreviews.size());
+        assertEquals(17,productPreviews.size());
 
         List<ProductPreview> productPreviews2 = productService.displayProductsByCateAndSorted("cell phone","auto_win_price","ASC");
         System.out.println(productPreviews2);
@@ -217,28 +208,28 @@ public class ProductServiceImplTest {
 
         productPreviews = productService.displayProductsByCateAndSorted("cell phone","auto_win_price","DESC");
         System.out.println(productPreviews);
-        assertEquals(12,productPreviews.size());
+        assertEquals(17,productPreviews.size());
         productPreviews2 = productService.displayProductsByCateAndSorted("cell phone","auto_win_price","desc");
         System.out.println(productPreviews2);
 
 
         productPreviews = productService.displayProductsByCateAndSorted("cell phone","autoWinPrice","asc");
         System.out.println(productPreviews);
-        assertEquals(12,productPreviews.size());
+        assertEquals(17,productPreviews.size());
 
         productPreviews2 = productService.displayProductsByCateAndSorted("cell phone","autoWinPrice","ASC");
         System.out.println(productPreviews2);
 
         productPreviews = productService.displayProductsByCateAndSorted("cell phone","autoWinPrice","DESC");
         System.out.println(productPreviews);
-        assertEquals(12,productPreviews.size());
+        assertEquals(17,productPreviews.size());
         productPreviews2 = productService.displayProductsByCateAndSorted("cell phone","autoWinPrice","desc");
         System.out.println(productPreviews2);
 
 
         productPreviews = productService.displayProductsByCateAndSorted("cell phone","auto_win_price","asc");
         System.out.println(productPreviews);
-        assertEquals(12,productPreviews.size());
+        assertEquals(17,productPreviews.size());
 
         productPreviews2 = productService.displayProductsByCateAndSorted("cell phone","price","ASC");
         System.out.println(productPreviews2);
@@ -246,7 +237,7 @@ public class ProductServiceImplTest {
 
         productPreviews = productService.displayProductsByCateAndSorted("cell phone","price","DESC");
         System.out.println(productPreviews);
-        assertEquals(12,productPreviews.size());
+        assertEquals(17,productPreviews.size());
         productPreviews2 = productService.displayProductsByCateAndSorted("cell phone","price","desc");
         System.out.println(productPreviews2);
     }
@@ -262,5 +253,12 @@ public class ProductServiceImplTest {
     public void queryProductStatus(){
         assertNull(productService.displayProductStatus(-1));
         assertEquals(1,productService.displayProductStatus(1).getPid());
+    }
+
+    @Test
+    public void unhapplyPathUpdateProductStatues(){
+        ProductStatus productStatus = new ProductStatus();
+        productStatus.setStatus("xxxx");
+        assertNull(productService.updateProductStatusService(productStatus));
     }
 }
