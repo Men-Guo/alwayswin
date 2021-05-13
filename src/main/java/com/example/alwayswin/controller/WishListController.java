@@ -75,7 +75,8 @@ public class WishListController {
     @PostMapping(value ="/wishlist/{uid}/{pid}")
     public CommonResult getWishListByUidPid(@PathVariable("uid") Integer uid, @PathVariable("pid") Integer pid){
         int num = wishListService.checkDuplicate(uid, pid);
-        return CommonResult.success(num);
+        if (num ==0) return CommonResult.success(null);
+        return CommonResult.failure("The item already in the wishList");
     }
 
     /**
@@ -113,7 +114,7 @@ public class WishListController {
         if (res == 1){
             return CommonResult.success(null);
         }
-        else if (res == -1){
+        else if (res == 0){
             return CommonResult.validateFailure("This product is already in wishList");
         }else {
             return CommonResult.failure();

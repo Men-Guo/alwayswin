@@ -89,17 +89,25 @@ public class ProductServiceImpl implements ProductService {
             Product oldProduct = productMapper.getByPid(product.getPid());
             if (null == oldProduct){
                 logger.debug("The product doesn't exist.");
-                return null;
+                return 0;
+            }
+            if (oldProduct.isCanceled()){
+                logger.debug("Already canceled, cant updated");
+                return -1;
+            }
+            if (!ProductStatusCode.isCancelable(product.getProductStatus().getStatus())){
+                logger.debug("Can't update.");
+                return -2;
             }
             if (!ProductCateCode.contains(product.getCate1())){
                 logger.debug("The product cate is illegal.");
-                return null;
+                return -3;
             }
             return productMapper.update(product);
         } catch(Exception e){
           logger.warn(e.getMessage());
         }
-        return null;
+        return 0;
     }
 
     /**
@@ -111,11 +119,11 @@ public class ProductServiceImpl implements ProductService {
         try{
             if (product.getAutoWinPrice()==0){
                 logger.debug("The AutoWin price is 0, can't create the product.");
-                return null;
+                return -1;
             }
             if (!ProductCateCode.contains(product.getCate1())){
                 logger.debug("Cate is illegal.");
-                return null;
+                return -2;
             }
             product.setCreateTime(new Timestamp(System.currentTimeMillis()));
             if (product.getStartTime().compareTo(new Timestamp(System.currentTimeMillis()))==0){
@@ -147,7 +155,7 @@ public class ProductServiceImpl implements ProductService {
         }catch(Exception e){
             logger.warn(e.getMessage());
         }
-        return null;
+        return -3;
     }
 
     /**

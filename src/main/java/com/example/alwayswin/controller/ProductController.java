@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -47,11 +46,11 @@ public class ProductController {
      * cancel某个pid 先更改product status 再更改product, 如不完成进行回滚 完成
      */
     @Transactional
-    @PostMapping(value = "/product/cancel/{pid}")
+    @PutMapping(value = "/product/cancel/{pid}")
     public CommonResult<Object> cancelProduct(@PathVariable("pid") int pid){
         try{
             if (null ==productService.cancelProduct(pid)){
-                throw new Exception("Delete Product error");
+                throw new Exception("Product not exist or can't not be canceled.");
             }
             return CommonResult.success(productService.displayProductDetail(pid));
         }catch(Exception e){
@@ -63,11 +62,14 @@ public class ProductController {
     /**
      * 更新某个pid
      */
-    @PostMapping(value = "/product/post")
+    @PutMapping(value = "/product/post")
     public CommonResult<Object> updateProduct(@RequestBody Product product){
         try{
             Integer num = productService.updateProduct(product);
-            if (num!=1) return CommonResult.failure();
+            if (num==0) return CommonResult.failure("The product doesn't exist.");
+            if (num==-1) return CommonResult.failure("Already Canceled, can't updated.");
+            if (num==-2) return CommonResult.failure("The status shows that can't updated");
+            if (num==-3) return CommonResult.failure("The product cate is illegal.");
         }catch(Exception e){
             logger.warn(e.getMessage());
         }
@@ -78,16 +80,22 @@ public class ProductController {
      * 添加product 同时添加productStatus 添加了回滚 完成
      */
     @PostMapping(value = "/product/create")
-    public CommonResult<Object> createProduct(Product product){
+    public CommonResult<Object> createProduct(@RequestBody Product product){
         try{
-           if (productService.createProduct(product)!=1){
-               logger.debug("product insert failure.");
-               return CommonResult.failure();
+            int res = productService.createProduct(product);
+           if (res==-1){
+               return CommonResult.failure("The AutoWin price is 0, can't create the product.");
            }
+            if (res==-2){
+                return CommonResult.failure("Cate is illegal.");
+            }
+            if (res==-3){
+                return CommonResult.failure("failed to insert to databased");
+            }
         }catch(Exception e){
             logger.warn(e.getMessage());
         }
-        return CommonResult.failure();
+        return CommonResult.success(product);
     }
 
     /**
@@ -167,7 +175,7 @@ public class ProductController {
     /**
      * 更新productStatus完成
      */
-    @PostMapping(value = "/productStatus/post")
+    @PutMapping(value = "/productStatus/post")
     public CommonResult<Object> updateProductStatus(@RequestBody ProductStatus productStatus){
         try{
             Integer num = productService.updateProductStatusService(productStatus);

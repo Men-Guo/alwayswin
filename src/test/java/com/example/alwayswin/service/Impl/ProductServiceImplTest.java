@@ -256,7 +256,7 @@ public class ProductServiceImplTest {
     }
 
     @Test
-    public void unhapplyPathUpdateProductStatues(){
+    public void unhappyPathUpdateProductStatues(){
         ProductStatus productStatus = new ProductStatus();
         productStatus.setStatus("xxxx");
         assertNull(productService.updateProductStatusService(productStatus));
