@@ -33,7 +33,7 @@ public class OrderController {
     }
 
     @ResponseBody
-    @GetMapping("/order/oid/{oid}")
+    @GetMapping("/order/{oid}")
     CommonResult<Order> getByOid(@PathVariable int oid){
         Order order = orderService.getOrderByOid(oid);
         if (order == null) {
@@ -86,7 +86,7 @@ public class OrderController {
     }
 
     @ResponseBody
-    @PutMapping("/order/update/{oid}")
+    @PutMapping("/order/{oid}")
     CommonResult updateOrder(@RequestHeader("Authorization") String authHeader,
                              @RequestBody Map param, @PathVariable int oid){
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
@@ -94,7 +94,7 @@ public class OrderController {
             return CommonResult.unauthorized();
         int uid = Integer.valueOf(claims.getAudience());
 
-        int res = orderService.updateOrder(oid, uid, param);  // 此处uid指的是操作者，不是订单的拥有者
+        int res = orderService.updateOrder(oid, uid, param);  // 操作者不一定是订单拥有者
         if (res == 0) {
             logger.debug("Update order failed");
             return CommonResult.failure();
@@ -123,7 +123,7 @@ public class OrderController {
     }
 
     @ResponseBody
-    @DeleteMapping("/order/delete/{oid}")
+    @DeleteMapping("/order/{oid}")
     CommonResult deleteOrder(@PathVariable int oid){
         int res = orderService.deleteOrder(oid);
         if (res == 1) {
