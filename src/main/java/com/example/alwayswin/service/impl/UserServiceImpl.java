@@ -1,5 +1,6 @@
 package com.example.alwayswin.service.impl;
 
+import com.example.alwayswin.entity.UserPreview;
 import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.security.UserDetailsServiceImpl;
 import com.example.alwayswin.service.UserService;
@@ -90,14 +91,20 @@ public class UserServiceImpl implements UserService {
 //    }
 
     // for testf
-    public String login(Map param) {
+    public UserPreview login(Map param) {
         String username = (String)param.get("username");
         String password = (String)param.get("password");
         try {
             User user = userMapper.getByUsername(username);
             if (user != null && passwordEncoder.matches(password, user.getPassword())) {
                 userMapper.updateLoginStatus(user.getUid(), true, new Timestamp(System.currentTimeMillis()));
-                return JwtUtils.generateToken(user);
+
+                String token = JwtUtils.generateToken(user);
+                UserInfo userInfo = userMapper.getUserInfoByUid(user.getUid());
+                UserPreview userPreview = new UserPreview(user.getUid(), user.getUsername(),
+                        user.getRole(), userInfo.getPortrait(), token);
+                return userPreview;
+
             }
         } catch (Exception e) {
             e.printStackTrace();

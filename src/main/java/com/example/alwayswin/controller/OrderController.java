@@ -32,6 +32,7 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    // keep /oid to avoid ambiguity
     @ResponseBody
     @GetMapping("/order/oid/{oid}")
     CommonResult<Order> getByOid(@PathVariable int oid){
@@ -42,6 +43,7 @@ public class OrderController {
         return CommonResult.success(order);
     }
 
+    // keep /number to avoid ambiguity
     @ResponseBody
     @GetMapping("/order/number/{number}")
     CommonResult<Order> getByNumber(@PathVariable String number){
@@ -94,7 +96,7 @@ public class OrderController {
             return CommonResult.unauthorized();
         int uid = Integer.valueOf(claims.getAudience());
 
-        int res = orderService.updateOrder(oid, uid, param);  // 此处uid指的是操作者，不是订单的拥有者
+        int res = orderService.updateOrder(oid, uid, param);  // 此处uid指的是操作者，不一定是订单的拥有者
         if (res == 0) {
             logger.debug("Update order failed");
             return CommonResult.failure();

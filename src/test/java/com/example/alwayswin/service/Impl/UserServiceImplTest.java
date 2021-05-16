@@ -2,6 +2,7 @@ package com.example.alwayswin.service.Impl;
 
 import com.example.alwayswin.entity.User;
 import com.example.alwayswin.entity.UserInfo;
+import com.example.alwayswin.entity.UserPreview;
 import com.example.alwayswin.mapper.BiddingMapper;
 import com.example.alwayswin.mapper.OrderMapper;
 import com.example.alwayswin.mapper.ProductMapper;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,16 +49,21 @@ public class UserServiceImplTest {
     public void happyPathWithLogin() {
         User user = new User(1, "Arthur", "$2a$10$wPsHefYMnGWXMkEKoOplfeabV074mpCMWe9OSM01.eyBHzMI5a1CW",
                 "user", false, new Timestamp(0));
-        when(userMapper.getByUsername(any())).thenReturn(user);
+        UserInfo userInfo = new UserInfo(1, 1, "www.baidu.com",
+                "", "", "", new Date(0), new Date(0), 0);
+
+        when(userMapper.getByUsername(anyString())).thenReturn(user);
+        when(userMapper.getUserInfoByUid(anyInt())).thenReturn(userInfo);
 
         Map<String, String> param = new HashMap<>();
         param.put("username", "Arthur");
         param.put("password", "ABC123");
 
-        String token = userService.login(param);
-        assertNotNull(token);
+        UserPreview preview = userService.login(param);
+        assertNotNull(preview);
+        assertEquals("www.baidu.com", preview.getPortrait());
 
-        Claims claims = JwtUtils.getClaimFromToken(token);
+        Claims claims = JwtUtils.getClaimFromToken(preview.getToken());
         assertNotNull(claims);
 
         String username = claims.getSubject();
@@ -76,8 +83,8 @@ public class UserServiceImplTest {
         param.put("username", "Arthur");
         param.put("password", "abc123");  // wrong password
 
-        String token = userService.login(param);
-        assertNull(token);
+        UserPreview preview = userService.login(param);
+        assertNull(preview);
     }
 
     @Test
@@ -86,8 +93,8 @@ public class UserServiceImplTest {
         param.put("username", "BBBBBB");  // user doesn't exist
         param.put("password", "ABC123");
 
-        String token = userService.login(param);
-        assertNull(token);
+        UserPreview preview = userService.login(param);
+        assertNull(preview);
     }
 
 

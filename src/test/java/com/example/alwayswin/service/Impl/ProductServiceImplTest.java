@@ -6,7 +6,7 @@ import com.example.alwayswin.entity.ProductPreview;
 import com.example.alwayswin.entity.ProductStatus;
 import com.example.alwayswin.service.ProductService;
 import com.example.alwayswin.service.impl.ProductServiceImpl;
-import com.example.alwayswin.utils.enums.ProductStatusCode;
+import com.example.alwayswin.utils.enumUtil.ProductStatusCode;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

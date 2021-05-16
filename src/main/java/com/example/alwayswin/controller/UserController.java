@@ -2,6 +2,7 @@ package com.example.alwayswin.controller;
 
 import com.example.alwayswin.entity.User;
 import com.example.alwayswin.entity.UserInfo;
+import com.example.alwayswin.entity.UserPreview;
 import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.service.UserService;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
@@ -49,11 +50,11 @@ public class UserController {
     @ResponseBody
     @PostMapping(value = "/login")
     public CommonResult login(@Validated @RequestBody Map params) {
-        String token = userService.login(params);
-        if (token == null) {
+        UserPreview userPreview = userService.login(params);
+        if (userPreview == null) {
             return CommonResult.validateFailure("Wrong username or password");
         }
-        return CommonResult.success(token);
+        return CommonResult.success(userPreview);
     }
 
     @ResponseBody
