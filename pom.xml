@@ -176,7 +176,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.alwayswin.MainApplication</mainClass>
+                    <mainClass>com.example.alwayswin.MainApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>
