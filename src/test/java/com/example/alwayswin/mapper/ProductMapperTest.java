@@ -53,7 +53,7 @@ public class ProductMapperTest {
     @Test
     public void queryAllProductPreview(){
         List<ProductPreview> productPreviews = productMapper.getPreviewProducts();
-        assertEquals(13, productPreviews.size());
+        assertEquals(16, productPreviews.size());
     }
 
     @Test
