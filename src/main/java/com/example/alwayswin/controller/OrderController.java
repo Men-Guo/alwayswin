@@ -33,7 +33,7 @@ public class OrderController {
     }
 
     @ResponseBody
-    @GetMapping("/order/{oid}")
+    @GetMapping("/order/oid/{oid}")
     CommonResult<Order> getByOid(@PathVariable int oid){
         Order order = orderService.getOrderByOid(oid);
         if (order == null) {
@@ -59,7 +59,7 @@ public class OrderController {
         if (claims == null)
             return CommonResult.unauthorized();
         else {
-            int uid = Integer.valueOf(claims.getAudience());
+            int uid = Integer.parseInt(claims.getAudience());
             List<Order> orderList = orderService.getOrdersByUid(uid);
             if (orderList == null) {
                 return CommonResult.failure();
@@ -73,7 +73,7 @@ public class OrderController {
     // 测试用，实际情况下用户无法自行创建order
     @ResponseBody
     @PostMapping("/order/create")
-    CommonResult createOrder(@RequestBody Map param) {
+    CommonResult<Object> createOrder(@RequestBody Map param) {
         // 前端记得传过来的address是string
         int res = orderService.addOrder(param);
         if (res == 1) {
@@ -86,15 +86,15 @@ public class OrderController {
     }
 
     @ResponseBody
-    @PutMapping("/order/{oid}")
-    CommonResult updateOrder(@RequestHeader("Authorization") String authHeader,
+    @PutMapping("/order/update/{oid}")
+    CommonResult<Object>  updateOrder(@RequestHeader("Authorization") String authHeader,
                              @RequestBody Map param, @PathVariable int oid){
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
             return CommonResult.unauthorized();
-        int uid = Integer.valueOf(claims.getAudience());
+        int uid = Integer.parseInt(claims.getAudience());
 
-        int res = orderService.updateOrder(oid, uid, param);  // 操作者不一定是订单拥有者
+        int res = orderService.updateOrder(oid, uid, param);  // 此处uid指的是操作者，不是订单的拥有者
         if (res == 0) {
             logger.debug("Update order failed");
             return CommonResult.failure();
@@ -123,8 +123,8 @@ public class OrderController {
     }
 
     @ResponseBody
-    @DeleteMapping("/order/{oid}")
-    CommonResult deleteOrder(@PathVariable int oid){
+    @DeleteMapping("/order/delete/{oid}")
+    CommonResult<Object>  deleteOrder(@PathVariable int oid){
         int res = orderService.deleteOrder(oid);
         if (res == 1) {
             logger.info("Delete order successfully");
