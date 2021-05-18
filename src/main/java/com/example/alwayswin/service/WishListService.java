@@ -12,6 +12,5 @@ public interface WishListService{
     int deleteWishList(Integer uid, Integer pid);
     int deleteWishList(Integer wid);
     List<WishList> queryWishList(Integer uid);
-    List<WishList> queryWishListPage(Integer uid, int pageNum, int pageSize);
     int checkDuplicate(Integer uid, Integer pid);
 }

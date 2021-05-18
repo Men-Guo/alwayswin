@@ -5,6 +5,7 @@ import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.service.OrderService;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
 import com.example.alwayswin.utils.enumUtil.ResultCode;
+import com.github.pagehelper.PageHelper;
 import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,12 +55,15 @@ public class OrderController {
 
     @ResponseBody
     @GetMapping("/order/my-order")
-    CommonResult<List<Order>> getByUid(@RequestHeader("Authorization") String authHeader){
+    CommonResult<List<Order>> getByUid(@RequestHeader("Authorization") String authHeader,
+                                       @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
+                                       @RequestParam(value = "pageSize",required = false,defaultValue = "5") Integer pageSize){
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
             return CommonResult.unauthorized();
         else {
-            int uid = Integer.valueOf(claims.getAudience());
+            int uid = Integer.parseInt(claims.getAudience());
+            PageHelper.startPage(page,pageSize);
             List<Order> orderList = orderService.getOrdersByUid(uid);
             if (orderList == null) {
                 return CommonResult.failure();
@@ -73,7 +77,7 @@ public class OrderController {
     // 测试用，实际情况下用户无法自行创建order
     @ResponseBody
     @PostMapping("/order/create")
-    CommonResult createOrder(@RequestBody Map param) {
+    CommonResult<Object> createOrder(@RequestBody Map param) {
         // 前端记得传过来的address是string
         int res = orderService.addOrder(param);
         if (res == 1) {
@@ -87,12 +91,12 @@ public class OrderController {
 
     @ResponseBody
     @PutMapping("/order/update/{oid}")
-    CommonResult updateOrder(@RequestHeader("Authorization") String authHeader,
+    CommonResult<Object>  updateOrder(@RequestHeader("Authorization") String authHeader,
                              @RequestBody Map param, @PathVariable int oid){
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
             return CommonResult.unauthorized();
-        int uid = Integer.valueOf(claims.getAudience());
+        int uid = Integer.parseInt(claims.getAudience());
 
         int res = orderService.updateOrder(oid, uid, param);  // 此处uid指的是操作者，不是订单的拥有者
         if (res == 0) {
@@ -124,7 +128,7 @@ public class OrderController {
 
     @ResponseBody
     @DeleteMapping("/order/delete/{oid}")
-    CommonResult deleteOrder(@PathVariable int oid){
+    CommonResult<Object>  deleteOrder(@PathVariable int oid){
         int res = orderService.deleteOrder(oid);
         if (res == 1) {
             logger.info("Delete order successfully");
