@@ -1,6 +1,7 @@
 package com.example.alwayswin.service;
 
 import com.example.alwayswin.entity.UserInfo;
+import com.example.alwayswin.entity.UserPreview;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.Map;
 public interface UserService {
 
     // return token
-    String login(Map param);
+    UserPreview login(Map param);
 
     int register(Map param);
 
