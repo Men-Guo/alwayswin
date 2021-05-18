@@ -2,6 +2,7 @@ package com.example.alwayswin.service.Impl;
 
 import com.example.alwayswin.entity.User;
 import com.example.alwayswin.entity.UserInfo;
+import com.example.alwayswin.entity.UserPreview;
 import com.example.alwayswin.mapper.BiddingMapper;
 import com.example.alwayswin.mapper.OrderMapper;
 import com.example.alwayswin.mapper.ProductMapper;
@@ -53,10 +54,10 @@ public class UserServiceImplTest {
         param.put("username", "Arthur");
         param.put("password", "ABC123");
 
-        String token = userService.login(param);
-        assertNotNull(token);
+        UserPreview userPreview = userService.login(param);
+        assertNotNull(userPreview);
 
-        Claims claims = JwtUtils.getClaimFromToken(token);
+        Claims claims = JwtUtils.getClaimFromToken(userPreview.getToken());
         assertNotNull(claims);
 
         String username = claims.getSubject();
@@ -76,8 +77,8 @@ public class UserServiceImplTest {
         param.put("username", "Arthur");
         param.put("password", "abc123");  // wrong password
 
-        String token = userService.login(param);
-        assertNull(token);
+        UserPreview preview = userService.login(param);
+        assertNull(preview);
     }
 
     @Test
@@ -86,8 +87,8 @@ public class UserServiceImplTest {
         param.put("username", "BBBBBB");  // user doesn't exist
         param.put("password", "ABC123");
 
-        String token = userService.login(param);
-        assertNull(token);
+        UserPreview preview = userService.login(param);
+        assertNull(preview);
     }
 
 
