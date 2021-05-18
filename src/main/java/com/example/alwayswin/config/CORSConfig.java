@@ -27,14 +27,13 @@ public class CORSConfig implements WebMvcConfigurer{
                 registry.addMapping("/**")
                         .allowedHeaders("*")
                         .allowedMethods("*")
-                        .allowedOrigins("http://localhost:9527",   // 本地前端1
-                                "http://192.168.86.25:9527",
-                                "http://localhost:9528",   // 本地前端2
-                                "http://192.168.86.25:9528",
-                                "http://54.175.176.26:8081" // client
+                        .allowedOrigins("http://localhost:9527",   // 本地前端
+                                "http://54.175.176.26:8081",  // client
+                                "http://localhost:8080"   // 本地后端
                         )
-                        .allowCredentials(true);  //带上cookie信息
+                        .allowCredentials(true);
             }
         };
     }
 }
+
