@@ -108,6 +108,15 @@ public class UserController {
     }
 
     @ResponseBody
+    @GetMapping("/seller/{uid}")
+    public CommonResult<UserPreview> getSellerInfo(@PathVariable("uid") Integer uid) {
+        UserPreview userPreview = userService.getSellerInfo(uid);
+        if (userPreview == null)
+                return CommonResult.failure();
+        return CommonResult.success(userPreview);
+    }
+
+    @ResponseBody
     @PutMapping("/user/my-info/update")
     public CommonResult<Object> updateUserInfo(@RequestHeader("Authorization") String authHeader,
                                        @RequestBody Map param){
@@ -141,5 +150,4 @@ public class UserController {
             else return CommonResult.failure();
         }
     }
-
 }

@@ -23,4 +23,6 @@ public interface UserService {
     int updateUserInfo(int uid, Map param);
 
     int updateUserBalance(int uid, Map param);
+
+    UserPreview getSellerInfo(int pid);
 }

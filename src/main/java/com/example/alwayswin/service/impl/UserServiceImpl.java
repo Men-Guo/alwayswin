@@ -90,6 +90,10 @@ public class UserServiceImpl implements UserService {
 //        return JwtUtils.generateToken(userMapper.getByUsername(user.getUsername()));
 //    }
 
+    public UserPreview getSellerInfo(int pid){
+        return userMapper.getPreviewByPid(pid);
+    }
+
     // for testf
     public UserPreview login(Map param) {
         String username = (String)param.get("username");

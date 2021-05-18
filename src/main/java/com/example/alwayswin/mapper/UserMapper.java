@@ -2,6 +2,7 @@ package com.example.alwayswin.mapper;
 
 import com.example.alwayswin.entity.User;
 import com.example.alwayswin.entity.UserInfo;
+import com.example.alwayswin.entity.UserPreview;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
@@ -15,6 +16,10 @@ import java.sql.Timestamp;
  */
 @Repository
 public interface UserMapper {
+
+    /////////          User Preview         //////////////
+    @Select("select * from user_preview where uid=#{uid}")
+    UserPreview getPreviewByPid(int uid);
 
     /////////          User          //////////////
 

@@ -7,6 +7,7 @@ import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.service.impl.ProductServiceImpl;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,7 +109,7 @@ public class ProductController {
      * 可选择是否排序，是否筛选
      */
     @RequestMapping(value = "/product/overview", method = RequestMethod.GET)
-    public CommonResult<List<ProductPreview>> productOverview(@RequestParam(value = "sortedBy",required = false) String sortedBy,
+    public CommonResult<PageInfo<ProductPreview>> productOverview(@RequestParam(value = "sortedBy",required = false) String sortedBy,
                                                               @RequestParam(value = "ordering",required = false) String ordering,
                                                               @RequestParam(value = "cate",required = false) String cate,
                                                               @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
@@ -136,7 +137,8 @@ public class ProductController {
         }catch(Exception e){
             logger.warn(e.getMessage());
         }
-        return CommonResult.success(productPreviewList);
+        PageInfo<ProductPreview> pageInfo = new PageInfo<>(productPreviewList);
+        return CommonResult.success(pageInfo);
     }
 
 /*
