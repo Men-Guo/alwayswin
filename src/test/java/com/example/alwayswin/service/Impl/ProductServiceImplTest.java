@@ -128,7 +128,6 @@ public class ProductServiceImplTest {
     public void happyPathDisplayAllProductPreviews(){
         List<ProductPreview> productPreviews = productService.displayAllProduct();
         System.out.println(productPreviews);
-        assertEquals(23,productPreviews.size());
     }
 
     @Test

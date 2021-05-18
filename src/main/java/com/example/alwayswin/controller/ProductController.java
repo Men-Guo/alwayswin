@@ -6,6 +6,7 @@ import com.example.alwayswin.entity.ProductStatus;
 import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.service.impl.ProductServiceImpl;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
+import com.github.pagehelper.PageHelper;
 import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,11 @@ import java.util.List;
 @RestController
 public class ProductController {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger;
+
+    {
+        logger = LoggerFactory.getLogger(getClass());
+    }
 
 
     @Autowired
@@ -103,13 +108,17 @@ public class ProductController {
      * 可选择是否排序，是否筛选
      */
     @RequestMapping(value = "/product/overview", method = RequestMethod.GET)
-    public CommonResult<List<ProductPreview>> productOverview(@RequestParam(required = false) String sortedBy,
-                                                              @RequestParam(required = false) String ordering,
-                                                              @RequestParam(required = false) String cate){
-        List<ProductPreview> productPreviewList = null;
+    public CommonResult<List<ProductPreview>> productOverview(@RequestParam(value = "sortedBy",required = false) String sortedBy,
+                                                              @RequestParam(value = "ordering",required = false) String ordering,
+                                                              @RequestParam(value = "cate",required = false) String cate,
+                                                              @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
+                                                              @RequestParam(value = "pageSize",required = false,defaultValue = "5") Integer pageSize){
+        List<ProductPreview> productPreviewList;
+        PageHelper.startPage(page, pageSize);
         if (sortedBy == null || ordering == null) {
-            if (cate == null)
+            if (cate == null) {
                 productPreviewList = productService.displayAllProduct();  // 返回所有商品，默认顺序
+            }
             else
                 productPreviewList = productService.displayAllProductsByCate(cate);  // 返回筛选商品，默认顺序
         }
@@ -130,9 +139,8 @@ public class ProductController {
         return CommonResult.success(productPreviewList);
     }
 
-    /**
+/*
      *  返回所有filter后的商品 完成
-     */
     @RequestMapping(value = "/product/{filter}-{sorted}", method = RequestMethod.GET)
     public CommonResult<List<ProductPreview>> productOverviewFilter(@PathVariable("variable") String variable,
                                               @PathVariable("order") String order){
@@ -147,18 +155,21 @@ public class ProductController {
             logger.warn(e.getMessage());
         }
         return CommonResult.success(productPreviewList);
-    }
+    }*/
 
     /**
      * 根据uid返回商品preview 完成
      */
     @GetMapping(value = "/user/my-products")
-    public CommonResult<List<ProductPreview>> productByUid(@RequestHeader("Authorization") String authHeader){
+    public CommonResult<List<ProductPreview>> productByUid(@RequestHeader("Authorization") String authHeader,
+                                                           @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
+                                                           @RequestParam(value = "pageSize",required = false,defaultValue = "5") Integer pageSize){
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
             return CommonResult.unauthorized();
         else {
-            int uid = Integer.valueOf(claims.getAudience());
+            int uid = Integer.parseInt(claims.getAudience());
+            PageHelper.startPage(page,pageSize);
             List<ProductPreview> productPreviewList = productService.displayAllProductsByUid(uid);
             try {
                 if (productPreviewList == null) {

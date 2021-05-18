@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private ProductMapper productMapper;
@@ -172,8 +172,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductPreview> displayAllProductSorted(String sortedBy, String ordering) {
         try{
-            if (!(ordering.toLowerCase().equals("asc")
-                    || ordering.toLowerCase().equals("desc"))) {
+            if (!(ordering.equalsIgnoreCase("asc")
+                    || ordering.equalsIgnoreCase("desc"))) {
                 logger.debug("The ordering string has typo in " + ordering);
                 return null;
             }
@@ -226,7 +226,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductPreview> displayProductsByCateAndSorted(String cate, String sortedBy, String ordering) {
         try{
-            if (!(ordering.toLowerCase().equals("asc") || ordering.toLowerCase().equals("desc"))) {
+            if (!(ordering.equalsIgnoreCase("asc") || ordering.equalsIgnoreCase("desc"))) {
                 logger.debug("The ordering string has typo in " + ordering);
                 return null;
             }
@@ -264,10 +264,10 @@ public class ProductServiceImpl implements ProductService {
         return null;
     }
 
-/*    *//**
+/*    /**
      * 添加ProductStatus 待完善
      * 需要添加end_time判断
-     *//*
+
     @Override
     public Integer addProductStatusService(ProductStatus productStatus) {
         try{
