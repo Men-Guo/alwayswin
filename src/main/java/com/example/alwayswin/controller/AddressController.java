@@ -4,6 +4,7 @@ import com.example.alwayswin.entity.Address;
 import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.service.AddressService;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
+import com.github.pagehelper.PageHelper;
 import io.jsonwebtoken.Claims;
 
 import org.slf4j.Logger;
@@ -45,13 +46,16 @@ public class AddressController {
 
     @ResponseBody
     @GetMapping("/user/address")
-    public CommonResult<List<Address>> getByUid(@RequestHeader("Authorization") String authHeader){
+    public CommonResult<List<Address>> getByUid(@RequestHeader("Authorization") String authHeader,
+                                                @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
+                                                @RequestParam(value = "pageSize",required = false,defaultValue = "5") Integer pageSize){
 
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
             return CommonResult.unauthorized();
         else {
-            int uid = Integer.valueOf(claims.getAudience());
+            int uid = Integer.parseInt(claims.getAudience());
+            PageHelper.startPage(page,pageSize);
             List<Address> addressList = addressService.getAllAddresses(uid);
             if (addressList == null) {
                 return CommonResult.failure();
@@ -64,7 +68,7 @@ public class AddressController {
 
     @ResponseBody
     @PostMapping("/user/address/create")
-    public CommonResult addAddress(@RequestBody Map param) {
+    public CommonResult<Object> addAddress(@RequestBody Map param) {
         int res = addressService.addAddress(param);
         if (res == 1) {
             logger.info("Add address successfully");
@@ -77,7 +81,7 @@ public class AddressController {
 
     @ResponseBody
     @PutMapping("/user/address/update/{aid}")
-    public CommonResult updateAddress(@RequestBody Map param, @PathVariable int aid){
+    public CommonResult<Object> updateAddress(@RequestBody Map param, @PathVariable int aid){
         int res = addressService.updateAddress(aid, param);
         if (res == 1) {
             logger.info("Edit address successfully");
@@ -91,7 +95,7 @@ public class AddressController {
 
     @ResponseBody
     @DeleteMapping("/user/address/delete/{aid}")
-    public CommonResult deleteAddress(@PathVariable int aid){
+    public CommonResult<Object> deleteAddress(@PathVariable int aid){
         int res = addressService.deleteAddress(aid);
         if (res == 1) {
             logger.info("Delete address successfully");

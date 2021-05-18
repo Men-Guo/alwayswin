@@ -5,6 +5,7 @@ import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.service.BiddingService;
 import com.example.alwayswin.service.OrderService;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
+import com.github.pagehelper.PageHelper;
 import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,13 +48,16 @@ public class BiddingController {
 
     @ResponseBody
     @GetMapping("/user/bids")
-    public CommonResult<List<Bidding>> getByUid(@RequestHeader("Authorization") String authHeader){
+    public CommonResult<List<Bidding>> getByUid(@RequestHeader("Authorization") String authHeader,
+                                                @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
+                                                @RequestParam(value = "pageSize",required = false,defaultValue = "5") Integer pageSize){
 
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
             return CommonResult.unauthorized();
         else {
-            int uid = Integer.valueOf(claims.getAudience());
+            int uid = Integer.parseInt(claims.getAudience());
+            PageHelper.startPage(page,pageSize);
             List<Bidding> biddingList = biddingService.getBidsByUid(uid);
             if (biddingList == null) {
                 return CommonResult.failure();
@@ -66,7 +70,10 @@ public class BiddingController {
 
     @ResponseBody
     @GetMapping("/product/{pid}/bids")
-    public CommonResult<List<Bidding>> getByPid(@PathVariable int pid) {
+    public CommonResult<List<Bidding>> getByPid(@PathVariable int pid,
+                                                @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
+                                                @RequestParam(value = "pageSize",required = false,defaultValue = "5") Integer pageSize) {
+        PageHelper.startPage(page,pageSize);
         List<Bidding> biddingList = biddingService.getBidsByPid(pid);
         if (biddingList == null) {
             return CommonResult.failure();
@@ -77,7 +84,7 @@ public class BiddingController {
 
     @ResponseBody
     @PostMapping("/product/bids/create")
-    public CommonResult addBidding(@RequestHeader("Authorization") String authHeader,
+    public CommonResult<Object> addBidding(@RequestHeader("Authorization") String authHeader,
                                    @RequestBody Map param) {
         int res = biddingService.addBid(param);
         if (res < 0) {

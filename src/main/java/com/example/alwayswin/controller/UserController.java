@@ -13,12 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.Map;
 
-/**
- * @ClassName: UserController
- * @Description:
- * @Author: SQ
- * @Date: 2021-4-19
- */
+
 @RestController
 public class UserController {
 
@@ -31,7 +26,7 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/register")
-    public CommonResult register(@RequestBody Map params) {
+    public CommonResult<Object> register(@RequestBody Map params) {
         int res = userService.register(params);
         if (res == -1) {
             return CommonResult.validateFailure("Duplicate username, plz get a new one");
@@ -49,7 +44,7 @@ public class UserController {
 
     @ResponseBody
     @PostMapping(value = "/login")
-    public CommonResult login(@Validated @RequestBody Map params) {
+    public CommonResult<Object> login(@Validated @RequestBody Map params) {
         UserPreview userPreview = userService.login(params);
         if (userPreview == null) {
             return CommonResult.validateFailure("Wrong username or password");
@@ -59,12 +54,12 @@ public class UserController {
 
     @ResponseBody
     @PostMapping(value = "/user/logout")
-    public CommonResult logout(@RequestHeader("Authorization") String authHeader) {
+    public CommonResult<Object> logout(@RequestHeader("Authorization") String authHeader) {
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
             return CommonResult.unauthorized();
         else {
-            int uid = Integer.valueOf(claims.getAudience());
+            int uid = Integer.parseInt(claims.getAudience());
             if (userService.logout(uid) == 1)
                 return CommonResult.success(null);
             else
@@ -74,13 +69,13 @@ public class UserController {
 
     @ResponseBody
     @PutMapping("/user/change-password")
-    public CommonResult changePassword(@RequestHeader("Authorization") String authHeader,
+    public CommonResult<Object> changePassword(@RequestHeader("Authorization") String authHeader,
                                 @RequestBody Map param) {
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
             return CommonResult.unauthorized();
         else {
-            int uid = Integer.valueOf(claims.getAudience());
+            int uid = Integer.parseInt(claims.getAudience());
             int res = userService.changePassword(uid, param);
             if (res == -1)
                 return CommonResult.failure("Old password doesn't match");
@@ -104,7 +99,7 @@ public class UserController {
         if (claims == null)
             return CommonResult.unauthorized();
         else {
-            int uid = Integer.valueOf(claims.getAudience());
+            int uid = Integer.parseInt(claims.getAudience());
             UserInfo userInfo = userService.getUserInfo(uid);
             if (userInfo == null)
                 return CommonResult.failure();
@@ -114,13 +109,13 @@ public class UserController {
 
     @ResponseBody
     @PutMapping("/user/my-info/update")
-    public CommonResult updateUserInfo(@RequestHeader("Authorization") String authHeader,
+    public CommonResult<Object> updateUserInfo(@RequestHeader("Authorization") String authHeader,
                                        @RequestBody Map param){
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
             return CommonResult.unauthorized();
         else {
-            int uid = Integer.valueOf(claims.getAudience());
+            int uid = Integer.parseInt(claims.getAudience());
             int res = userService.updateUserInfo(uid, param);  // 如果涉及到充钱扣钱的话, param里放一个amount，带正负号的
             if (res == 1)
                 return CommonResult.success(res);
@@ -131,13 +126,13 @@ public class UserController {
     // todo: 现在是个假接口，以后接入支付模块
     @ResponseBody
     @PutMapping("/user/add-funds")
-    public CommonResult updateBalance(@RequestHeader("Authorization") String authHeader,
+    public CommonResult<Object> updateBalance(@RequestHeader("Authorization") String authHeader,
                                        @RequestBody Map param){
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
             return CommonResult.unauthorized();
         else {
-            int uid = Integer.valueOf(claims.getAudience());
+            int uid = Integer.parseInt(claims.getAudience());
             int res = userService.updateUserBalance(uid, param);  // {balance, amount}
             if (res == 1)
                 return CommonResult.success(res);

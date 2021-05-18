@@ -4,6 +4,7 @@ import com.example.alwayswin.entity.WishList;
 import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.service.WishListService;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
+import com.github.pagehelper.PageHelper;
 import io.jsonwebtoken.Claims;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,34 +24,21 @@ public class WishListController {
     /**
      * 【分页】查询某个uid的list
 
-    @ResponseBody
-    @GetMapping(value = "/my-wishlist")
-    public CommonResult<PageInfo> getWishListsByUid(@RequestHeader("Authorization") String authHeader,
-                                                @RequestParam(defaultValue = "1") Integer pageNum,
-                                                @RequestParam(defaultValue = "10") Integer pageSize) {
-        Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
-        if (claims == null)
-            return CommonResult.unauthorized();
-
-        int uid = Integer.valueOf(claims.getAudience());
-        PageInfo pageInfo= PageHelper.startPage(pageNum, pageSize)
-                .doSelectPageInfo(() -> wishListService.queryWishList(uid));
-        return CommonResult.success(pageInfo);
-    }
-    */
-
 
     /**
      * 查询某个uid的list
      */
 
     @GetMapping(value = "/my-wishlist")
-    public CommonResult<List<WishList>> getWishListsByUid(@RequestHeader("Authorization") String authHeader) {
+    public CommonResult<List<WishList>> getWishListsByUid(@RequestHeader("Authorization") String authHeader,
+                                                          @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
+                                                          @RequestParam(value = "pageSize",required = false,defaultValue = "5") Integer pageSize) {
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
             return CommonResult.unauthorized();
 
         int uid = Integer.parseInt(claims.getAudience());
+        PageHelper.startPage(page,pageSize);
         List<WishList> wishLists = wishListService.queryWishList(uid);
         if (wishLists == null)
             return CommonResult.failure();
@@ -73,7 +61,7 @@ public class WishListController {
      */
     @ResponseBody
     @PostMapping(value ="/wishlist/{uid}/{pid}")
-    public CommonResult getWishListByUidPid(@PathVariable("uid") Integer uid, @PathVariable("pid") Integer pid){
+    public CommonResult<Object> getWishListByUidPid(@PathVariable("uid") Integer uid, @PathVariable("pid") Integer pid){
         int num = wishListService.checkDuplicate(uid, pid);
         if (num ==0) return CommonResult.success(null);
         return CommonResult.failure("The item already in the wishList");
@@ -84,7 +72,7 @@ public class WishListController {
      */
     @Deprecated
     @DeleteMapping(value ="/wishlist/{uid}/{pid}")
-    public CommonResult deleteWishListByUidPid(@PathVariable("uid") Integer uid, @PathVariable("pid") Integer pid){
+    public CommonResult<Object> deleteWishListByUidPid(@PathVariable("uid") Integer uid, @PathVariable("pid") Integer pid){
         int res = wishListService.deleteWishList(uid,pid);
         if (res == 1){
             return CommonResult.success(null);
@@ -95,7 +83,7 @@ public class WishListController {
 
     @ResponseBody
     @DeleteMapping(value ="/wishlist/delete/{wid}")
-    public CommonResult deleteWishListByWid(@PathVariable("wid") Integer wid) {
+    public CommonResult<Object> deleteWishListByWid(@PathVariable("wid") Integer wid) {
         int res = wishListService.deleteWishList(wid);
         if (res == 1){
             return CommonResult.success(null);
@@ -109,7 +97,7 @@ public class WishListController {
      */
     @ResponseBody
     @PostMapping(value = "/wishlist/create")
-    public CommonResult insertWishList(@RequestBody WishList wishList){
+    public CommonResult<Object> insertWishList(@RequestBody WishList wishList){
         int res = wishListService.addWishList(wishList);
         if (res == 1){
             return CommonResult.success(null);
