@@ -58,7 +58,7 @@ public class AddressController {
             int uid = Integer.parseInt(claims.getAudience());
             PageHelper.startPage(page,pageSize);
             List<Address> addressList = addressService.getAllAddresses(uid);
-            PageInfo<Address> pageInfo = new PageInfo<Address>();
+            PageInfo<Address> pageInfo = new PageInfo<>(addressList);
             if (addressList == null) {
                 return CommonResult.failure();
             }
