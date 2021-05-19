@@ -14,8 +14,9 @@ public class ProductPreview {
     private double price;
     private String status;
     private String url;
+    private UserPreview userPreview;
 
-    public ProductPreview(Integer pid, Integer uid, String title, String cate1, Timestamp endTime, Timestamp startTime, double autoWinPrice, double price, String status, String url) {
+    public ProductPreview(Integer pid, Integer uid, String title, String cate1, Timestamp endTime, Timestamp startTime, double autoWinPrice, double price, String status, String url, UserPreview userPreview) {
         this.pid = pid;
         this.uid = uid;
         this.title = title;
@@ -26,6 +27,7 @@ public class ProductPreview {
         this.price = price;
         this.status = status;
         this.url = url;
+        this.userPreview = userPreview;
     }
 
     public Timestamp getStartTime() {
@@ -116,6 +118,14 @@ public class ProductPreview {
         this.autoWinPrice = autoWinPrice;
     }
 
+    public UserPreview getUserPreview() {
+        return userPreview;
+    }
+
+    public void setUserPreview(UserPreview userPreview) {
+        this.userPreview = userPreview;
+    }
+
     @Override
     public String toString() {
         return "ProductPreview{" +
@@ -123,12 +133,13 @@ public class ProductPreview {
                 ", uid=" + uid +
                 ", title='" + title + '\'' +
                 ", cate1='" + cate1 + '\'' +
-                ", endTime=" + endTime +
                 ", startTime=" + startTime +
+                ", endTime=" + endTime +
                 ", autoWinPrice=" + autoWinPrice +
                 ", price=" + price +
                 ", status='" + status + '\'' +
                 ", url='" + url + '\'' +
+                ", userPreview=" + userPreview +
                 '}';
     }
 }
