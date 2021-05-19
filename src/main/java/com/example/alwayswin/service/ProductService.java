@@ -66,6 +66,7 @@ public interface ProductService {
 
     ProductStatus displayProductStatus(Integer pid);
 
+    List<ProductPreview> displaySearchProducts(String keyword);
 
 
 

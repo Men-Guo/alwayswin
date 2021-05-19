@@ -25,6 +25,15 @@ public interface ProductMapper {
             })
     List<ProductPreview> getPreviewProducts();
 
+
+    @Select("SELECT * from product_preview where title Like #{keyword}")
+    @Results(
+            value ={
+                    @Result(property = "uid", column = "uid"),
+                    @Result(property = "userPreview", column = "uid",
+                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByPid"))
+            })
+    List<ProductPreview> getPreviewProductsSearch(String keyword);
     /**
      * 根据排序返回list preview
      */

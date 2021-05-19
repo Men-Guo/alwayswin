@@ -260,4 +260,9 @@ public class ProductServiceImplTest {
         productStatus.setStatus("xxxx");
         assertNull(productService.updateProductStatusService(productStatus));
     }
+
+    @Test
+    public void testSearch(){
+        System.out.println(productService.displaySearchProducts("pho"));
+    }
 }

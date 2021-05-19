@@ -175,4 +175,9 @@ public class ProductMapperTest {
         product.setCanceled(false);
         assertEquals(1, productMapper.update(product));
     }
+
+    @Test
+    public void search(){
+        System.out.println(productMapper.getPreviewProductsSearch("%phone%"));
+    }
 }

@@ -30,6 +30,24 @@ public class ProductController {
     @Autowired
     ProductServiceImpl productService = new ProductServiceImpl();
 
+    @RequestMapping(value = "/product/search", method = RequestMethod.POST)
+    public CommonResult<PageInfo<ProductPreview>> search(@RequestParam("keyword") String keyword,
+                                                     @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
+                                                     @RequestParam(value = "pageSize",required = false,defaultValue = "5") Integer pageSize){
+        try{
+            PageHelper.startPage(page,pageSize);
+            List<ProductPreview> productPreviews = productService.displaySearchProducts(keyword);
+            if (productPreviews==null){
+                logger.debug("search does not exists");
+                return CommonResult.validateFailure("search does not exists");
+            }
+            PageInfo<ProductPreview> pageInfo = new PageInfo<>(productPreviews);
+            return CommonResult.success(pageInfo);
+        }catch(Exception e){
+            logger.warn(e.getMessage());
+        }
+        return CommonResult.failure();
+    }
     /**
      * product详情展示页面 完成
      */
