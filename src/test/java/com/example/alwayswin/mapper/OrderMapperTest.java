@@ -23,6 +23,7 @@ class OrderMapperTest {
     @Test
     public void happyPathWithGetByOid() {
         Order order = orderMapper.getByOid(1);
+        System.out.println(order.toString());
         assertNotNull(order);
         assertEquals(1, order.getUid());
         assertEquals("Play Station 1000", order.getProductPreview().getTitle());

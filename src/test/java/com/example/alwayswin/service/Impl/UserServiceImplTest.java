@@ -47,7 +47,7 @@ public class UserServiceImplTest {
     @Test
     public void happyPathWithLogin() {
         User user = new User(1, "Arthur", "$2a$10$wPsHefYMnGWXMkEKoOplfeabV074mpCMWe9OSM01.eyBHzMI5a1CW",
-                "user", false, new Timestamp(0));
+                "user", false, new Timestamp(System.currentTimeMillis()));
         when(userMapper.getByUsername(any())).thenReturn(user);
 
         Map<String, String> param = new HashMap<>();
@@ -67,10 +67,22 @@ public class UserServiceImplTest {
 
         userService.logout(1);
     }
+    @Test
+    public void wrongUsernameExceptionWithLogin() {
+        User user = new User(1, "Arthur", "ABC123", "user", false, new Timestamp(System.currentTimeMillis()));
+        when(userMapper.getByUsername("arthur")).thenReturn(user);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("username", "Arthur");
+        param.put("password", "abc123");  // wrong password
+
+        UserPreview preview = userService.login(param);
+        assertNull(preview);
+    }
 
     @Test
     public void wrongPasswordExceptionWithLogin() {
-        User user = new User(1, "Arthur", "ABC123", "user", false, new Timestamp(0));
+        User user = new User(1, "Arthur", "ABC123", "user", false, new Timestamp(System.currentTimeMillis()));
         when(userMapper.getByUsername("Arthur")).thenReturn(user);
 
         Map<String, String> param = new HashMap<>();
@@ -111,7 +123,7 @@ public class UserServiceImplTest {
 
     @Test
     public void DuplicateUsernameExceptionWithRegister() {
-        User user = new User(0, "Ja3on_Jone5", "ABC123", "user", false, new Timestamp(0));
+        User user = new User(0, "Ja3on_Jone5", "ABC123", "user", false, new Timestamp(System.currentTimeMillis()));
         when(userMapper.getByUsername(anyString())).thenReturn(user);
 
         Map<String, String> param = new HashMap<>();
@@ -255,7 +267,7 @@ public class UserServiceImplTest {
     public void happyPathWithChangePassword() {
         User user = new User(1, "Arthur",
                 "$2a$10$wPsHefYMnGWXMkEKoOplfeabV074mpCMWe9OSM01.eyBHzMI5a1CW",
-                "user", false, new Timestamp(0));
+                "user", false, new Timestamp(System.currentTimeMillis()));
         when(userMapper.getByUid(anyInt())).thenReturn(user);
 
         Map<String, String> param = new HashMap<>();
@@ -272,7 +284,7 @@ public class UserServiceImplTest {
     public void wrongOldPasswordExceptiomWithChangePassword() {
         User user = new User(1, "Arthur",
                 "$2a$10$wPsHefYMnGWXMkEKoOplfeabV074mpCMWe9OSM01.eyBHzMI5a1CW",
-                "user", false, new Timestamp(0));
+                "user", false, new Timestamp(System.currentTimeMillis()));
         when(userMapper.getByUid(anyInt())).thenReturn(user);
 
         Map<String, String> param = new HashMap<>();
@@ -288,7 +300,7 @@ public class UserServiceImplTest {
     public void sameOldAndNewPasswordExceptionWithChangePassword() {
         User user = new User(1, "Arthur",
                 "$2a$10$wPsHefYMnGWXMkEKoOplfeabV074mpCMWe9OSM01.eyBHzMI5a1CW",
-                "user", false, new Timestamp(0));
+                "user", false, new Timestamp(System.currentTimeMillis()));
         when(userMapper.getByUid(anyInt())).thenReturn(user);
 
         Map<String, String> param = new HashMap<>();
@@ -304,7 +316,7 @@ public class UserServiceImplTest {
     public void illegalNewPasswordExceptionWithChangePassword() {
         User user = new User(1, "Arthur",
                 "$2a$10$wPsHefYMnGWXMkEKoOplfeabV074mpCMWe9OSM01.eyBHzMI5a1CW",
-                "user", false, new Timestamp(0));
+                "user", false, new Timestamp(System.currentTimeMillis()));
         when(userMapper.getByUid(anyInt())).thenReturn(user);
 
         Map<String, String> param = new HashMap<>();
@@ -320,7 +332,7 @@ public class UserServiceImplTest {
     public void newPasswordsNotEqualExceptionWithChangePassword() {
         User user = new User(1, "Arthur",
                 "$2a$10$wPsHefYMnGWXMkEKoOplfeabV074mpCMWe9OSM01.eyBHzMI5a1CW",
-                "user", false, new Timestamp(0));
+                "user", false, new Timestamp(System.currentTimeMillis()));
         when(userMapper.getByUid(anyInt())).thenReturn(user);
 
         Map<String, String> param = new HashMap<>();

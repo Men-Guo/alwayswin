@@ -1,4 +1,3 @@
-<<<<<<< 70943283ca7736496ab98c33ec386c62a00d73ce
 # Created by https://www.gitignore.io/api/intellij
 # Edit at https://www.gitignore.io/?templates=intellij
 
@@ -94,8 +93,7 @@ fabric.properties
 .idea/**/markdown-navigator/
 
 # End of https://www.gitignore.io/api/intellij
-=======
-HELP.md
+
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -133,5 +131,3 @@ build/
 mvnw
 mvnw.cmd
 .gradle
-
->>>>>>> -m

@@ -26,7 +26,8 @@ public interface UserMapper {
     @Select("select * from user where uid = #{uid}")
     User getByUid(int uid);
 
-    @Select("select * from user where username = #{username}")
+    // user **BINARY** to make case sensitive
+    @Select("select * from user where BINARY username = #{username}")
     User getByUsername(String username);
 
     @Options(useGeneratedKeys = true,keyProperty = "uid")

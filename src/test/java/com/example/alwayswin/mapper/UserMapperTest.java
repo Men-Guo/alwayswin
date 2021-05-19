@@ -39,7 +39,7 @@ class UserMapperTest {
 
     @Test
     public void noSuchUserGetByUsername() {
-        assertNull(userMapper.getByUsername("xxx"));
+        assertNull(userMapper.getByUsername("arthur"));
     }
 
     ////////////////////        add    ///////////////////////////////////
