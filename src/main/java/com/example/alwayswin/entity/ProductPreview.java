@@ -1,5 +1,6 @@
 package com.example.alwayswin.entity;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 
 public class ProductPreview {
@@ -7,40 +8,38 @@ public class ProductPreview {
     private Integer uid;
     private String title;
     private String cate1;   // ('camera', 'cell phone', 'accessory', 'computer', 'tablet', 'network hardware', 'tv', 'smart home', 'portable audio', 'car electronics', 'gaming console', 'vr', 'others')
+    private Timestamp startTime;
     private Timestamp endTime;
     private double autoWinPrice;
     private double price;
     private String status;
     private String url;
 
-    public ProductPreview() {}
-
-    public ProductPreview(Integer pid, Integer uid, String title, String cate1,
-                          Timestamp endTime, double autoWinPrice, double price, String status, String url) {
+    public ProductPreview(Integer pid, Integer uid, String title, String cate1, Timestamp endTime, Timestamp startTime, double autoWinPrice, double price, String status, String url) {
         this.pid = pid;
         this.uid = uid;
         this.title = title;
         this.cate1 = cate1;
         this.endTime = endTime;
+        this.startTime = startTime;
         this.autoWinPrice = autoWinPrice;
         this.price = price;
         this.status = status;
         this.url = url;
     }
-    @Override
-    public String toString() {
-        return "ProductPreview{" +
-                "pid=" + pid +
-                ", uid=" + uid +
-                ", title='" + title + '\'' +
-                ", cate1='" + cate1 + '\'' +
-                ", endTime=" + endTime +
-                ", autoWinPrice=" + autoWinPrice +
-                ", price=" + price +
-                ", status='" + status + '\'' +
-                ", url='" + url + '\'' +
-                '}';
+
+    public Timestamp getStartTime() {
+        return startTime;
     }
+
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
+    }
+
+
+
+    public ProductPreview() {}
+
 
     public String getUrl() {
         return url;
@@ -117,5 +116,19 @@ public class ProductPreview {
         this.autoWinPrice = autoWinPrice;
     }
 
-
+    @Override
+    public String toString() {
+        return "ProductPreview{" +
+                "pid=" + pid +
+                ", uid=" + uid +
+                ", title='" + title + '\'' +
+                ", cate1='" + cate1 + '\'' +
+                ", endTime=" + endTime +
+                ", startTime=" + startTime +
+                ", autoWinPrice=" + autoWinPrice +
+                ", price=" + price +
+                ", status='" + status + '\'' +
+                ", url='" + url + '\'' +
+                '}';
+    }
 }
