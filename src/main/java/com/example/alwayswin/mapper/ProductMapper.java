@@ -25,6 +25,14 @@ public interface ProductMapper {
             })
     List<ProductPreview> getPreviewProducts();
 
+    @Select("SELECT * from product_preview where uid =#{uid} and status = 'success'")
+    @Results(
+            value ={
+                    @Result(property = "uid", column = "uid"),
+                    @Result(property = "userPreview", column = "uid",
+                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByUid"))
+            })
+    List<ProductPreview> getSellerSuccessPreviewProducts(Integer uid);
 
     @Select("SELECT * from product_preview where title Like #{keyword}")
     @Results(

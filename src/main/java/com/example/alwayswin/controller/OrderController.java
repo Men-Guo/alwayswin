@@ -1,8 +1,11 @@
 package com.example.alwayswin.controller;
 
 import com.example.alwayswin.entity.Order;
+import com.example.alwayswin.entity.ProductPreview;
 import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.service.OrderService;
+import com.example.alwayswin.service.ProductService;
+import com.example.alwayswin.service.impl.ProductServiceImpl;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
 import com.example.alwayswin.utils.enumUtil.ResultCode;
 import com.github.pagehelper.PageHelper;
@@ -10,6 +13,7 @@ import com.github.pagehelper.PageInfo;
 import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

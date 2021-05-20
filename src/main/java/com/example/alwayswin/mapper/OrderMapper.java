@@ -52,6 +52,7 @@ public interface OrderMapper {
     // 其他属性不能修改
     @Update("update orders set " +
             "orders.address = #{address}," +
+            "orders.payment=#{payment},"+
             "orders.status = #{status}" +
             "where orders.oid = #{oid}")
     int update(Order order);

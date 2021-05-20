@@ -319,8 +319,10 @@ public class ProductServiceImpl implements ProductService {
         return null;
     }
 
-
-
+    @Override
+    public List<ProductPreview> getSellerSuccessOrder(Integer uid) {
+        return productMapper.getSellerSuccessPreviewProducts(uid);
+    }
 
 
     /////////    仅限测试时使用       //////////////
