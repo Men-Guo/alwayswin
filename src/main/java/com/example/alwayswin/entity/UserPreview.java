@@ -10,14 +10,14 @@ public class UserPreview {
     private Integer uid;
     private String username;
     private String role;
-    private String protrait;
+    private String portrait;
     private String token;
 
     public UserPreview() {
         uid= 0;
         username = "";
         role = "user";
-        protrait = "https://alwayswin-figures.s3.amazonaws.com/icon/default-icon.png";
+        portrait = "https://alwayswin-figures.s3.amazonaws.com/icon/default-icon.png";
         token = "";
     }
 
@@ -25,7 +25,7 @@ public class UserPreview {
         this.uid = uid;
         this.username = username;
         this.role = role;
-        this.protrait = portrait;
+        this.portrait = portrait;
         this.token = token;
     }
 
@@ -54,11 +54,11 @@ public class UserPreview {
     }
 
     public String getPortrait() {
-        return protrait;
+        return portrait;
     }
 
     public void setPortrait(String portrait) {
-        this.protrait = portrait;
+        this.portrait = portrait;
     }
 
     public String getToken() {
@@ -75,7 +75,7 @@ public class UserPreview {
                 "uid=" + uid +
                 ", username='" + username + '\'' +
                 ", role='" + role + '\'' +
-                ", portrait='" + protrait + '\'' +
+                ", portrait='" + portrait + '\'' +
                 ", token='" + token + '\'' +
                 '}';
     }
