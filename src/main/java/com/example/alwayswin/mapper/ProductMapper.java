@@ -21,7 +21,7 @@ public interface ProductMapper {
             value ={
                     @Result(property = "uid", column = "uid"),
                     @Result(property = "userPreview", column = "uid",
-                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByPid"))
+                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByUid"))
             })
     List<ProductPreview> getPreviewProducts();
 

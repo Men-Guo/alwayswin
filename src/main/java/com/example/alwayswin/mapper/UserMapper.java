@@ -19,7 +19,7 @@ public interface UserMapper {
 
     /////////          User Preview         //////////////
     @Select("select * from user_preview where uid=#{uid}")
-    UserPreview getPreviewByPid(int uid);
+    UserPreview getPreviewByUid(int uid);
 
     /////////          User          //////////////
 
