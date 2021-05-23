@@ -48,7 +48,7 @@ public class OrderController {
     CommonResult<Order> getByNumber(@PathVariable String number){
         Order order = orderService.getOrderByNumber(number);
         if (order == null) {
-            return CommonResult.validateFailure();
+            return CommonResult.failure("Oops, there is no such order");
         }
         return CommonResult.success(order);
     }

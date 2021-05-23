@@ -111,7 +111,7 @@ public class OrderServiceImpl implements OrderService {
             }
             // 操作者既不是买家也不是卖家
             else {
-                return -3;  // permission denied
+                return -3;  // 不允许进行操作
             }
             order.setOid(oid);
         }catch (Exception e) {
