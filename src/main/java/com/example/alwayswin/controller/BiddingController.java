@@ -6,6 +6,7 @@ import com.example.alwayswin.service.BiddingService;
 import com.example.alwayswin.service.OrderService;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,9 +49,9 @@ public class BiddingController {
 
     @ResponseBody
     @GetMapping("/user/bids")
-    public CommonResult<List<Bidding>> getByUid(@RequestHeader("Authorization") String authHeader,
-                                                @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
-                                                @RequestParam(value = "pageSize",required = false,defaultValue = "5") Integer pageSize){
+    public CommonResult<PageInfo<Bidding>> getByUid(@RequestHeader("Authorization") String authHeader,
+                                                    @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
+                                                    @RequestParam(value = "pageSize",required = false,defaultValue = "5") Integer pageSize){
 
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
         if (claims == null)
@@ -63,7 +64,8 @@ public class BiddingController {
                 return CommonResult.failure();
             }
             else {
-                return CommonResult.success(biddingList);
+                PageInfo<Bidding> pageInfo = new PageInfo<>(biddingList);
+                return CommonResult.success(pageInfo);
             }
         }
     }

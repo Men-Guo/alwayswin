@@ -5,6 +5,7 @@ import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.service.AddressService;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.jsonwebtoken.Claims;
 
 import org.slf4j.Logger;
@@ -46,7 +47,7 @@ public class AddressController {
 
     @ResponseBody
     @GetMapping("/user/address")
-    public CommonResult<List<Address>> getByUid(@RequestHeader("Authorization") String authHeader,
+    public CommonResult<PageInfo> getByUid(@RequestHeader("Authorization") String authHeader,
                                                 @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
                                                 @RequestParam(value = "pageSize",required = false,defaultValue = "5") Integer pageSize){
 
@@ -57,11 +58,12 @@ public class AddressController {
             int uid = Integer.parseInt(claims.getAudience());
             PageHelper.startPage(page,pageSize);
             List<Address> addressList = addressService.getAllAddresses(uid);
+            PageInfo<Address> pageInfo = new PageInfo<>(addressList);
             if (addressList == null) {
                 return CommonResult.failure();
             }
             else {
-                return CommonResult.success(addressList);
+                return CommonResult.success(pageInfo);
             }
         }
     }

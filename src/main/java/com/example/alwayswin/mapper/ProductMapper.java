@@ -17,25 +17,78 @@ public interface ProductMapper {
      * 不排序返回preview
      */
     @Select("SELECT * from product_preview")
+    @Results(
+            value ={
+                    @Result(property = "uid", column = "uid"),
+                    @Result(property = "userPreview", column = "uid",
+                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByUid"))
+            })
     List<ProductPreview> getPreviewProducts();
 
+    @Select("SELECT * from product_preview where uid =#{uid} and status = 'success'")
+    @Results(
+            value ={
+                    @Result(property = "uid", column = "uid"),
+                    @Result(property = "userPreview", column = "uid",
+                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByUid"))
+            })
+    List<ProductPreview> getSellerSuccessPreviewProducts(Integer uid);
+
+    @Select("SELECT * from product_preview where title Like #{keyword}")
+    @Results(
+            value ={
+                    @Result(property = "uid", column = "uid"),
+                    @Result(property = "userPreview", column = "uid",
+                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByPid"))
+            })
+    List<ProductPreview> getPreviewProductsSearch(String keyword);
     /**
      * 根据排序返回list preview
      */
     @Select("SELECT * from product_preview order by #{column} #{ordering}")
+    @Results(
+            value ={
+                    @Result(property = "uid", column = "uid"),
+                    @Result(property = "userPreview", column = "uid",
+                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByPid"))
+            })
     List<ProductPreview> getOrderedPreviewProducts(String column, String ordering);
 
     @Select("SELECT * from product_preview where uid =#{uid}")
+    @Results(
+            value ={
+                    @Result(property = "uid", column = "uid"),
+                    @Result(property = "userPreview", column = "uid",
+                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByPid"))
+            })
     List<ProductPreview> getByUid(int uid);
 
     @Select("SELECT * from product_preview where cate_1 =#{cate1}")
+    @Results(
+            value ={
+                    @Result(property = "uid", column = "uid"),
+                    @Result(property = "userPreview", column = "uid",
+                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByPid"))
+            })
     List<ProductPreview> getByCate1(String cate1);
 
     @Select("SELECT * from product_preview where cate_1 =#{cate1} " +
             "order by #{column} #{ordering}")
+    @Results(
+            value ={
+                    @Result(property = "uid", column = "uid"),
+                    @Result(property = "userPreview", column = "uid",
+                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByPid"))
+            })
     List<ProductPreview> getOrderedPreviewProductsByCate1(String cate1, String column, String ordering);
 
     @Select("SELECT * from product_preview where pid =#{pid}")
+    @Results(
+            value ={
+                    @Result(property = "uid", column = "uid"),
+                    @Result(property = "userPreview", column = "uid",
+                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByPid"))
+            })
     ProductPreview getProductPreviewByPid(int pid);
 
 

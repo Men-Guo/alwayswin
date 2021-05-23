@@ -53,13 +53,13 @@ public class ProductMapperTest {
     @Test
     public void queryAllProductPreview(){
         List<ProductPreview> productPreviews = productMapper.getPreviewProducts();
-        assertEquals(16, productPreviews.size());
+        System.out.println(productPreviews);
     }
 
     @Test
     public void queryProductPreviewByUid(){
         List<ProductPreview> productPreviews = productMapper.getByUid(1);
-        assertEquals(3, productPreviews.size());
+        System.out.println(productPreviews);
     }
 
     @Test
@@ -174,5 +174,10 @@ public class ProductMapperTest {
         product.setPassed(true);
         product.setCanceled(false);
         assertEquals(1, productMapper.update(product));
+    }
+
+    @Test
+    public void search(){
+        System.out.println(productMapper.getPreviewProductsSearch("%phone%"));
     }
 }

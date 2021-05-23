@@ -173,4 +173,9 @@ class UserMapperTest {
         userInfo.setBalance(originalBalance);
         assertEquals(userMapper.updateUserBalance(userInfo), 1);
     }
+
+    @Test
+    public void testpreview(){
+        System.out.println(userMapper.getPreviewByUid(1).toString());
+    }
 }

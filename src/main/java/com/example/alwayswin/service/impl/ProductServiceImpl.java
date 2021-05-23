@@ -305,10 +305,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
+    @Override
+    public List<ProductPreview> displaySearchProducts(String keyword){
+        try{
+            if (keyword.isEmpty()) return null;
+            StringBuilder stringBuilder = new StringBuilder(keyword);
+            stringBuilder.append("%");
+            stringBuilder.insert(0,"%");
+            return productMapper.getPreviewProductsSearch(stringBuilder.toString());
+        }catch(Exception e){
+            logger.warn(e.getMessage());
+        }
+        return null;
+    }
 
-
-
-
+    @Override
+    public List<ProductPreview> getSellerSuccessOrder(Integer uid) {
+        return productMapper.getSellerSuccessPreviewProducts(uid);
+    }
 
 
     /////////    仅限测试时使用       //////////////

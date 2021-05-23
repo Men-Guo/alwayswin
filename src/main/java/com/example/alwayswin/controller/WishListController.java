@@ -5,6 +5,7 @@ import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.service.WishListService;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.jsonwebtoken.Claims;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ public class WishListController {
      */
 
     @GetMapping(value = "/my-wishlist")
-    public CommonResult<List<WishList>> getWishListsByUid(@RequestHeader("Authorization") String authHeader,
+    public CommonResult<PageInfo<WishList>> getWishListsByUid(@RequestHeader("Authorization") String authHeader,
                                                           @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
                                                           @RequestParam(value = "pageSize",required = false,defaultValue = "5") Integer pageSize) {
         Claims claims = JwtUtils.getClaimFromToken(JwtUtils.getTokenFromHeader(authHeader));
@@ -42,7 +43,8 @@ public class WishListController {
         List<WishList> wishLists = wishListService.queryWishList(uid);
         if (wishLists == null)
             return CommonResult.failure();
-        return CommonResult.success(wishLists);
+        PageInfo<WishList> pageInfo = new PageInfo<>(wishLists);
+        return CommonResult.success(pageInfo);
     }
 
     /**

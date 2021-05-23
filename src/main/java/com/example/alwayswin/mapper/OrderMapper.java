@@ -17,18 +17,21 @@ import java.util.List;
 public interface OrderMapper {
     @Select("SELECT * from orders where oid = #{oid}")
     @Results({
+            @Result(property = "pid", column = "pid"),
             @Result(property = "productPreview",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getProductPreviewByPid"))
     })
     Order getByOid(int oid);
 
     @Select("SELECT * from orders where number = #{number}")
     @Results({
+            @Result(property = "pid", column = "pid"),
             @Result(property = "productPreview",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getProductPreviewByPid"))
     })
     Order getByNumber(String number);
 
     @Select("SELECT * from orders where uid = #{uid}")
     @Results({
+            @Result(property = "pid", column = "pid"),
             @Result(property = "productPreview",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getProductPreviewByPid"))
     })
     List<Order> getByUid(int uid);

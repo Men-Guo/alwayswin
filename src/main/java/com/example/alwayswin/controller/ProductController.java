@@ -7,6 +7,7 @@ import com.example.alwayswin.security.JwtUtils;
 import com.example.alwayswin.service.impl.ProductServiceImpl;
 import com.example.alwayswin.utils.commonAPI.CommonResult;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,37 @@ public class ProductController {
     @Autowired
     ProductServiceImpl productService = new ProductServiceImpl();
 
+
+    @ResponseBody
+    @GetMapping("/getSellingOrder/{uid}")
+    public CommonResult<PageInfo<ProductPreview>> getSellerOrder(@PathVariable("uid") Integer uid,
+                                                          @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
+                                                          @RequestParam(value = "pageSize",required = false,defaultValue = "5") Integer pageSize){
+        PageHelper.startPage(page,pageSize);
+        List<ProductPreview> productPreviews = productService.getSellerSuccessOrder(uid);
+        if (productPreviews.isEmpty()) return CommonResult.failure("Uid not success order.");
+        PageInfo<ProductPreview> pageInfo = new PageInfo<>(productPreviews);
+        return CommonResult.success(pageInfo);
+    }
+
+    @RequestMapping(value = "/product/search", method = RequestMethod.POST)
+    public CommonResult<PageInfo<ProductPreview>> search(@RequestParam("keyword") String keyword,
+                                                     @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
+                                                     @RequestParam(value = "pageSize",required = false,defaultValue = "5") Integer pageSize){
+        try{
+            PageHelper.startPage(page,pageSize);
+            List<ProductPreview> productPreviews = productService.displaySearchProducts(keyword);
+            if (productPreviews==null){
+                logger.debug("search does not exists");
+                return CommonResult.validateFailure("search does not exists");
+            }
+            PageInfo<ProductPreview> pageInfo = new PageInfo<>(productPreviews);
+            return CommonResult.success(pageInfo);
+        }catch(Exception e){
+            logger.warn(e.getMessage());
+        }
+        return CommonResult.failure();
+    }
     /**
      * product详情展示页面 完成
      */
@@ -108,7 +140,7 @@ public class ProductController {
      * 可选择是否排序，是否筛选
      */
     @RequestMapping(value = "/product/overview", method = RequestMethod.GET)
-    public CommonResult<List<ProductPreview>> productOverview(@RequestParam(value = "sortedBy",required = false) String sortedBy,
+    public CommonResult<PageInfo<ProductPreview>> productOverview(@RequestParam(value = "sortedBy",required = false) String sortedBy,
                                                               @RequestParam(value = "ordering",required = false) String ordering,
                                                               @RequestParam(value = "cate",required = false) String cate,
                                                               @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
@@ -136,7 +168,8 @@ public class ProductController {
         }catch(Exception e){
             logger.warn(e.getMessage());
         }
-        return CommonResult.success(productPreviewList);
+        PageInfo<ProductPreview> pageInfo = new PageInfo<>(productPreviewList);
+        return CommonResult.success(pageInfo);
     }
 
 /*

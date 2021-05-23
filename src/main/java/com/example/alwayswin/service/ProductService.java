@@ -66,8 +66,9 @@ public interface ProductService {
 
     ProductStatus displayProductStatus(Integer pid);
 
+    List<ProductPreview> displaySearchProducts(String keyword);
 
-
+    List<ProductPreview> getSellerSuccessOrder(Integer uid);
 
     /////////    仅限测试时使用       //////////////
     // 删除product
