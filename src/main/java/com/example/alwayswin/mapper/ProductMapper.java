@@ -25,21 +25,12 @@ public interface ProductMapper {
             })
     List<ProductPreview> getPreviewProducts();
 
-    @Select("SELECT * from product_preview where uid =#{uid} and status = 'success'")
-    @Results(
-            value ={
-                    @Result(property = "uid", column = "uid"),
-                    @Result(property = "userPreview", column = "uid",
-                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByUid"))
-            })
-    List<ProductPreview> getSellerSuccessPreviewProducts(Integer uid);
-
     @Select("SELECT * from product_preview where title Like #{keyword}")
     @Results(
             value ={
                     @Result(property = "uid", column = "uid"),
                     @Result(property = "userPreview", column = "uid",
-                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByPid"))
+                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByUid"))
             })
     List<ProductPreview> getPreviewProductsSearch(String keyword);
     /**
@@ -50,7 +41,7 @@ public interface ProductMapper {
             value ={
                     @Result(property = "uid", column = "uid"),
                     @Result(property = "userPreview", column = "uid",
-                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByPid"))
+                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByUid"))
             })
     List<ProductPreview> getOrderedPreviewProducts(String column, String ordering);
 
@@ -59,7 +50,7 @@ public interface ProductMapper {
             value ={
                     @Result(property = "uid", column = "uid"),
                     @Result(property = "userPreview", column = "uid",
-                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByPid"))
+                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByUid"))
             })
     List<ProductPreview> getByUid(int uid);
 
@@ -68,7 +59,7 @@ public interface ProductMapper {
             value ={
                     @Result(property = "uid", column = "uid"),
                     @Result(property = "userPreview", column = "uid",
-                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByPid"))
+                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByUid"))
             })
     List<ProductPreview> getByCate1(String cate1);
 
@@ -78,7 +69,7 @@ public interface ProductMapper {
             value ={
                     @Result(property = "uid", column = "uid"),
                     @Result(property = "userPreview", column = "uid",
-                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByPid"))
+                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByUid"))
             })
     List<ProductPreview> getOrderedPreviewProductsByCate1(String cate1, String column, String ordering);
 
@@ -87,7 +78,7 @@ public interface ProductMapper {
             value ={
                     @Result(property = "uid", column = "uid"),
                     @Result(property = "userPreview", column = "uid",
-                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByPid"))
+                            one = @One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByUid"))
             })
     ProductPreview getProductPreviewByPid(int pid);
 

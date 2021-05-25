@@ -18,10 +18,9 @@ public interface BiddingMapper {
 
     @Select("SELECT * from bidding where bid = #{bid}")
     @Results({
+            @Result(property = "pid",column = "pid"),
             @Result(property = "productPreview",column = "pid",
                     one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getProductPreviewByPid")),
-            @Result(property = "user",column = "uid",
-                    one=@One(select = "com.example.alwayswin.mapper.UserMapper.getByUid"))
     })
     Bidding getByBid(int bid);
 
@@ -29,6 +28,7 @@ public interface BiddingMapper {
     // 某个用户的所有bids
     @Select("SELECT * from bidding where uid = #{uid}")
     @Results({
+            @Result(property = "pid",column = "pid"),
             @Result(property = "productPreview",column = "pid",
                     one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getProductPreviewByPid"))
     })

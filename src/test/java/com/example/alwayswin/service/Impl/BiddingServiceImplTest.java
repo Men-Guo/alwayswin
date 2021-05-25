@@ -24,7 +24,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class BiddingServiceImplTest {
-    private static BiddingService biddingService;
+    private BiddingService biddingService;
     @Mock
     private BiddingMapper biddingMapper;
 
@@ -46,6 +46,11 @@ class BiddingServiceImplTest {
         when(biddingMapper.getByBid(anyInt())).thenReturn(bidding);
 
         assertEquals(1, biddingService.getByBid(1).getOffer());
+    }
+
+    @Test
+    public void happyPathWithGetByBid2() {
+        System.out.println(biddingService.getByBid(1));
     }
 
     @Test

@@ -31,17 +31,7 @@ public class ProductController {
     ProductServiceImpl productService = new ProductServiceImpl();
 
 
-    @ResponseBody
-    @GetMapping("/getSellingOrder/{uid}")
-    public CommonResult<PageInfo<ProductPreview>> getSellerOrder(@PathVariable("uid") Integer uid,
-                                                          @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
-                                                          @RequestParam(value = "pageSize",required = false,defaultValue = "5") Integer pageSize){
-        PageHelper.startPage(page,pageSize);
-        List<ProductPreview> productPreviews = productService.getSellerSuccessOrder(uid);
-        if (productPreviews.isEmpty()) return CommonResult.failure("Uid not success order.");
-        PageInfo<ProductPreview> pageInfo = new PageInfo<>(productPreviews);
-        return CommonResult.success(pageInfo);
-    }
+
 
     @RequestMapping(value = "/product/search", method = RequestMethod.POST)
     public CommonResult<PageInfo<ProductPreview>> search(@RequestParam("keyword") String keyword,

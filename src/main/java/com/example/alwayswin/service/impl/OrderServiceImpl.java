@@ -131,6 +131,12 @@ public class OrderServiceImpl implements OrderService {
             return -1;
     }
 
+    @Override
+    public List<Order> getSellerOrderByUid(int uid) {
+
+        return orderMapper.getSellerOrder(uid);
+    }
+
     private int payOrder(Order order) {
         // 扣钱
         UserInfo userInfo = userMapper.getUserInfoByUid(order.getUid());
