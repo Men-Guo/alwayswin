@@ -319,6 +319,24 @@ public class ProductServiceImpl implements ProductService {
         return null;
     }
 
+    @Override
+    public Integer updateProductStatusByTime() {
+        List<ProductStatus> productStatuses = productMapper.getDueProduct();
+        boolean trigger =false;
+        if (null == productStatuses) return null;
+        for (ProductStatus status:productStatuses){
+            Product product = productMapper.getByPid(status.getPid());
+            if (product.getReservedPrice()==0.0) status.setStatus("success");
+            if (product.getReservedPrice()>status.getPrice()) status.setStatus("broughtIn");
+            else status.setStatus("success");
+            if (productMapper.updateProductStatus(status)==0) {
+                trigger=true;
+                break;
+            }
+        }
+        if (trigger) return 0;
+        return 1;
+    }
 
 
     /////////    仅限测试时使用       //////////////

@@ -158,11 +158,8 @@ public interface ProductMapper {
     @Delete("delete from product_status where pid=#{pid}")
     int deleteProductStatus(int pid);
 
-
-
-
-
-
+    @Select("SELECT * FROM product_status where end_time < CURRENT_TIME() and (product_status.`status`!=\"success\" and product_status.`status`!=\"broughtIn\")")
+    List<ProductStatus> getDueProduct();
 
     /////////    仅限测试时使用       //////////////
     @Delete("DELETE FROM product WHERE pid = #{pid}")
