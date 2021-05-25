@@ -323,12 +323,19 @@ public class ProductServiceImpl implements ProductService {
     public Integer updateProductStatusByTime() {
         List<ProductStatus> productStatuses = productMapper.getDueProduct();
         boolean trigger =false;
-        if (null == productStatuses) return null;
         for (ProductStatus status:productStatuses){
             Product product = productMapper.getByPid(status.getPid());
             if (product.getReservedPrice()==0.0) status.setStatus("success");
             if (product.getReservedPrice()>status.getPrice()) status.setStatus("broughtIn");
             else status.setStatus("success");
+            if (productMapper.updateProductStatus(status)==0) {
+                trigger=true;
+                break;
+            }
+        }
+        productStatuses = productMapper.getWaitingProduct();
+        for (ProductStatus status:productStatuses){
+            status.setStatus("bidding");
             if (productMapper.updateProductStatus(status)==0) {
                 trigger=true;
                 break;

@@ -158,9 +158,11 @@ public interface ProductMapper {
     @Delete("delete from product_status where pid=#{pid}")
     int deleteProductStatus(int pid);
 
-    @Select("SELECT * FROM product_status where end_time < CURRENT_TIME() and (product_status.`status`!=\"success\" and product_status.`status`!=\"broughtIn\")")
+    @Select("SELECT * FROM product_status where end_time < (select now() - INTERVAL 25200 SECOND) and (product_status.`status`!=\"success\" and product_status.`status`!=\"broughtIn\")")
     List<ProductStatus> getDueProduct();
 
+    @Select("SELECT product_status.* FROM product_status join product on product.pid = product_status.pid where product.start_time  BETWEEN (select now()- INTERVAL 25215 SECOND) and (select now()- INTERVAL 25200 SECOND) and (product_status.`status`=\"waiting\")")
+    List<ProductStatus> getWaitingProduct();
     /////////    仅限测试时使用       //////////////
     @Delete("DELETE FROM product WHERE pid = #{pid}")
     int deleteProduct(int pid);
