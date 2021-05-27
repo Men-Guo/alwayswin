@@ -109,8 +109,9 @@ public class FigureServiceImpl implements FigureService {
             return 0;
         String url = figure.getUrl();
         // 先从bucket里删掉
+        if (url.equals("https://alwayswin-figures.s3.amazonaws.com/product-figure/default-product-thumbnail.png")||
+        url.equals("https://alwayswin-figures.s3.amazonaws.com/icon/default-icon.png")) return 0;
         deleteFigureFromS3(url);
-
         // 再从数据库删掉
         return figureMapper.delete(fid);
     }
