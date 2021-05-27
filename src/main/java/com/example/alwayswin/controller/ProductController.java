@@ -33,7 +33,7 @@ public class ProductController {
 
 
 
-    @RequestMapping(value = "/product/search", method = RequestMethod.POST)
+    @RequestMapping(value = "/product/search", method = RequestMethod.GET)
     public CommonResult<PageInfo<ProductPreview>> search(@RequestParam("keyword") String keyword,
                                                      @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
                                                      @RequestParam(value = "pageSize",required = false,defaultValue = "5") Integer pageSize){

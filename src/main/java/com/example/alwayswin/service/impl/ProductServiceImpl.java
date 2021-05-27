@@ -125,12 +125,13 @@ public class ProductServiceImpl implements ProductService {
                 return -2;
             }
             product.setCreateTime(new Timestamp(System.currentTimeMillis()));
-            if (product.getStartTime().compareTo(new Timestamp(System.currentTimeMillis()))==0){
+            if (product.getStartTime().compareTo(new Timestamp(System.currentTimeMillis()))<=0){
                 product.setStartTime(new Timestamp(System.currentTimeMillis()+24*3600*1000L));
             }
             product.setPassed(false);
             product.setCanceled(false);
-            if (product.getEndTime().compareTo(product.getStartTime())==0){
+            System.out.println(product.getEndTime().compareTo(product.getStartTime()));
+            if (product.getEndTime().compareTo(product.getStartTime())<=0){
                product.setEndTime(new Timestamp(System.currentTimeMillis()+7*24*3600*1000L));
             }
             int num = productMapper.add(product);

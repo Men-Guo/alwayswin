@@ -38,7 +38,7 @@ public interface BiddingMapper {
     // 某个product的所有bids
     @Select("SELECT * from bidding where pid = #{pid}")
     @Results({
-            @Result(property = "user",column = "uid", one=@One(select = "com.example.alwayswin.mapper.UserMapper.getByUid"))
+            @Result(property = "user",column = "uid", one=@One(select = "com.example.alwayswin.mapper.UserMapper.getPreviewByUid"))
     })
     List<Bidding> getByPid(int pid);
 
