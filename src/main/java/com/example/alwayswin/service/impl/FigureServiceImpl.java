@@ -160,7 +160,7 @@ public class FigureServiceImpl implements FigureService {
 
         String s3Filename = null;
         try {
-            s3Filename = s3FolderName + '/' + RandomStringUtil.createRandomString(5) + “-” + filename;
+            s3Filename = s3FolderName + '/' + RandomStringUtil.createRandomString(5) + '-' + filename;
             File tempFile = new File(filename);
             FileUtils.copyInputStreamToFile(file.getInputStream(), tempFile);  // 传到server作为中转
 
