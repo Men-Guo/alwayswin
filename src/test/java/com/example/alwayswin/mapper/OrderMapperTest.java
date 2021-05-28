@@ -123,4 +123,8 @@ class OrderMapperTest {
         assertEquals(0, orderMapper.delete(0));
     }
 
+    @Test
+    public void testSellerOrder(){
+        System.out.println(orderMapper.getSellerOrder(2));
+    }
 }

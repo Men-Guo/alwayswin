@@ -68,7 +68,7 @@ public interface ProductService {
 
     List<ProductPreview> displaySearchProducts(String keyword);
 
-    List<ProductPreview> getSellerSuccessOrder(Integer uid);
+    Integer updateProductStatusByTime();
 
     /////////    仅限测试时使用       //////////////
     // 删除product

@@ -77,9 +77,10 @@ public class OrderServiceImpl implements OrderService {
             Order oldOrder = orderMapper.getByOid(oid);
 
             // 操作者是买家
-            if (uid == order.getUid()) {
+            if (uid == oldOrder.getUid()) {
                 // placed -> paid, 同时进行的还有改地址
                 if (oldOrder.getStatus().equals(OrderStatusCode.PLACED.getStatus())) {
+
                     if (order.getStatus().equals(OrderStatusCode.PAID.getStatus())) {
                         if (payOrder(order) == -1) { // 钱没够，先充钱
                             return -4;
@@ -129,6 +130,12 @@ public class OrderServiceImpl implements OrderService {
             return orderMapper.delete(oid);
         else
             return -1;
+    }
+
+    @Override
+    public List<Order> getSellerOrderByUid(int uid) {
+
+        return orderMapper.getSellerOrder(uid);
     }
 
     private int payOrder(Order order) {

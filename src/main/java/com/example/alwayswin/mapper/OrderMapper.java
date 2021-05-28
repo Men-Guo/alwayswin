@@ -42,6 +42,12 @@ public interface OrderMapper {
 //            @Result(property = "product",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getByPid"))
 //    })
 //    List<Order> getByUidAndStatus(int uid, String status);
+    @Select("select orders.* from orders join (Select pid as ppid from product where uid =#{uid}) as t on orders.pid=t.ppid")
+    @Results({
+            @Result(property = "pid", column = "pid"),
+            @Result(property = "productPreview",column = "pid", one=@One(select = "com.example.alwayswin.mapper.ProductMapper.getProductPreviewByPid"))
+    })
+    List<Order> getSellerOrder(int uid);
 
     @Options(useGeneratedKeys = true,keyProperty = "oid")
     @Insert("insert into " +
