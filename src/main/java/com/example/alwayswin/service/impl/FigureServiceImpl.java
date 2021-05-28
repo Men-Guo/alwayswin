@@ -17,6 +17,7 @@ import com.example.alwayswin.entity.Figure;
 import com.example.alwayswin.mapper.FigureMapper;
 import com.example.alwayswin.service.FigureService;
 import com.example.alwayswin.utils.enumUtil.ImageType;
+import com.example.alwayswin.utils.RandomStringUtil;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -109,9 +110,9 @@ public class FigureServiceImpl implements FigureService {
             return 0;
         String url = figure.getUrl();
         // 先从bucket里删掉
-        if (url.equals("https://alwayswin-figures.s3.amazonaws.com/product-figure/default-product-thumbnail.png")||
-        url.equals("https://alwayswin-figures.s3.amazonaws.com/icon/default-icon.png")) return 0;
-        deleteFigureFromS3(url);
+        if (deleteFigureFromS3(url) == -1)
+            return 0;
+
         // 再从数据库删掉
         return figureMapper.delete(fid);
     }
@@ -159,9 +160,9 @@ public class FigureServiceImpl implements FigureService {
 
         String s3Filename = null;
         try {
-            s3Filename = s3FolderName + '/' + filename;
+            s3Filename = s3FolderName + '/' + RandomStringUtil.createRandomString(5) + '-' + filename;
             File tempFile = new File(filename);
-            FileUtils.copyInputStreamToFile(file.getInputStream(), tempFile);
+            FileUtils.copyInputStreamToFile(file.getInputStream(), tempFile);  // 传到server作为中转
 
             // upload to s3
             PutObjectRequest request = new PutObjectRequest(BUCKET_NAME, s3Filename, tempFile);
@@ -209,7 +210,7 @@ public class FigureServiceImpl implements FigureService {
 
 
 
-    private void deleteFigureFromS3(String url) {
+    private int deleteFigureFromS3(String url) {
 //        url https://alwayswin-figures.s3.amazonaws.com/product-figure/default-product-thumbnail.png
         String[] strings = url.substring("https://".length()).split("/", 2);
         String keyName = strings[1];
@@ -218,7 +219,9 @@ public class FigureServiceImpl implements FigureService {
             s3client.deleteObject(BUCKET_NAME, keyName);
         } catch (AmazonServiceException e) {
             logger.error(e.getErrorMessage());
+            return -1;
         }
+        return 1;
     }
 
     private void initAWSClient() {
