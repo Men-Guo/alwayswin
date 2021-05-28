@@ -122,6 +122,7 @@ public class ProductController {
         }catch(Exception e){
             logger.warn(e.getMessage());
         }
+        product = productService.displayProductDetail(product.getPid());
         return CommonResult.success(product);
     }
 

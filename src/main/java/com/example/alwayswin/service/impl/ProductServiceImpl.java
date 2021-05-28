@@ -140,7 +140,8 @@ public class ProductServiceImpl implements ProductService {
             ProductStatus productStatus = new ProductStatus();
             productStatus.setPid(product.getPid());
             productStatus.setPrice(product.getStartPrice());
-            productStatus.setStatus("pending");
+            if (product.getStartTime().compareTo(new Timestamp(System.currentTimeMillis()))>0) productStatus.setStatus("waiting");
+            else productStatus.setStatus("bidding");
             productStatus.setEndTime(product.getEndTime());
             num = productMapper.addProductStatus(productStatus);
             if (num==0) throw new Exception("Failed to add product status.");

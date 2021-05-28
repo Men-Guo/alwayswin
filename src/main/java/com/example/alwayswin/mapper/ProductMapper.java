@@ -16,7 +16,7 @@ public interface ProductMapper {
     /**
      * 不排序返回preview
      */
-    @Select("SELECT * from product_preview where status = 'bidding' or status ='waiting' ")
+    @Select("SELECT * from product_preview where status = 'bidding' or status ='waiting' or status like 'extended%'")
     @Results(
             value ={
                     @Result(property = "uid", column = "uid"),
@@ -25,7 +25,7 @@ public interface ProductMapper {
             })
     List<ProductPreview> getPreviewProducts();
 
-    @Select("SELECT * from product_preview where title Like 'phone' and status = 'bidding' or status ='waiting'")
+    @Select("SELECT * from product_preview where title Like '%#{keyword}%' and status = 'bidding' or status ='waiting'")
     @Results(
             value ={
                     @Result(property = "uid", column = "uid"),
@@ -36,7 +36,7 @@ public interface ProductMapper {
     /**
      * 根据排序返回list preview
      */
-    @Select("SELECT * from product_preview where status = 'bidding' or status ='waiting' order by #{column} #{ordering}")
+    @Select("SELECT * from product_preview where status = 'bidding' or status ='waiting' or status like 'extended%' order by #{column} #{ordering}")
     @Results(
             value ={
                     @Result(property = "uid", column = "uid"),
@@ -54,7 +54,7 @@ public interface ProductMapper {
             })
     List<ProductPreview> getByUid(int uid);
 
-    @Select("SELECT * from product_preview where cate_1 =#{cate1} and status = 'bidding' or status ='waiting'")
+    @Select("SELECT * from product_preview where cate_1 =#{cate1} and status = 'bidding' or status ='waiting' or status like 'extended%'")
     @Results(
             value ={
                     @Result(property = "uid", column = "uid"),
@@ -63,7 +63,7 @@ public interface ProductMapper {
             })
     List<ProductPreview> getByCate1(String cate1);
 
-    @Select("SELECT * from product_preview where cate_1 =#{cate1} and status = 'bidding' or status ='waiting' " +
+    @Select("SELECT * from product_preview where cate_1 =#{cate1} and status = 'bidding' or status ='waiting' or status like 'extended%' " +
             "order by #{column} #{ordering}")
     @Results(
             value ={
