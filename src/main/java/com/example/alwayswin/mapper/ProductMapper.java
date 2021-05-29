@@ -25,7 +25,7 @@ public interface ProductMapper {
             })
     List<ProductPreview> getPreviewProducts();
 
-    @Select("SELECT * from product_preview where title Like '%#{keyword}%' and status = 'bidding' or status ='waiting'")
+    @Select("SELECT * from product_preview where title Like #{keyword} and status = 'bidding' or status ='waiting'")
     @Results(
             value ={
                     @Result(property = "uid", column = "uid"),
