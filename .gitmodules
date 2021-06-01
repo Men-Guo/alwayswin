@@ -1,0 +1,3 @@
+[submodule "alwayswin-client"]
+	path = alwayswin-client
+	url = https://github.com/ShuqingYe1997/AlwaysWin-Client
