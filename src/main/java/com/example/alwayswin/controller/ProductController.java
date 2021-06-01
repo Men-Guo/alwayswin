@@ -122,6 +122,7 @@ public class ProductController {
         }catch(Exception e){
             logger.warn(e.getMessage());
         }
+        product = productService.displayProductDetail(product.getPid());
         return CommonResult.success(product);
     }
 
@@ -135,6 +136,7 @@ public class ProductController {
                                                               @RequestParam(value = "cate",required = false) String cate,
                                                               @RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
                                                               @RequestParam(value = "pageSize",required = false,defaultValue = "5") Integer pageSize){
+
         List<ProductPreview> productPreviewList;
         PageHelper.startPage(page, pageSize);
         if (sortedBy == null || ordering == null) {
