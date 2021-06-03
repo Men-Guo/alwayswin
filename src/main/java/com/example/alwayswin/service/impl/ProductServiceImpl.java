@@ -126,7 +126,7 @@ public class ProductServiceImpl implements ProductService {
             }
             product.setCreateTime(new Timestamp(System.currentTimeMillis()));
             if (product.getStartTime().compareTo(new Timestamp(System.currentTimeMillis()))<=0){
-                product.setStartTime(new Timestamp(System.currentTimeMillis()+24*3600*1000L));
+                product.setStartTime(new Timestamp(System.currentTimeMillis()+10*1000L));
             }
             product.setPassed(true);
             product.setCanceled(false);
@@ -140,7 +140,7 @@ public class ProductServiceImpl implements ProductService {
             ProductStatus productStatus = new ProductStatus();
             productStatus.setPid(product.getPid());
             productStatus.setPrice(product.getStartPrice());
-            if (product.getStartTime().compareTo(new Timestamp(System.currentTimeMillis()))>0) productStatus.setStatus("waiting");
+            if (product.getStartTime().compareTo(new Timestamp(System.currentTimeMillis()-10*1000L))>0) productStatus.setStatus("waiting");
             else productStatus.setStatus("bidding");
             productStatus.setEndTime(product.getEndTime());
             num = productMapper.addProductStatus(productStatus);
@@ -150,7 +150,7 @@ public class ProductServiceImpl implements ProductService {
             figure.setThumbnail(true);
             figure.setUpdatedTime(new Timestamp(System.currentTimeMillis()));
             figure.setDescription("default picture.");
-            figure.setUrl("https://alwayswin-figures.s3.amazonaws.com/icon/default-icon.png");
+            figure.setUrl("https://alwayswin-figures.s3.amazonaws.com/product-figure/default-product-thumbnail.png");
             num = figureMapper.add(figure);
             if (num==0) throw new Exception("Failed to add product figure. Gonna reroll.");
             return num;

@@ -24,6 +24,8 @@ public class CORSConfig {
         corsConfiguration.addAllowedOrigin("http://localhost:9527");
         corsConfiguration.addAllowedOrigin("http://localhost:9528");
         corsConfiguration.addAllowedOrigin( "http://54.175.176.26:8081");
+        corsConfiguration.addAllowedOrigin("http://192.168.1.191:9527");
+        corsConfiguration.addAllowedOrigin("http://192.168.1.191:9528");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.setAllowCredentials(true);
