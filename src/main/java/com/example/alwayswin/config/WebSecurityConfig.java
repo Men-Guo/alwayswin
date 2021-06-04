@@ -71,7 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //todo: 增加授权接口
         // 允许 登录 注册的 api 的无授权访问，其他需要授权访问
 //        httpSecurity.authorizeRequests()
-//                .antMatchers("/user/login", "/user/register")
+//                .antMatchers("/login", "/register")
 //                .permitAll().anyRequest().authenticated();
 //        http.authorizeRequests()
 //                // Authenticate endpoint can be access by anyone

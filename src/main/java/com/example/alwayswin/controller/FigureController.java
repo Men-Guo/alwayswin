@@ -37,6 +37,7 @@ public class FigureController {
     }
 
     // 传用户头像
+    @ResponseBody
     @PostMapping("/user/my-info/upload-icon")
     public CommonResult<String> uploadIcon(@RequestParam("icon") MultipartFile icon) {
         String url = figureService.uploadFile(icon, "icon");
@@ -46,6 +47,7 @@ public class FigureController {
     }
 
     // 传单张的product figure
+    @ResponseBody
     @PostMapping("/product/figure/upload")
     public CommonResult<String> uploadFigure(@RequestParam("figure") MultipartFile figure) {
         String url = figureService.uploadFile(figure, "product-figure");
